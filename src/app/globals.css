@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FAF8F3;
+  --foreground: #20201E;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom editorial styles */
+.font-editorial {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* Cultural geometric pattern utilities */
+.bg-mandala-pattern {
+  background-image: radial-gradient(#C66A4A 0.75px, transparent 0.75px), radial-gradient(#414B75 0.75px, #FAF8F3 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(#E9E5DD 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F3;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1CBC1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8A8882;
+}
+
+/* Focus styles for WCAG AA */
+*:focus-visible {
+  outline: 2px solid #C66A4A;
+  outline-offset: 2px;
+}
+
