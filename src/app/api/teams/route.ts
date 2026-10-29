@@ -1,100 +1,115 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getActiveUser, loadData, saveData, addAuditLog } from "@/lib/store";
-import { Team } from "@/types";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { TeamRow } from "@/lib/supabase/mappers";
+
+function generateInviteCode(): string {
+  return `ART-${Math.floor(1000 + Math.random() * 9000)}`;
+}
 
 // GET current user's team
 export async function GET() {
-  const activeUser = getActiveUser();
-  if (!activeUser) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { session, pending } = await getSession();
+  if (!session) {
+    return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
   }
 
-  const data = loadData();
-  const team = activeUser.teamId ? data.teams.find((t) => t.id === activeUser.teamId) : null;
-
-  return NextResponse.json({ team, user: activeUser });
+  const team = session.profile.team_id ? await loadTeam(session.profile.team_id) : null;
+  return withCookies(NextResponse.json({ team, user: session.user }), pending);
 }
 
 // POST create team
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = getActiveUser();
-    if (!activeUser) {
-      return NextResponse.json({ error: "You must be signed in to create a team" }, { status: 401 });
+    const { session, pending } = await getSession();
+    if (!session) {
+      return withCookies(
+        NextResponse.json({ error: "You must be signed in to create a team" }, { status: 401 }),
+        pending
+      );
     }
 
-    const data = loadData();
-    const currentUser = data.users.find((u) => u.id === activeUser.id);
-    if (!currentUser) {
-      return NextResponse.json({ error: "User profile not found" }, { status: 404 });
-    }
-
-    // Check if user already belongs to an active team
-    if (currentUser.teamId) {
-      const existingTeam = data.teams.find((t) => t.id === currentUser.teamId);
+    if (session.profile.team_id) {
+      const existingTeam = await loadTeam(session.profile.team_id);
       if (existingTeam) {
-        return NextResponse.json(
-          { error: `You are already a member of team "${existingTeam.name}". A participant can belong to only one team.` },
-          { status: 400 }
+        return withCookies(
+          NextResponse.json(
+            {
+              error: `You are already a member of team "${existingTeam.name}". A participant can belong to only one team.`,
+            },
+            { status: 400 }
+          ),
+          pending
         );
       }
     }
 
     const { name, selectedChallengeId } = await req.json();
-    if (!name || name.trim().length < 3) {
-      return NextResponse.json({ error: "Team name must be at least 3 characters long." }, { status: 400 });
+    if (!name || String(name).trim().length < 3) {
+      return withCookies(
+        NextResponse.json({ error: "Team name must be at least 3 characters long." }, { status: 400 }),
+        pending
+      );
     }
 
-    // Check duplicate team name
-    if (data.teams.some((t) => t.name.toLowerCase() === name.trim().toLowerCase())) {
-      return NextResponse.json({ error: `Team name "${name}" is already taken. Please pick another name.` }, { status: 400 });
+    const admin = createAdminSupabase();
+
+    const { data: allTeams } = await admin.from("teams").select("id, name, invitation_code");
+    const teamNames = new Set((allTeams || []).map((t) => t.name.toLowerCase()));
+    if (teamNames.has(String(name).trim().toLowerCase())) {
+      return withCookies(
+        NextResponse.json({ error: `Team name "${name}" is already taken. Please pick another name.` }, { status: 400 }),
+        pending
+      );
     }
 
-    // Generate unique 6-character alphanumeric invitation code e.g. ART-9281
-    let inviteCode = `ART-${Math.floor(1000 + Math.random() * 9000)}`;
-    while (data.teams.some((t) => t.invitationCode === inviteCode)) {
-      inviteCode = `ART-${Math.floor(1000 + Math.random() * 9000)}`;
+    const existingCodes = new Set((allTeams || []).map((t) => t.invitation_code));
+    let inviteCode = generateInviteCode();
+    while (existingCodes.has(inviteCode)) inviteCode = generateInviteCode();
+
+    const { data: teamRow, error: teamError } = await admin
+      .from("teams")
+      .insert({
+        name: String(name).trim(),
+        leader_id: session.userId,
+        invitation_code: inviteCode,
+        selected_challenge_id: selectedChallengeId || null,
+        status: "incomplete",
+      })
+      .select("*")
+      .single<TeamRow>();
+
+    if (teamError || !teamRow) {
+      if (teamError?.code === "23505") {
+        return withCookies(
+          NextResponse.json({ error: `Team name "${name}" is already taken. Please pick another name.` }, { status: 400 }),
+          pending
+        );
+      }
+      throw new Error(teamError?.message || "Could not create team.");
     }
 
-    const teamId = `team-${Date.now().toString(36)}`;
-    const newTeam: Team = {
-      id: teamId,
-      name: name.trim(),
-      leaderId: currentUser.id,
-      invitationCode: inviteCode,
-      selectedChallengeId: selectedChallengeId || null,
-      status: "incomplete", // Needs 1 more member for exactly 2
-      members: [
-        {
-          userId: currentUser.id,
-          name: currentUser.name,
-          email: currentUser.email,
-          institution: currentUser.institution,
-          department: currentUser.department,
-          role: "leader",
-          joinedAt: new Date().toISOString(),
-        },
-      ],
-      createdAt: new Date().toISOString(),
-    };
+    const { error: memberError } = await admin.from("team_members").insert({
+      team_id: teamRow.id,
+      user_id: session.userId,
+      role: "leader",
+    });
 
-    // Update user role to leader and assign teamId
-    currentUser.teamId = teamId;
-    currentUser.role = "leader";
+    if (memberError) throw new Error(memberError.message);
 
-    data.teams.push(newTeam);
-    saveData(data);
+    await admin.from("profiles").update({ team_id: teamRow.id }).eq("id", session.userId);
 
-    addAuditLog(
-      currentUser.name,
-      currentUser.email,
+    const team = await loadTeam(teamRow.id);
+    if (!team) throw new Error("Team not found after creation.");
+
+    await logAudit(
+      { name: session.user.name, email: session.user.email },
       "TEAM_CREATED",
-      `Created team "${newTeam.name}" (Code: ${newTeam.invitationCode})`
+      `Created team "${teamRow.name}" (Code: ${teamRow.invitation_code})`
     );
 
-    return NextResponse.json({ success: true, team: newTeam });
+    return withCookies(NextResponse.json({ success: true, team }), pending);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

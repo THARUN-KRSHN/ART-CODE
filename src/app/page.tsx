@@ -3,7 +3,8 @@ import Link from "next/link";
 import { PosterArtwork } from "@/components/art/PosterArtwork";
 import { ChallengeMotif } from "@/components/art/ChallengeMotif";
 import { RhombusMotif, CulturalDivider } from "@/components/art/CulturalMotifs";
-import { getChallenges, getEventSettings } from "@/lib/store";
+import { ProblemStatement } from "@/types";
+// Data fetched from real database via API routes (no build-time JSON)
 import {
   Calendar,
   Users,
@@ -16,36 +17,21 @@ import {
   FileCode,
 } from "lucide-react";
 
-export default function HomePage() {
-  const challenges = getChallenges();
-  const settings = getEventSettings();
+export default async function HomePage() {
+  const [settingsRes, challengesRes] = await Promise.all([
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/settings`, { cache: "no-store" }).catch(() => fetch(`/api/settings`, { cache: "no-store" })),
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/challenges`, { cache: "no-store" }).catch(() => fetch(`/api/challenges`, { cache: "no-store" })),
+  ]);
+  const { settings } = await settingsRes.json();
+  const cj = await challengesRes.json();
+  const challenges: ProblemStatement[] = (cj?.challenges || []) as ProblemStatement[];
 
+  const fmt = (d: string) => new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
   const timelineMilestones = [
-    {
-      date: "29 Oct 2026",
-      title: "Team Registration Opens",
-      desc: "Participant onboarding and two-member team formation commences",
-      status: "active",
-    },
-    {
-      date: "30 Oct 2026",
-      title: "Project Submission Opens",
-      desc: "Teams can begin drafting problem statements and deliverables",
-      status: "upcoming",
-    },
-    {
-      date: "08 Nov 2026",
-      title: "Submission Deadline",
-      desc: "11:59 PM IST — Final project locking and confirmation",
-      status: "upcoming",
-      highlight: true,
-    },
-    {
-      date: "14 Nov 2026",
-      title: "Winner Announcement",
-      desc: "Official announcement of results and prize citations",
-      status: "upcoming",
-    },
+    { date: fmt(settings.registrationOpens), title: "Team Registration Opens", desc: "Participant onboarding and two-member team formation commences", status: "active" },
+    { date: fmt(settings.submissionOpens), title: "Project Submission Opens", desc: "Teams can begin drafting problem statements and deliverables", status: "upcoming" },
+    { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "11:59 PM IST — Final project locking and confirmation", status: "upcoming", highlight: true },
+    { date: fmt(settings.winnerAnnouncement), title: "Winner Announcement", desc: "Official announcement of results and prize citations", status: "upcoming" },
   ];
 
   const faqs = [
@@ -160,7 +146,7 @@ export default function HomePage() {
                 <Award size={20} />
               </div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-darkRed font-semibold">Prize Pool</div>
-              <div className="text-lg font-bold text-ink mt-0.5">₹3,000 Cash Pool</div>
+              <div className="text-lg font-bold text-ink mt-0.5">{settings.totalPrizePool} Cash Pool</div>
               <div className="text-xs text-ink-secondary mt-1">Plus participation certificates</div>
             </div>
 
@@ -169,7 +155,7 @@ export default function HomePage() {
                 <Clock size={20} />
               </div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-darkRed font-semibold">Event Dates</div>
-              <div className="text-lg font-bold text-ink mt-0.5">29 Oct – 8 Nov 2026</div>
+              <div className="text-lg font-bold text-ink mt-0.5">{new Date(settings.registrationOpens).toLocaleDateString("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" })} – {new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })}</div>
               <div className="text-xs text-ink-secondary mt-1">Submission closes 11:59 PM IST</div>
             </div>
           </div>

@@ -1,46 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getActiveUser, loadData, saveData, addAuditLog } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { getSession, logAudit, withCookies } from "@/lib/auth";
+import { mapProfile, ProfileRow } from "@/lib/supabase/mappers";
+
+const DEFAULT_INSTITUTION = "Christ College of Engineering (Autonomous), Irinjalakuda";
 
 export async function GET() {
-  const activeUser = getActiveUser();
-  if (!activeUser) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { session, pending } = await getSession();
+  if (!session) {
+    return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
   }
-  return NextResponse.json({ user: activeUser });
+  return withCookies(NextResponse.json({ user: session.user }), pending);
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = getActiveUser();
-    if (!activeUser) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { session, pending } = await getSession();
+    if (!session) {
+      return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
     }
 
     const { name, phone, institution, department, yearOfStudy } = await req.json();
 
-    if (!name || name.trim().length < 2) {
-      return NextResponse.json({ error: "Please enter your full name." }, { status: 400 });
+    if (!name || String(name).trim().length < 2) {
+      return withCookies(NextResponse.json({ error: "Please enter your full name." }, { status: 400 }), pending);
     }
 
-    const data = loadData();
-    const user = data.users.find((u) => u.id === activeUser.id);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const admin = createAdminSupabase();
+    const { data: updated, error } = await admin
+      .from("profiles")
+      .update({
+        name: String(name).trim(),
+        phone: phone ? String(phone).trim() : null,
+        institution: institution ? String(institution).trim() : DEFAULT_INSTITUTION,
+        department: department ? String(department).trim() : null,
+        year_of_study: yearOfStudy || null,
+      })
+      .eq("id", session.userId)
+      .select("*")
+      .single<ProfileRow>();
+
+    if (error || !updated) {
+      return withCookies(NextResponse.json({ error: "Could not update profile." }, { status: 500 }), pending);
     }
 
-    user.name = name.trim();
-    user.phone = phone?.trim() || "";
-    user.institution = institution?.trim() || "Christ College of Engineering (Autonomous), Irinjalakuda";
-    user.department = department?.trim() || "";
-    user.yearOfStudy = yearOfStudy || "";
+    const user = mapProfile(updated, session.role);
 
-    saveData(data);
+    await logAudit(
+      { name: user.name, email: user.email },
+      "PROFILE_UPDATED",
+      `Updated profile details (${user.institution})`
+    );
 
-    addAuditLog(user.name, user.email, "PROFILE_UPDATED", `Updated profile details (${user.institution})`);
-
-    return NextResponse.json({ success: true, user });
+    return withCookies(NextResponse.json({ success: true, user }), pending);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

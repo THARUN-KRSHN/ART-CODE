@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PosterArtwork } from "@/components/art/PosterArtwork";
@@ -10,6 +10,7 @@ import { Github, ArrowRight, CheckCircle2 } from "lucide-react";
 export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [institution, setInstitution] = useState("Christ College of Engineering (Autonomous), Irinjalakuda");
@@ -22,33 +23,27 @@ export default function RegisterPage() {
       setErrorMsg("Please fill in your name and email.");
       return;
     }
+    if (!password || password.length < 8) {
+      setErrorMsg("Password must be at least 8 characters.");
+      return;
+    }
 
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          provider: "email",
           email: email.trim(),
+          password,
           name: name.trim(),
+          phone: phone.trim(),
+          institution: institution.trim(),
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        // Also save phone and institution if provided
-        if (phone || institution) {
-          await fetch("/api/profile", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: name.trim(),
-              phone: phone.trim(),
-              institution: institution.trim(),
-            }),
-          });
-        }
         router.push("/onboarding");
       } else {
         setErrorMsg(data.error || "Registration failed");
@@ -60,22 +55,16 @@ export default function RegisterPage() {
     }
   };
 
-  const handleOAuth = async (provider: "google" | "github") => {
+  const handleOAuth = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/oauth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider,
-          email: `new.${provider}@cce.edu.in`,
-          name: provider === "google" ? "New Google Participant" : "New GitHub Developer",
-        }),
+        body: JSON.stringify({ provider: "google", next: "/onboarding" }),
       });
       const data = await res.json();
-      if (res.ok) {
-        router.push("/onboarding");
-      }
+      if (res.ok && data.url) window.location.href = data.url;
     } catch (e: any) {
       setErrorMsg(e.message);
     } finally {
@@ -127,7 +116,7 @@ export default function RegisterPage() {
             </div>
             <h2 className="text-2xl font-bold text-darkRed font-display">Participant Registration</h2>
             <p className="text-xs text-ink-secondary mt-1">
-              Join ART//CODE 2026. Fast sign up using OAuth or institutional email.
+              Join ART//CODE 2026. Fast sign up using Google or email.
             </p>
           </div>
 
@@ -137,10 +126,10 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* Social buttons */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Google sign-up */}
+          <div className="grid grid-cols-1 gap-3">
             <button
-              onClick={() => handleOAuth("google")}
+              onClick={handleOAuth}
               disabled={isLoading}
               className="py-2.5 px-3 rounded-xl border-2 border-mutedGold bg-cream hover:bg-paleCream text-ink text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-subtle"
             >
@@ -162,16 +151,7 @@ export default function RegisterPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>Google</span>
-            </button>
-
-            <button
-              onClick={() => handleOAuth("github")}
-              disabled={isLoading}
-              className="py-2.5 px-3 rounded-xl border border-darkRed bg-darkRed text-cream hover:bg-vermilion text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-subtle"
-            >
-              <Github size={15} className="text-accentGold" />
-              <span>GitHub</span>
+              <span>Continue with Google</span>
             </button>
           </div>
 
@@ -194,6 +174,20 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Ananya Nair"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-darkRed mb-1 font-mono uppercase tracking-wider">
+                Password *
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>

@@ -1,76 +1,106 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getChallengeById, getActiveUser, loadData, saveData, addAuditLog } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { mapProblem, ProblemRow } from "@/lib/supabase/mappers";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
-  const challenge = getChallengeById(params.slug);
-  if (!challenge) {
-    return NextResponse.json({ error: "Challenge not found" }, { status: 404 });
-  }
+async function findChallenge(identifier: string): Promise<ProblemRow | null> {
+  if (!/^[A-Za-z0-9_-]+$/.test(identifier)) return null;
+  const admin = createAdminSupabase();
+  const bySlug = await admin
+    .from("problem_statements")
+    .select("*")
+    .eq("slug", identifier)
+    .eq("is_published", true)
+    .maybeSingle<ProblemRow>();
+  if (bySlug.data) return bySlug.data;
 
-  const activeUser = getActiveUser();
-  const data = loadData();
-  const team = activeUser?.teamId ? data.teams.find((t) => t.id === activeUser.teamId) : null;
-  const isSelectedByTeam = team?.selectedChallengeId === challenge.id;
-
-  return NextResponse.json({
-    challenge,
-    team,
-    isSelectedByTeam,
-    canSelect: activeUser && team && team.leaderId === activeUser.id,
-  });
+  const byId = await admin
+    .from("problem_statements")
+    .select("*")
+    .or(`id.eq.${identifier},code.eq.${identifier.toUpperCase()}`)
+    .eq("is_published", true)
+    .maybeSingle<ProblemRow>();
+  return byId.data;
 }
 
-// POST: Select challenge for the team
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
   try {
-    const activeUser = getActiveUser();
-    if (!activeUser) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const row = await findChallenge(params.slug);
+    if (!row) {
+      return NextResponse.json({ error: "Challenge not found" }, { status: 404 });
     }
 
-    const data = loadData();
-    const team = data.teams.find((t) => t.id === activeUser.teamId);
-    if (!team) {
-      return NextResponse.json({ error: "You must belong to a team to select a challenge." }, { status: 400 });
-    }
+    const { session } = await getSession();
+    const team = session?.profile.team_id ? await loadTeam(session.profile.team_id) : null;
+    const isSelectedByTeam = team?.selectedChallengeId === row.id;
 
-    if (team.leaderId !== activeUser.id) {
-      return NextResponse.json({ error: "Only the Team Leader can change the team's selected challenge." }, { status: 403 });
-    }
-
-    const challenge = data.challenges.find((c) => c.slug === params.slug || c.id === params.slug);
-    if (!challenge) {
-      return NextResponse.json({ error: "Challenge not found." }, { status: 404 });
-    }
-
-    team.selectedChallengeId = challenge.id;
-
-    // Also update existing draft submission if one exists
-    const sub = data.submissions.find((s) => s.teamId === team.id);
-    if (sub && !sub.isLocked) {
-      sub.challengeId = challenge.id;
-      sub.challengeTitle = challenge.title;
-      sub.updatedAt = new Date().toISOString();
-    }
-
-    saveData(data);
-
-    addAuditLog(
-      activeUser.name,
-      activeUser.email,
-      "CHALLENGE_SELECTED",
-      `Team "${team.name}" selected challenge ${challenge.code}: "${challenge.title}"`
-    );
-
-    return NextResponse.json({ success: true, message: `Selected ${challenge.code} for team "${team.name}"` });
+    return NextResponse.json({
+      challenge: mapProblem(row),
+      team,
+      isSelectedByTeam,
+      canSelect: Boolean(session && team && team.leaderId === session.userId),
+    });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 
+// POST: Select challenge for the team
+export async function POST(_req: NextRequest, { params }: { params: { slug: string } }) {
+  try {
+    const { session, pending } = await getSession();
+    if (!session) {
+      return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
+    }
+
+    if (!session.profile.team_id) {
+      return withCookies(
+        NextResponse.json({ error: "You must belong to a team to select a challenge." }, { status: 400 }),
+        pending
+      );
+    }
+
+    const team = await loadTeam(session.profile.team_id);
+    if (!team) {
+      return withCookies(NextResponse.json({ error: "Team not found." }, { status: 404 }), pending);
+    }
+
+    if (team.leaderId !== session.userId) {
+      return withCookies(
+        NextResponse.json({ error: "Only the Team Leader can change the team's selected challenge." }, { status: 403 }),
+        pending
+      );
+    }
+
+    const row = await findChallenge(params.slug);
+    if (!row) {
+      return withCookies(NextResponse.json({ error: "Challenge not found." }, { status: 404 }), pending);
+    }
+
+    const admin = createAdminSupabase();
+    await admin.from("teams").update({ selected_challenge_id: row.id }).eq("id", team.id);
+
+    const { data: draft } = await admin
+      .from("submissions")
+      .select("id, is_locked")
+      .eq("team_id", team.id)
+      .maybeSingle();
+
+    if (draft && !draft.is_locked) {
+      await admin.from("submissions").update({ challenge_id: row.id }).eq("id", draft.id);
+    }
+
+    await logAudit(
+      { name: session.user.name, email: session.user.email },
+      "CHALLENGE_SELECTED",
+      `Team "${team.name}" selected challenge ${row.code}: "${row.title}"`
+    );
+
+    return withCookies(
+      NextResponse.json({ success: true, message: `Selected ${row.code} for team "${team.name}"` }),
+      pending
+    );
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}

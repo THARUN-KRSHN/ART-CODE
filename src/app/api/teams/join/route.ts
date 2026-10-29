@@ -1,89 +1,97 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getActiveUser, loadData, saveData, addAuditLog } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { getSession, getSettings, loadTeam, logAudit, withCookies } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = getActiveUser();
-    if (!activeUser) {
-      return NextResponse.json({ error: "You must be signed in to join a team." }, { status: 401 });
+    const { session, pending } = await getSession();
+    if (!session) {
+      return withCookies(
+        NextResponse.json({ error: "You must be signed in to join a team." }, { status: 401 }),
+        pending
+      );
     }
 
     const { invitationCode } = await req.json();
-    if (!invitationCode || !invitationCode.trim()) {
-      return NextResponse.json({ error: "Please provide a valid invitation code." }, { status: 400 });
+    if (!invitationCode || !String(invitationCode).trim()) {
+      return withCookies(NextResponse.json({ error: "Please provide a valid invitation code." }, { status: 400 }), pending);
     }
 
-    const data = loadData();
-    const currentUser = data.users.find((u) => u.id === activeUser.id);
-    if (!currentUser) {
-      return NextResponse.json({ error: "User profile not found." }, { status: 404 });
-    }
-
-    // Check if user is already in a team
-    if (currentUser.teamId) {
-      const currentTeam = data.teams.find((t) => t.id === currentUser.teamId);
-      return NextResponse.json(
-        {
-          error: `You are already a member of "${currentTeam?.name || "another team"}". A participant can belong to only one active team.`,
-        },
-        { status: 400 }
+    if (session.profile.team_id) {
+      const currentTeam = await loadTeam(session.profile.team_id);
+      return withCookies(
+        NextResponse.json(
+          {
+            error: `You are already a member of "${currentTeam?.name || "another team"}". A participant can belong to only one active team.`,
+          },
+          { status: 400 }
+        ),
+        pending
       );
     }
 
-    // Find team by invitation code
-    const cleanCode = invitationCode.trim().toUpperCase();
-    const team = data.teams.find((t) => t.invitationCode.toUpperCase() === cleanCode);
+    const admin = createAdminSupabase();
+    const cleanCode = String(invitationCode).trim().toUpperCase();
 
-    if (!team) {
-      return NextResponse.json(
-        { error: "Invalid invitation code. No active team matches this code." },
-        { status: 404 }
+    const { data: teamRow } = await admin
+      .from("teams")
+      .select("*")
+      .eq("invitation_code", cleanCode)
+      .maybeSingle<any>();
+
+    if (!teamRow) {
+      return withCookies(
+        NextResponse.json({ error: "Invalid invitation code. No active team matches this code." }, { status: 404 }),
+        pending
       );
     }
 
-    // Check if team already has 2 members
-    if (team.members.length >= 2) {
-      return NextResponse.json(
-        { error: `Team "${team.name}" is already complete with 2 members. Each team is strictly limited to 2 members.` },
-        { status: 400 }
+    const { data: members } = await admin.from("team_members").select("user_id").eq("team_id", teamRow.id);
+    const memberCount = (members || []).length;
+    const teamSize = (await getSettings()).teamSize;
+
+    if (memberCount >= teamSize) {
+      return withCookies(
+        NextResponse.json(
+          {
+            error: `Team "${teamRow.name}" is already complete with ${teamSize} members. Each team is strictly limited to ${teamSize} members.`,
+          },
+          { status: 400 }
+        ),
+        pending
       );
     }
 
-    // Check if user is somehow already in team's member list
-    if (team.members.some((m) => m.userId === currentUser.id)) {
-      return NextResponse.json({ error: "You are already a member of this team." }, { status: 400 });
+    if (members?.some((m) => m.user_id === session.userId)) {
+      return withCookies(NextResponse.json({ error: "You are already a member of this team." }, { status: 400 }), pending);
     }
 
-    // Add member
-    team.members.push({
-      userId: currentUser.id,
-      name: currentUser.name,
-      email: currentUser.email,
-      institution: currentUser.institution,
-      department: currentUser.department,
+    const { error: joinError } = await admin.from("team_members").insert({
+      team_id: teamRow.id,
+      user_id: session.userId,
       role: "member",
-      joinedAt: new Date().toISOString(),
     });
 
-    // Update team status
-    team.status = team.members.length === 2 ? "complete" : "incomplete";
+    if (joinError) {
+      return withCookies(
+        NextResponse.json({ error: joinError.message || "Could not join the team." }, { status: 400 }),
+        pending
+      );
+    }
 
-    // Update user record
-    currentUser.teamId = team.id;
-    currentUser.role = "participant";
+    await admin.from("profiles").update({ team_id: teamRow.id }).eq("id", session.userId);
 
-    saveData(data);
+    const team = await loadTeam(teamRow.id);
+    if (!team) throw new Error("Team not found after joining.");
 
-    addAuditLog(
-      currentUser.name,
-      currentUser.email,
+    await logAudit(
+      { name: session.user.name, email: session.user.email },
       "TEAM_JOINED",
       `Joined team "${team.name}" via code ${cleanCode}. Team is now ${team.status}.`
     );
 
-    return NextResponse.json({ success: true, team });
+    return withCookies(NextResponse.json({ success: true, team }), pending);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

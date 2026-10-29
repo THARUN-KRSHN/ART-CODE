@@ -1,38 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { PosterArtwork } from "@/components/art/PosterArtwork";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
 import { Github, ArrowRight } from "lucide-react";
 
-export default function LoginPage() {
+function LoginInner() {
   const router = useRouter();
+  const search = useSearchParams();
+  const nextPath = search.get("next") && search.get("next")!.startsWith("/") ? search.get("next")! : "/dashboard";
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [providers, setProviders] = useState<{ email: boolean; google: boolean } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleOAuthLogin = async (provider: "google" | "github") => {
+  useEffect(() => {
+    fetch("/api/auth/providers")
+      .then((r) => r.json())
+      .then((p) => setProviders({ email: !!p.email, google: !!p.google }))
+      .catch(() => setProviders({ email: true, google: false }));
+  }, []);
+
+  const handleOAuthLogin = async () => {
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/oauth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider,
-          email: provider === "google" ? "participant.google@cce.edu.in" : "developer.github@cce.edu.in",
-          name: provider === "google" ? "Google Participant" : "GitHub Developer",
-        }),
+        body: JSON.stringify({ provider: "google", next: nextPath }),
       });
       const data = await res.json();
       if (res.ok) {
-        if (data.isNew) {
-          router.push("/onboarding");
-        } else {
-          router.push("/dashboard");
-        }
+        if (data.url) window.location.href = data.url;
+        else setErrorMsg("Could not start Google sign-in.");
       } else {
         setErrorMsg(data.error || "Authentication failed");
       }
@@ -45,10 +49,8 @@ export default function LoginPage() {
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes("@")) {
-      setErrorMsg("Please enter a valid academic or personal email address.");
-      return;
-    }
+    if (!email || !email.includes("@")) return setErrorMsg("Enter a valid email address.");
+    if (!password || password.length < 8) return setErrorMsg("Enter your password (min 8 chars).");
 
     setIsLoading(true);
     setErrorMsg(null);
@@ -56,19 +58,11 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider: "email",
-          email: email.trim(),
-          name: email.split("@")[0].replace(".", " "),
-        }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
       const data = await res.json();
       if (res.ok) {
-        if (data.isNew) {
-          router.push("/onboarding");
-        } else {
-          router.push("/dashboard");
-        }
+        router.push(nextPath || "/dashboard");
       } else {
         setErrorMsg(data.error || "Authentication failed");
       }
@@ -116,7 +110,7 @@ export default function LoginPage() {
             </div>
             <h2 className="text-2xl font-bold text-darkRed font-display">Sign In to ART//CODE</h2>
             <p className="text-xs text-ink-secondary mt-1">
-              Use Google, GitHub, or your registered academic email.
+              Use Google or your registered email and password.
             </p>
           </div>
 
@@ -126,11 +120,11 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Social Auth Providers */}
+          {/* Google OAuth */}
           <div className="space-y-3">
             <button
-              onClick={() => handleOAuthLogin("google")}
-              disabled={isLoading}
+              onClick={handleOAuthLogin}
+              disabled={isLoading || providers?.google === false}
               className="w-full py-3 px-4 rounded-xl border-2 border-mutedGold bg-cream hover:bg-paleCream text-ink text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-colors shadow-subtle disabled:opacity-60"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -153,15 +147,6 @@ export default function LoginPage() {
               </svg>
               <span>Continue with Google</span>
             </button>
-
-            <button
-              onClick={() => handleOAuthLogin("github")}
-              disabled={isLoading}
-              className="w-full py-3 px-4 rounded-xl border border-darkRed bg-darkRed text-cream hover:bg-vermilion text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-colors shadow-subtle disabled:opacity-60"
-            >
-              <Github size={16} className="text-accentGold" />
-              <span>Continue with GitHub</span>
-            </button>
           </div>
 
           <div className="relative flex py-2 items-center">
@@ -172,7 +157,7 @@ export default function LoginPage() {
             <div className="flex-grow border-t border-mutedGold"></div>
           </div>
 
-          {/* Email form */}
+          {/* Email + Password */}
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-darkRed mb-1.5 font-mono uppercase tracking-wider">
@@ -187,13 +172,26 @@ export default function LoginPage() {
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
+            <div>
+              <label className="block text-xs font-bold text-darkRed mb-1.5 font-mono uppercase tracking-wider">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+              />
+            </div>
 
             <button
               type="submit"
               disabled={isLoading}
               className="w-full py-3 rounded-xl bg-vermilion hover:bg-darkRed text-cream text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-subtle"
             >
-              <span>{isLoading ? "Signing in..." : "Continue with Email"}</span>
+              <span>{isLoading ? "Signing in..." : "Sign In"}</span>
               <ArrowRight size={14} className="text-accentGold" />
             </button>
           </form>
@@ -201,11 +199,19 @@ export default function LoginPage() {
           <p className="text-center text-xs text-ink-secondary">
             Don't have an account yet?{" "}
             <Link href="/register" className="text-vermilion font-bold hover:underline">
-              Register Team
+              Register
             </Link>
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream flex items-center justify-center p-8"><div className="text-center space-y-3"><div className="w-8 h-8 rounded-full border-2 border-vermilion border-t-transparent animate-spin mx-auto" /><p className="text-xs font-mono text-ink/70">Loading…</p></div></div>}>
+      <LoginInner />
+    </Suspense>
   );
 }

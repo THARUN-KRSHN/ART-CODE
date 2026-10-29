@@ -76,8 +76,8 @@ export default function SubmissionConfirmationPage() {
     <div className="min-h-screen bg-cream bg-mandala-grid py-12 md:py-20 flex items-center justify-center p-4">
       <div className="w-full max-w-3xl bg-paleCream/95 backdrop-blur-sm rounded-2xl border-2 border-mutedGold/60 shadow-elevated p-8 sm:p-12 space-y-8 text-center relative overflow-hidden">
         {/* Cultural corner ornamentation */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-mandala-pattern opacity-10 pointer-events-none rounded-full translate-x-10 -translate-y-10" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-mandala-pattern opacity-10 pointer-events-none rounded-full -translate-x-10 translate-y-10" />
+        <div className="absolute top-0 right-0 w-32 h-32 bg-mandala-grid opacity-10 pointer-events-none rounded-full translate-x-10 -translate-y-10" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-mandala-grid opacity-10 pointer-events-none rounded-full -translate-x-10 translate-y-10" />
 
         {/* Celebration Artwork */}
         <CelebrationMotif className="mx-auto" />

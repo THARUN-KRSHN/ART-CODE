@@ -1,46 +1,68 @@
 import { NextResponse } from "next/server";
-import { getActiveUser, loadData } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { forbidden, getSession, withCookies } from "@/lib/auth";
+import { mapAudit, mapProblem, mapSettings, AuditRow, ProblemRow, SettingsRow } from "@/lib/supabase/mappers";
 
 export async function GET() {
-  const activeUser = getActiveUser();
-  if (!activeUser || activeUser.role !== "admin") {
-    return NextResponse.json({ error: "Access denied. Administrator privileges required." }, { status: 403 });
+  const { session, pending } = await getSession();
+  if (!session || session.role !== "admin") {
+    return withCookies(forbidden(), pending);
   }
 
-  const data = loadData();
+  const admin = createAdminSupabase();
 
-  const totalParticipants = data.users.filter((u) => u.role !== "admin").length;
-  const totalTeams = data.teams.length;
-  const completeTeams = data.teams.filter((t) => t.status === "complete").length;
-  const incompleteTeams = data.teams.filter((t) => t.status === "incomplete").length;
-  const draftSubmissions = data.submissions.filter((s) => s.status === "draft").length;
-  const finalSubmissions = data.submissions.filter((s) => s.status === "submitted" || s.isLocked).length;
+  const [{ data: pCount }, { data: tCount }, { data: tComplete }, { data: tIncomplete }, { data: sDraft }, { data: sFinal }] = await Promise.all([
+    admin.from("profiles").select("id").neq("role", "admin"),
+    admin.from("teams").select("id"),
+    admin.from("teams").select("id").eq("status", "complete"),
+    admin.from("teams").select("id").eq("status", "incomplete"),
+    admin.from("submissions").select("id").eq("status", "draft").eq("is_locked", false),
+    admin.from("submissions").select("id").or("status.eq.submitted,is_locked.eq.true"),
+  ]);
 
-  // Submissions per challenge
-  const challengeStats = data.challenges.map((c) => {
-    const subs = data.submissions.filter((s) => s.challengeId === c.id);
-    return {
-      challengeId: c.id,
-      code: c.code,
-      title: c.title,
-      category: c.category,
-      count: subs.length,
-      finalCount: subs.filter((s) => s.isLocked).length,
-    };
-  });
+  const { data: problems } = await admin.from("problem_statements").select("id, code, title, category");
+  const challengeStats = await Promise.all(
+    (problems || []).map(async (c: any) => {
+      const [{ data: all }, { data: locked }] = await Promise.all([
+        admin.from("submissions").select("id").eq("challenge_id", c.id),
+        admin
+          .from("submissions")
+          .select("id")
+          .eq("challenge_id", c.id)
+          .or("status.eq.submitted,is_locked.eq.true"),
+      ]);
+      return {
+        challengeId: c.id,
+        code: c.code,
+        title: c.title,
+        category: c.category,
+        count: all?.length ?? 0,
+        finalCount: locked?.length ?? 0,
+      };
+    })
+  );
 
-  return NextResponse.json({
-    stats: {
-      totalParticipants,
-      totalTeams,
-      completeTeams,
-      incompleteTeams,
-      draftSubmissions,
-      finalSubmissions,
-    },
-    challengeStats,
-    recentActivity: data.auditLogs.slice(0, 10),
-    settings: data.settings,
-  });
+  const { data: audits } = await admin
+    .from("audit_logs")
+    .select("*")
+    .order("timestamp", { ascending: false })
+    .limit(10);
+  const { data: settingsRow } = await admin.from("event_settings").select("*").eq("id", 1).maybeSingle<SettingsRow>();
+
+  return withCookies(
+    NextResponse.json({
+      stats: {
+        totalParticipants: pCount?.length ?? 0,
+        totalTeams: tCount?.length ?? 0,
+        completeTeams: tComplete?.length ?? 0,
+        incompleteTeams: tIncomplete?.length ?? 0,
+        draftSubmissions: sDraft?.length ?? 0,
+        finalSubmissions: sFinal?.length ?? 0,
+      },
+      challengeStats,
+      recentActivity: (audits || []).map((a) => mapAudit(a as AuditRow)),
+      settings: settingsRow ? mapSettings(settingsRow) : null,
+    }),
+    pending
+  );
 }
-

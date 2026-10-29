@@ -1,43 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadData, saveData, setActiveUser, addAuditLog } from "@/lib/store";
-import { UserProfile } from "@/types";
+import { createRouteSupabase, attachCookies } from "@/lib/supabase/server";
+import { logAudit, resolveSessionForAuthUser, withCookies } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const { provider, email, name } = await req.json();
-    const data = loadData();
+    const { email, password } = await req.json();
 
-    // Check if existing user
-    let user = data.users.find((u) => u.email.toLowerCase() === (email || "").toLowerCase());
-
-    if (!user) {
-      // Register new participant
-      const newUserId = `user-${Date.now().toString(36)}`;
-      const newUser: UserProfile = {
-        id: newUserId,
-        name: name || (provider === "github" ? "GitHub Developer" : "Google Participant"),
-        email: email || `${newUserId}@domain.edu`,
-        institution: "Christ College of Engineering (Autonomous), Irinjalakuda",
-        role: "participant",
-        provider: provider || "google",
-        teamId: null,
-        createdAt: new Date().toISOString(),
-      };
-
-      data.users.push(newUser);
-      data.activeUserId = newUser.id;
-      saveData(data);
-
-      addAuditLog(newUser.name, newUser.email, "USER_REGISTERED", `Registered new participant via ${provider}`);
-      return NextResponse.json({ success: true, user: newUser, isNew: true });
-    } else {
-      data.activeUserId = user.id;
-      saveData(data);
-      addAuditLog(user.name, user.email, "USER_LOGIN", `Participant signed in via ${provider || user.provider}`);
-      return NextResponse.json({ success: true, user, isNew: false });
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
+
+    const { supabase, pending } = createRouteSupabase();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: String(email).trim(),
+      password: String(password),
+    });
+
+    if (error || !data.user) {
+      const message =
+        error?.message === "Email not confirmed"
+          ? "This email has not been confirmed yet. Check your inbox for the confirmation link."
+          : "Invalid email or password.";
+      return NextResponse.json({ error: message }, { status: 401 });
+    }
+
+    const session = await resolveSessionForAuthUser(data.user, pending);
+    if (!session) {
+      return NextResponse.json({ error: "Account profile could not be found." }, { status: 404 });
+    }
+
+    await logAudit(
+      { name: session.user.name, email: session.user.email },
+      "USER_LOGIN",
+      `Participant signed in via email & password`
+    );
+
+    return withCookies(NextResponse.json({ success: true, user: session.user, isNew: false }), pending);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

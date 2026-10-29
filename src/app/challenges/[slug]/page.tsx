@@ -119,6 +119,9 @@ export default function ChallengeDetailPage() {
                 <span className="text-xs font-mono uppercase tracking-widest px-2.5 py-0.5 rounded bg-accentGold text-darkRed font-bold">
                   {challenge.category}
                 </span>
+                <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-cream text-darkRed border border-mutedGold font-bold">
+                  {challenge.difficulty}
+                </span>
               </div>
               <h1 className="font-editorial text-3xl sm:text-5xl text-darkRed leading-tight">
                 {challenge.title}
@@ -130,6 +133,7 @@ export default function ChallengeDetailPage() {
           <p className="text-sm sm:text-base text-ink-secondary leading-relaxed border-t border-mutedGold/60 pt-6">
             {challenge.shortDescription}
           </p>
+          <div className="text-[11px] font-mono uppercase tracking-widest text-ink-muted mt-2">{challenge.domain}</div>
 
           {/* Action / Selection Box */}
           <div className="p-5 rounded-xl border-2 border-mutedGold bg-cream flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -242,10 +246,62 @@ export default function ChallengeDetailPage() {
             <RhombusMotif size={14} />
             <span>05 // Submission Guidance & Constraints</span>
           </h2>
-          <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
-            {challenge.submissionGuidance}
-          </p>
+          <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.submissionGuidance}</p>
         </section>
+
+        {/* Additional Sections from Statement */}
+        {challenge.mvp && (
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+              <RhombusMotif size={14} />
+              <span>06 // Minimum Viable Prototype</span>
+            </div>
+            <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
+              <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.mvp}</p>
+            </div>
+          </section>
+        )}
+
+        {challenge.successCriteria && (
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+              <RhombusMotif size={14} />
+              <span>07 // Success Criteria</span>
+            </div>
+            <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
+              <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.successCriteria}</p>
+            </div>
+          </section>
+        )}
+
+        {challenge.constraints && challenge.constraints.length > 0 && (
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+              <RhombusMotif size={14} />
+              <span>08 // Scope Limitations</span>
+            </div>
+            <ul className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-2 text-xs sm:text-sm text-ink-secondary">
+              {challenge.constraints.map((c, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-vermilion mt-1.5 flex-shrink-0" />
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {challenge.researchConnection && (
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+              <RhombusMotif size={14} />
+              <span>09 // Research Connection</span>
+            </div>
+            <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
+              <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.researchConnection}</p>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

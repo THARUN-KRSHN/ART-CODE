@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getActiveUser, loadData, saveData, addAuditLog } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { getSession, getSettings, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { mapSubmission, ProblemRow, SubmissionRow } from "@/lib/supabase/mappers";
 import { z } from "zod";
 
 const submissionSchema = z.object({
@@ -21,48 +23,66 @@ const submissionSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = getActiveUser();
-    if (!activeUser) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { session, pending } = await getSession();
+    if (!session) {
+      return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
     }
 
-    if (!activeUser.teamId) {
-      return NextResponse.json({ error: "You must be in a team to submit." }, { status: 400 });
+    if (!session.profile.team_id) {
+      return withCookies(NextResponse.json({ error: "You must be in a team to submit." }, { status: 400 }), pending);
     }
 
-    const data = loadData();
-    const team = data.teams.find((t) => t.id === activeUser.teamId);
+    const admin = createAdminSupabase();
+    const team = await loadTeam(session.profile.team_id);
     if (!team) {
-      return NextResponse.json({ error: "Team not found." }, { status: 404 });
+      return withCookies(NextResponse.json({ error: "Team not found." }, { status: 404 }), pending);
     }
 
     // Role verification: Only Leader can finalize
-    if (team.leaderId !== activeUser.id) {
-      return NextResponse.json(
-        { error: "Only the designated Team Leader can perform the final project submission." },
-        { status: 403 }
+    if (team.leaderId !== session.userId) {
+      return withCookies(
+        NextResponse.json(
+          { error: "Only the designated Team Leader can perform the final project submission." },
+          { status: 403 }
+        ),
+        pending
       );
     }
 
     // Eligibility verification: Team MUST have exactly 2 members
     if (team.members.length < 2 || team.status !== "complete") {
-      return NextResponse.json(
-        {
-          error: "Team Incomplete! ART//CODE 2026 rules strictly require exactly 2 members per team before submission.",
-        },
-        { status: 400 }
+      return withCookies(
+        NextResponse.json(
+          {
+            error: "Team Incomplete! ART//CODE 2026 rules strictly require exactly 2 members per team before submission.",
+          },
+          { status: 400 }
+        ),
+        pending
       );
     }
 
     // Deadline & Submission Window Verification
     const now = new Date();
-    const deadline = new Date(data.settings.submissionDeadline);
+    const settings = await getSettings();
+    const opens = new Date(settings.submissionOpens);
+    const deadline = new Date(settings.submissionDeadline);
+    if (now < opens) {
+      return withCookies(
+        NextResponse.json(
+          { error: `Submission window opens on ${opens.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}` },
+          { status: 400 }
+        ),
+        pending
+      );
+    }
     if (now > deadline) {
-      return NextResponse.json(
-        {
-          error: "Submission window closed. The deadline of 8 November 2026, 11:59 PM IST has passed.",
-        },
-        { status: 400 }
+      return withCookies(
+        NextResponse.json(
+          { error: `Submission window closed. The deadline of ${deadline.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} has passed.` },
+          { status: 400 }
+        ),
+        pending
       );
     }
 
@@ -83,70 +103,79 @@ export async function POST(req: NextRequest) {
     }
 
     const validData = parseResult.data;
-    const challenge = data.challenges.find((c) => c.id === validData.challengeId);
 
-    const existingIdx = data.submissions.findIndex((s) => s.teamId === team.id);
-    const existing = existingIdx >= 0 ? data.submissions[existingIdx] : null;
+    const { data: existing } = await admin
+      .from("submissions")
+      .select("*")
+      .eq("team_id", team.id)
+      .maybeSingle<SubmissionRow>();
 
-    if (existing && existing.isLocked) {
-      return NextResponse.json(
-        { error: "This project has already been finalized and locked." },
-        { status: 400 }
-      );
+    if (existing && existing.is_locked) {
+      return withCookies(NextResponse.json({ error: "This project has already been finalized and locked." }, { status: 400 }), pending);
     }
 
-    // Generate definitive reference ID e.g. AC26-SUB-7391
-    const refCode = existing?.referenceId || `AC26-SUB-${Math.floor(1000 + Math.random() * 9000)}`;
+    const refCode = existing?.reference_id || `AC26-SUB-${Math.floor(1000 + Math.random() * 9000)}`;
     const submissionTimestamp = new Date().toISOString();
 
-    const finalizedSubmission = {
-      id: existing ? existing.id : `sub-${Date.now().toString(36)}`,
-      teamId: team.id,
-      teamName: team.name,
-      challengeId: validData.challengeId,
-      challengeTitle: challenge?.title || "Challenge Statement",
-      projectTitle: validData.projectTitle,
-      shortDescription: validData.shortDescription,
-      problemDescription: validData.problemDescription,
-      proposedSolution: validData.proposedSolution,
-      keyFeatures: Array.isArray(body.keyFeatures) && body.keyFeatures.length > 0 ? body.keyFeatures : ["Working prototype", "Interactive UI"],
-      techStack: validData.techStack,
-      innovationAndImpact: validData.innovationAndImpact,
-      githubUrl: validData.githubUrl,
-      liveUrl: validData.liveUrl || "",
-      googleDriveUrl: validData.googleDriveUrl,
-      additionalComments: validData.additionalComments || "",
-      status: "submitted" as const,
-      referenceId: refCode,
-      acknowledged: true,
-      submittedAt: submissionTimestamp,
-      submittedBy: activeUser.id,
-      isLocked: true, // Participant editing is now permanently locked
-      updatedAt: submissionTimestamp,
-    };
+    // Resolve challenge title
+    let challengeTitle = "";
+    const { data: prob } = await admin
+      .from("problem_statements")
+      .select("title")
+      .eq("id", validData.challengeId)
+      .maybeSingle<Pick<ProblemRow, "title">>();
+    challengeTitle = prob?.title || "Challenge Statement";
 
-    if (existingIdx >= 0) {
-      data.submissions[existingIdx] = finalizedSubmission;
-    } else {
-      data.submissions.push(finalizedSubmission);
+    const upsert = {
+      id: existing?.id,
+      team_id: team.id,
+      challenge_id: validData.challengeId,
+      project_title: validData.projectTitle,
+      short_description: validData.shortDescription,
+      problem_description: validData.problemDescription,
+      proposed_solution: validData.proposedSolution,
+      key_features: Array.isArray(body.keyFeatures) && body.keyFeatures.length > 0 ? body.keyFeatures : [
+        "Working prototype",
+        "Interactive UI",
+      ],
+      tech_stack: validData.techStack,
+      innovation_and_impact: validData.innovationAndImpact,
+      github_url: validData.githubUrl,
+      live_url: validData.liveUrl || null,
+      google_drive_url: validData.googleDriveUrl,
+      additional_comments: validData.additionalComments || null,
+      status: "submitted",
+      reference_id: refCode,
+      acknowledged: true,
+      submitted_at: submissionTimestamp,
+      submitted_by: session.userId,
+      is_locked: true,
+      updated_at: submissionTimestamp,
+    } as Partial<SubmissionRow>;
+
+    const { data: saved, error } = await admin
+      .from("submissions")
+      .upsert(upsert, { onConflict: "team_id" })
+      .select("*")
+      .maybeSingle<SubmissionRow>();
+
+    if (error || !saved) {
+      return withCookies(NextResponse.json({ error: error?.message || "Could not finalize submission" }, { status: 400 }), pending);
     }
 
-    saveData(data);
+    const submission = mapSubmission(saved, team.name, challengeTitle);
 
-    addAuditLog(
-      activeUser.name,
-      activeUser.email,
+    await logAudit(
+      { name: session.user.name, email: session.user.email },
       "SUBMISSION_FINALIZED",
-      `Finalized submission ${refCode} for "${team.name}" (Project: ${finalizedSubmission.projectTitle})`
+      `Finalized submission ${refCode} for "${team.name}" (Project: ${submission.projectTitle})`
     );
 
-    return NextResponse.json({
-      success: true,
-      submission: finalizedSubmission,
-      message: "Your project has been officially submitted and locked.",
-    });
+    return withCookies(
+      NextResponse.json({ success: true, submission, message: "Your project has been officially submitted and locked." }),
+      pending
+    );
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

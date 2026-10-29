@@ -1,26 +1,43 @@
 import { NextResponse } from "next/server";
-import { getActiveUser, loadData } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { forbidden, getSession, loadTeam, withCookies } from "@/lib/auth";
 
 export async function GET() {
-  const activeUser = getActiveUser();
-  if (!activeUser || activeUser.role !== "admin") {
-    return NextResponse.json({ error: "Access denied." }, { status: 403 });
+  const { session, pending } = await getSession();
+  if (!session || session.role !== "admin") {
+    return withCookies(forbidden(), pending);
   }
 
-  const data = loadData();
-  const teamsWithDetails = data.teams.map((t) => {
-    const submission = data.submissions.find((s) => s.teamId === t.id);
-    const challenge = data.challenges.find((c) => c.id === t.selectedChallengeId);
-    return {
-      ...t,
-      challengeTitle: challenge?.title || "Not selected",
-      submissionStatus: submission ? submission.status : "not_started",
-      submissionLocked: submission?.isLocked || false,
-      submissionRef: submission?.referenceId || null,
-      submissionTitle: submission?.projectTitle || null,
-    };
-  });
+  const admin = createAdminSupabase();
+  const { data: teamRows } = await admin.from("teams").select("*").order("created_at", { ascending: true });
 
-  return NextResponse.json({ teams: teamsWithDetails });
+  const teams = await Promise.all(
+    (teamRows || []).map(async (t: any) => {
+      const team = await loadTeam(t.id);
+      const [{ data: sub }, { data: prob }] = await Promise.all([
+        admin
+          .from("submissions")
+          .select("id, status, is_locked, reference_id, project_title")
+          .eq("team_id", t.id)
+          .maybeSingle(),
+        t.selected_challenge_id
+          ? admin
+              .from("problem_statements")
+              .select("title")
+              .eq("id", t.selected_challenge_id)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
+      ]);
+      return {
+        ...(team as any),
+        challengeTitle: prob?.title || "Not selected",
+        submissionStatus: sub?.status || "not_started",
+        submissionLocked: Boolean(sub?.is_locked),
+        submissionRef: sub?.reference_id || null,
+        submissionTitle: sub?.project_title || null,
+      };
+    })
+  );
+
+  return withCookies(NextResponse.json({ teams }), pending);
 }
-

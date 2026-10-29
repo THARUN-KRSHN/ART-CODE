@@ -1,113 +1,153 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getActiveUser, loadData, saveData, addAuditLog } from "@/lib/store";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { mapProblem, mapSubmission, ProblemRow, SubmissionRow } from "@/lib/supabase/mappers";
 import { ProjectSubmission } from "@/types";
 
 // GET current submission for active user's team
 export async function GET() {
-  const activeUser = getActiveUser();
-  if (!activeUser) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { session, pending } = await getSession();
+  if (!session) {
+    return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
   }
 
-  if (!activeUser.teamId) {
-    return NextResponse.json({ submission: null, team: null });
+  if (!session.profile.team_id) {
+    return withCookies(NextResponse.json({ submission: null, team: null, user: session.user }), pending);
   }
 
-  const data = loadData();
-  const team = data.teams.find((t) => t.id === activeUser.teamId);
-  const submission = data.submissions.find((s) => s.teamId === activeUser.teamId) || null;
+  const admin = createAdminSupabase();
+  const team = await loadTeam(session.profile.team_id);
+  const { data: subRow } = await admin
+    .from("submissions")
+    .select(
+      "id, team_id, challenge_id, project_title, short_description, problem_description, proposed_solution, key_features, tech_stack, innovation_and_impact, github_url, live_url, google_drive_url, additional_comments, status, reference_id, acknowledged, submitted_at, submitted_by, is_locked, updated_at"
+    )
+    .eq("team_id", session.profile.team_id)
+    .maybeSingle<SubmissionRow>();
 
-  return NextResponse.json({ submission, team, user: activeUser });
+  let submission: ProjectSubmission | null = null;
+  if (subRow) {
+    // Resolve titles
+    const { data: prob } = await admin
+      .from("problem_statements")
+      .select("title")
+      .eq("id", subRow.challenge_id)
+      .maybeSingle<Pick<ProblemRow, "title">>();
+    submission = mapSubmission(subRow, team?.name, prob?.title || "");
+  }
+
+  return withCookies(NextResponse.json({ submission, team, user: session.user }), pending);
 }
 
 // POST: Save draft submission (Leader only!)
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = getActiveUser();
-    if (!activeUser) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { session, pending } = await getSession();
+    if (!session) {
+      return withCookies(NextResponse.json({ error: "Unauthorized" }, { status: 401 }), pending);
     }
 
-    if (!activeUser.teamId) {
-      return NextResponse.json({ error: "You must belong to a team to submit." }, { status: 400 });
+    if (!session.profile.team_id) {
+      return withCookies(NextResponse.json({ error: "You must belong to a team to submit." }, { status: 400 }), pending);
     }
 
-    const data = loadData();
-    const team = data.teams.find((t) => t.id === activeUser.teamId);
+    const admin = createAdminSupabase();
+    const team = await loadTeam(session.profile.team_id);
     if (!team) {
-      return NextResponse.json({ error: "Team not found." }, { status: 404 });
+      return withCookies(NextResponse.json({ error: "Team not found." }, { status: 404 }), pending);
     }
 
     // Role check: Only Team Leader can edit drafts
-    if (team.leaderId !== activeUser.id) {
-      return NextResponse.json(
-        { error: "Only the Team Leader can edit the draft submission. Teammates can view status." },
-        { status: 403 }
-      );
-    }
-
-    const existingSubmission = data.submissions.find((s) => s.teamId === team.id);
-
-    // If locked, reject edits
-    if (existingSubmission && existingSubmission.isLocked) {
-      return NextResponse.json(
-        { error: "This project has already been submitted and locked. Contact event administrators for exceptions." },
-        { status: 400 }
+    if (team.leaderId !== session.userId) {
+      return withCookies(
+        NextResponse.json(
+          { error: "Only the Team Leader can edit the draft submission. Teammates can view status." },
+          { status: 403 }
+        ),
+        pending
       );
     }
 
     const payload = await req.json();
-    const challenge = data.challenges.find((c) => c.id === payload.challengeId);
 
-    const submissionId = existingSubmission ? existingSubmission.id : `sub-${Date.now().toString(36)}`;
-    const updatedSubmission: ProjectSubmission = {
-      id: submissionId,
-      teamId: team.id,
-      teamName: team.name,
-      challengeId: payload.challengeId || team.selectedChallengeId || "ch-01",
-      challengeTitle: challenge?.title || "Living Archives: Generative AI for Indigenous Mural & Fresco Restoration",
-      projectTitle: payload.projectTitle || "",
-      shortDescription: payload.shortDescription || "",
-      problemDescription: payload.problemDescription || "",
-      proposedSolution: payload.proposedSolution || "",
-      keyFeatures: Array.isArray(payload.keyFeatures) ? payload.keyFeatures : [],
-      techStack: Array.isArray(payload.techStack) ? payload.techStack : [],
-      innovationAndImpact: payload.innovationAndImpact || "",
-      githubUrl: payload.githubUrl || "",
-      liveUrl: payload.liveUrl || "",
-      googleDriveUrl: payload.googleDriveUrl || "",
-      additionalComments: payload.additionalComments || "",
+    // Determine challenge
+    const selectedChallengeId = payload.challengeId || team.selectedChallengeId;
+    let challengeTitle = "";
+    if (selectedChallengeId) {
+      const { data: prob } = await admin
+        .from("problem_statements")
+        .select("title")
+        .eq("id", selectedChallengeId)
+        .maybeSingle<Pick<ProblemRow, "title">>();
+      challengeTitle = prob?.title || "";
+    }
+
+    // Existing draft?
+    const { data: existing } = await admin
+      .from("submissions")
+      .select("*")
+      .eq("team_id", team.id)
+      .maybeSingle<SubmissionRow>();
+
+    if (existing && existing.is_locked) {
+      return withCookies(
+        NextResponse.json(
+          { error: "This project has already been submitted and locked. Contact event administrators for exceptions." },
+          { status: 400 }
+        ),
+        pending
+      );
+    }
+
+    const refId = existing?.reference_id || `AC26-SUB-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const upsertPayload = {
+      id: existing?.id,
+      team_id: team.id,
+      challenge_id: selectedChallengeId,
+      project_title: String(payload.projectTitle || ""),
+      short_description: String(payload.shortDescription || ""),
+      problem_description: String(payload.problemDescription || ""),
+      proposed_solution: String(payload.proposedSolution || ""),
+      key_features: Array.isArray(payload.keyFeatures) ? payload.keyFeatures : [],
+      tech_stack: Array.isArray(payload.techStack) ? payload.techStack : [],
+      innovation_and_impact: String(payload.innovationAndImpact || ""),
+      github_url: String(payload.githubUrl || ""),
+      live_url: payload.liveUrl ? String(payload.liveUrl) : null,
+      google_drive_url: String(payload.googleDriveUrl || ""),
+      additional_comments: payload.additionalComments ? String(payload.additionalComments) : null,
       status: "draft",
-      referenceId: existingSubmission?.referenceId || `AC26-SUB-${Math.floor(1000 + Math.random() * 9000)}`,
+      reference_id: refId,
       acknowledged: Boolean(payload.acknowledged),
-      isLocked: false,
-      updatedAt: new Date().toISOString(),
-    };
+      is_locked: false,
+      updated_at: new Date().toISOString(),
+    } as Partial<SubmissionRow>;
 
-    // Update team's selected challenge
+    // Update team's selected challenge if provided
     if (payload.challengeId) {
-      team.selectedChallengeId = payload.challengeId;
+      await admin.from("teams").update({ selected_challenge_id: payload.challengeId }).eq("id", team.id);
     }
 
-    const existingIdx = data.submissions.findIndex((s) => s.teamId === team.id);
-    if (existingIdx >= 0) {
-      data.submissions[existingIdx] = updatedSubmission;
-    } else {
-      data.submissions.push(updatedSubmission);
+    const { data: upserted, error } = await admin
+      .from("submissions")
+      .upsert(upsertPayload, { onConflict: "team_id" })
+      .select("*")
+      .maybeSingle<SubmissionRow>();
+
+    if (error || !upserted) {
+      return withCookies(NextResponse.json({ error: error?.message || "Could not save draft" }, { status: 400 }), pending);
     }
 
-    saveData(data);
+    const submission = mapSubmission(upserted, team.name, challengeTitle);
 
-    addAuditLog(
-      activeUser.name,
-      activeUser.email,
+    await logAudit(
+      { name: session.user.name, email: session.user.email },
       "DRAFT_SAVED",
-      `Saved draft submission for team "${team.name}" (${updatedSubmission.projectTitle || "Untitled"})`
+      `Saved draft submission for team "${team.name}" (${submission.projectTitle || "Untitled"})`
     );
 
-    return NextResponse.json({ success: true, submission: updatedSubmission });
+    return withCookies(NextResponse.json({ success: true, submission }), pending);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

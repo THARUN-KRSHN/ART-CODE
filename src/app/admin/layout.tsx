@@ -25,20 +25,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     checkAdmin();
   }, []);
 
-  const switchToAdmin = async () => {
-    setIsLoading(true);
-    try {
-      await fetch("/api/auth/switch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: "user-admin" }),
-      });
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
+  const goToLogin = () => {
+    window.location.href = "/login?next=/admin";
   };
 
   if (isLoading) {
@@ -63,13 +51,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-xs text-ink/80 leading-relaxed font-sans">
             You are currently signed in as <strong>{currentUser ? currentUser.name : "Public Visitor"}</strong> ({currentUser ? currentUser.role : "unauthenticated"}). The admin portal is restricted to authorized DELTA committee members.
           </p>
-          <div className="pt-2">
-            <button
-              onClick={switchToAdmin}
-              className="w-full py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold hover:bg-darkRed transition-colors shadow-sm"
-            >
-              Switch to Dr. Arun Mohan (Admin Demo Persona)
-            </button>
+          <div className="pt-2 text-xs text-ink/80">
+            Please sign in with an authorized admin account. If you believe this is an error, contact the organisers.
+            <div className="mt-3">
+              <button
+                onClick={goToLogin}
+                className="w-full py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold hover:bg-darkRed transition-colors shadow-sm"
+              >
+                Go to Sign In
+              </button>
+            </div>
           </div>
         </div>
       </div>

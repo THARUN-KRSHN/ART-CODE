@@ -21,19 +21,13 @@ export default function ChallengesPage() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const categories = [
-    "All",
-    "Heritage & AI",
-    "Performing Arts & Tech",
-    "Indigenous Calligraphy",
-    "Digital Craftsmanship",
-    "Interactive Exhibitions",
-  ];
+  const categories = React.useMemo(() => {
+    const cats = Array.from(new Set(challenges.map((c) => c.category)));
+    return ["All", ...cats];
+  }, [challenges]);
 
   const filtered = challenges.filter((c) => {
-    const matchesCat =
-      selectedCategory === "All" ||
-      c.category.toLowerCase().includes(selectedCategory.toLowerCase());
+    const matchesCat = selectedCategory === "All" || c.category === selectedCategory;
     const matchesSearch =
       c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -2,7 +2,9 @@ import React from "react";
 import Link from "next/link";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
 
-export function Footer() {
+export async function Footer() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/settings`, { cache: "no-store" }).catch(() => fetch(`/api/settings`, { cache: "no-store" }));
+  const { settings } = await res.json();
   return (
     <footer className="border-t-2 border-mutedGold bg-darkRed text-cream pt-14 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,7 +20,7 @@ export function Footer() {
               </span>
             </div>
             <p className="font-editorial text-sm text-accentGold italic leading-snug">
-              Where Creativity Meets Technology.
+              {settings?.tagline || "Where Creativity Meets Technology."}
             </p>
             <p className="text-xs text-cream/80 leading-relaxed">
               A virtual hackathon celebrating Indian art, culture, heritage, and creative technology. Organised by DELTA.
@@ -91,18 +93,17 @@ export function Footer() {
               <RhombusMotif size={12} color="#F1B321" />
               <span>Organised By</span>
             </h4>
-            <p className="text-xs text-cream font-bold">
-              DELTA — Department of Computer Science & Engineering (Data Science)
-            </p>
-            <p className="text-xs text-cream/80">
-              Christ College of Engineering (Autonomous)
-            </p>
+            <p className="text-xs text-cream font-bold">{settings?.organiser || "DELTA"}</p>
+            <p className="text-xs text-cream/80">{settings?.department}</p>
+            <p className="text-xs text-cream/80">{settings?.institution}</p>
             <p className="text-xs text-cream/70">
               Irinjalakuda, Thrissur, Kerala — 680125
             </p>
-            <p className="text-xs font-mono text-accentGold pt-1">
-              Contact: delta@cce.edu.in
-            </p>
+            <p className="text-xs font-mono text-accentGold pt-1">Contact: {settings?.contactEmail || "delta@cce.edu.in"}</p>
+            <div className="flex items-center gap-4 pt-3">
+              <img src="/img/delta-logo.png" alt="DELTA" className="h-8 w-auto opacity-90" />
+              <img src="/img/christ-logo.png" alt="Christ College of Engineering" className="h-8 w-auto opacity-90" />
+            </div>
           </div>
         </div>
 

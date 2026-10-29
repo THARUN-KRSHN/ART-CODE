@@ -9,7 +9,7 @@ export interface UserProfile {
   department?: string;
   yearOfStudy?: string;
   role: UserRole;
-  avatar?: string;
+  avatar?: string | null;
   provider: "google" | "github" | "email";
   teamId?: string | null;
   createdAt: string;
@@ -38,27 +38,28 @@ export interface Team {
   createdAt: string;
 }
 
-export type ChallengeCategory = 
-  | "Heritage & AI"
-  | "Digital Craftsmanship"
-  | "Performing Arts & Tech"
-  | "Interactive Exhibitions"
-  | "Indigenous Calligraphy";
+export type ProblemAccent = "vermilion" | "gold" | "darkRed" | "secondaryRed";
 
 export interface ProblemStatement {
   id: string;
   slug: string;
-  code: string; // e.g. "CH-01"
+  code: string;
   title: string;
-  category: ChallengeCategory;
+  category: string;
+  domain: string;
+  difficulty: string;
+  motif: string;
+  accentColor: ProblemAccent;
   shortDescription: string;
   background: string;
   problemDescription: string;
   objectives: string[];
   expectedOutcomes: string[];
+  mvp: string;
+  successCriteria: string;
   constraints?: string[];
+  researchConnection: string;
   submissionGuidance: string;
-  accentColor: "terracotta" | "indigo" | "saffron" | "sage";
   isPublished: boolean;
 }
 
@@ -82,10 +83,10 @@ export interface ProjectSubmission {
   googleDriveUrl: string;
   additionalComments?: string;
   status: SubmissionStatus;
-  referenceId?: string; // e.g. "AC26-SUB-8291"
+  referenceId?: string;
   acknowledged: boolean;
   submittedAt?: string;
-  submittedBy?: string; // Leader User ID
+  submittedBy?: string;
   isLocked: boolean;
   updatedAt: string;
 }
@@ -101,7 +102,7 @@ export interface NotificationItem {
   targetAudience: NotificationAudience;
   targetTeamId?: string;
   createdAt: string;
-  readBy: string[]; // array of userIds
+  readBy: string[];
 }
 
 export interface EventSettings {
@@ -109,6 +110,7 @@ export interface EventSettings {
   tagline: string;
   organiser: string;
   institution: string;
+  department: string;
   theme: string;
   registrationOpens: string;
   submissionOpens: string;
@@ -119,28 +121,10 @@ export interface EventSettings {
   secondPrize: string;
   thirdPrize: string;
   totalPrizePool: string;
+  facultyCoordinators: string;
+  studentCoordinators: string;
+  contactEmail: string;
   resultsPublished: boolean;
-}
-
-export interface EvaluationCriterion {
-  id: string;
-  name: string;
-  maxMarks: number;
-  score: number;
-  guidance: string;
-  comments?: string;
-}
-
-export interface ProjectEvaluation {
-  id: string;
-  submissionId: string;
-  judgeName: string;
-  judgeId: string;
-  criteria: EvaluationCriterion[];
-  totalScore: number;
-  generalComments?: string;
-  status: "draft" | "finalized";
-  updatedAt: string;
 }
 
 export interface WinnerResult {
@@ -162,4 +146,3 @@ export interface AuditLogItem {
   action: string;
   details: string;
 }
-

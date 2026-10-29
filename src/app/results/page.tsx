@@ -9,47 +9,22 @@ import { Award, Clock, ArrowLeft, Sparkles, Trophy, Medal } from "lucide-react";
 export default function ResultsPage() {
   const [settings, setSettings] = useState<EventSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [winners, setWinners] = useState<WinnerResult[]>([]);
+  const [published, setPublished] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch("/api/admin/settings")
+    fetch("/api/results")
       .then((res) => res.json())
-      .then((data) => setSettings(data.settings))
+      .then((data) => {
+        setSettings(data.settings || null);
+        setWinners(data.winners || []);
+        setPublished(Boolean(data.resultsPublished));
+      })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   }, []);
 
-  const mockWinners: WinnerResult[] = [
-    {
-      rank: 1,
-      prizeAmount: "₹1,500",
-      teamName: "Team KalaKriti",
-      projectTitle: "ChitraPunar: Neural Fresco Inpainting with Mineral Pigment Physics",
-      challengeTitle: "Living Archives: Generative AI for Indigenous Mural & Fresco Restoration",
-      members: ["Ananya Nair (Leader)", "Rohan Varma (Teammate)"],
-      institution: "Christ College of Engineering, Irinjalakuda",
-      score: 96.5,
-    },
-    {
-      rank: 2,
-      prizeAmount: "₹1,000",
-      teamName: "Team MudraTech",
-      projectTitle: "KathakaliVision: Real-time Samyutta Hasta Pose Synthesis",
-      challengeTitle: "Symphony of Mudras: Real-time Computer Vision for Classical Dance Synthesis",
-      members: ["Aditi Menon", "Devika N."],
-      institution: "Christ College of Engineering, Irinjalakuda",
-      score: 92.0,
-    },
-    {
-      rank: 3,
-      prizeAmount: "₹500",
-      teamName: "Team Tantu",
-      projectTitle: "KasavuMatrix: Algorithmic Cellular Automata Handloom Weaver Assistant",
-      challengeTitle: "Woven Geometry: Algorithmic Loom & Pattern Synthesis for Traditional Handloom",
-      members: ["Vivek Nair", "Kavya Krishnan"],
-      institution: "Christ College of Engineering, Irinjalakuda",
-      score: 89.5,
-    },
-  ];
+  const byRank = (r: 1 | 2 | 3) => winners.find((w) => w.rank === r) || null;
 
   if (isLoading) {
     return (
@@ -63,7 +38,7 @@ export default function ResultsPage() {
   }
 
   // If results not yet officially published
-  if (!settings?.resultsPublished) {
+  if (!published) {
     return (
       <div className="min-h-screen bg-cream bg-mandala-grid py-16 flex items-center justify-center p-4">
         <div className="max-w-xl w-full bg-paleCream/95 p-8 sm:p-12 rounded-2xl border-2 border-mutedGold/60 shadow-elevated text-center space-y-6">
@@ -84,7 +59,7 @@ export default function ResultsPage() {
           </div>
 
           <div className="p-4 rounded-xl border-2 border-mutedGold/50 bg-cream text-xs text-darkRed inline-block font-mono font-semibold">
-            Scheduled Announcement: <strong>14 November 2026</strong> (06:00 PM IST)
+            Scheduled Announcement: <strong>{new Date(settings?.winnerAnnouncement || '').toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric', timeZone:'Asia/Kolkata'})}</strong>
           </div>
 
           <div className="pt-2">
@@ -112,7 +87,7 @@ export default function ResultsPage() {
             Prizes & Merit Awards
           </h1>
           <p className="text-xs sm:text-sm text-ink/80 leading-relaxed font-sans">
-            Total prize pool of ₹3,000 along with participation certificates. Honouring computational craftsmanship and cultural innovation.
+             Total prize pool of {settings?.totalPrizePool || '₹3,000'} along with participation certificates. Honouring computational craftsmanship and cultural innovation.
           </p>
         </div>
 
@@ -129,18 +104,18 @@ export default function ResultsPage() {
               2nd Place // Silver Merit
             </span>
             <div className="font-editorial text-4xl font-bold text-ink">
-              {mockWinners[1].prizeAmount}
+              {byRank(2)?.prizeAmount}
             </div>
             <div className="border-t border-mutedGold/40 pt-4 space-y-1">
-              <h3 className="text-base font-bold text-ink">{mockWinners[1].teamName}</h3>
+              <h3 className="text-base font-bold text-ink">{byRank(2)?.teamName}</h3>
               <p className="text-xs text-vermilion font-bold">
-                {mockWinners[1].projectTitle}
+                {byRank(2)?.projectTitle}
               </p>
               <div className="text-[11px] text-ink/60 pt-2 font-mono">
-                {mockWinners[1].members.join(", ")}
+                {(byRank(2)?.members || []).join(', ')}
               </div>
               <div className="text-[10px] text-ink/50 pt-1">
-                Score: {mockWinners[1].score} / 100
+                {byRank(2)?.score ? `Score: ${byRank(2)?.score} / 100` : ''}
               </div>
             </div>
           </div>
@@ -157,18 +132,18 @@ export default function ResultsPage() {
               1st Place // Gold Citation
             </span>
             <div className="font-editorial text-5xl font-bold text-vermilion">
-              {mockWinners[0].prizeAmount}
+              {byRank(1)?.prizeAmount}
             </div>
             <div className="border-t border-vermilion/30 pt-4 space-y-1">
-              <h3 className="text-xl font-bold text-ink">{mockWinners[0].teamName}</h3>
+              <h3 className="text-xl font-bold text-ink">{byRank(1)?.teamName}</h3>
               <p className="text-xs text-vermilion font-bold leading-relaxed">
-                {mockWinners[0].projectTitle}
+                {byRank(1)?.projectTitle}
               </p>
               <div className="text-[11px] text-ink/70 pt-2 font-mono font-medium">
-                {mockWinners[0].members.join(", ")}
+                {(byRank(1)?.members || []).join(', ')}
               </div>
               <div className="text-[10px] text-darkRed font-mono font-bold pt-1">
-                Score: {mockWinners[0].score} / 100 • Gold Citation & Certificate
+                {byRank(1)?.score ? `Score: ${byRank(1)?.score} / 100 • Gold Citation & Certificate` : 'Gold Citation & Certificate'}
               </div>
             </div>
           </div>
@@ -182,18 +157,18 @@ export default function ResultsPage() {
               3rd Place // Bronze Merit
             </span>
             <div className="font-editorial text-4xl font-bold text-ink">
-              {mockWinners[2].prizeAmount}
+              {byRank(3)?.prizeAmount}
             </div>
             <div className="border-t border-mutedGold/40 pt-4 space-y-1">
-              <h3 className="text-base font-bold text-ink">{mockWinners[2].teamName}</h3>
+              <h3 className="text-base font-bold text-ink">{byRank(3)?.teamName}</h3>
               <p className="text-xs text-vermilion font-bold">
-                {mockWinners[2].projectTitle}
+                {byRank(3)?.projectTitle}
               </p>
               <div className="text-[11px] text-ink/60 pt-2 font-mono">
-                {mockWinners[2].members.join(", ")}
+                {(byRank(3)?.members || []).join(', ')}
               </div>
               <div className="text-[10px] text-ink/50 pt-1">
-                Score: {mockWinners[2].score} / 100
+                {byRank(3)?.score ? `Score: ${byRank(3)?.score} / 100` : ''}
               </div>
             </div>
           </div>

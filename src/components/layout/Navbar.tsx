@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserProfile } from "@/types";
-import { RoleSwitcher } from "@/components/common/RoleSwitcher";
 import { ArtCodeLogo } from "@/components/art/ArtCodeLogo";
 import {
   Menu,
@@ -77,8 +76,6 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center gap-3">
-          <RoleSwitcher />
-
           {currentUser ? (
             <div className="flex items-center gap-3 pl-2 border-l border-mutedGold">
               {currentUser.role === "admin" && (
@@ -111,6 +108,20 @@ export function Navbar() {
                 <span>Dashboard</span>
                 <ChevronRight size={13} />
               </Link>
+
+              <form
+                action="/api/auth/logout"
+                method="post"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  await fetch("/api/auth/logout", { method: "POST" });
+                  window.location.href = "/";
+                }}
+              >
+                <button className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-mutedGold text-ink hover:bg-cream">
+                  Logout
+                </button>
+              </form>
             </div>
           ) : (
             <div className="flex items-center gap-2 pl-2 border-l border-mutedGold">
@@ -133,7 +144,6 @@ export function Navbar() {
 
         {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 lg:hidden">
-          <RoleSwitcher />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 rounded-lg text-ink hover:bg-cream transition-colors"
@@ -203,6 +213,16 @@ export function Navbar() {
                 >
                   Register Now
                 </Link>
+                <button
+                  onClick={async () => {
+                    await fetch("/api/auth/logout", { method: "POST" });
+                    setIsMobileMenuOpen(false);
+                    window.location.href = "/";
+                  }}
+                  className="hidden"
+                >
+                  Logout
+                </button>
               </>
             )}
           </div>

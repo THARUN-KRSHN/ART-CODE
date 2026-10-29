@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
-import { getActiveUser, loadData, setActiveUser } from "@/lib/store";
+import { getSession, withCookies } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const data = loadData();
-  const user = getActiveUser();
-  return NextResponse.json({
-    user,
-    allUsers: data.users,
-  });
+  const { session, pending } = await getSession();
+  return withCookies(NextResponse.json({ user: session?.user ?? null }), pending);
 }
-
