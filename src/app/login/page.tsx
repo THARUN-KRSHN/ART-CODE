@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthArtwork } from "@/components/art/AuthArtwork";
-import { Github, Mail, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { PosterArtwork } from "@/components/art/PosterArtwork";
+import { RhombusMotif } from "@/components/art/CulturalMotifs";
+import { Github, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -79,42 +80,48 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-4xl bg-white rounded-card border border-border shadow-elevated overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-        {/* Left Side: Art & Editorial Introduction */}
-        <div className="lg:col-span-5 bg-ivory-50 p-8 sm:p-10 border-b lg:border-b-0 lg:border-r border-border flex flex-col justify-between space-y-8">
+    <div className="min-h-screen bg-cream text-ink flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-4xl bg-paleCream rounded-card border-2 border-mutedGold shadow-poster overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        {/* Left Side: Editorial Introduction (Panel 10 Style) */}
+        <div className="lg:col-span-5 bg-cream p-8 sm:p-10 border-b lg:border-b-0 lg:border-r-2 border-mutedGold flex flex-col justify-between space-y-6">
           <div className="space-y-3">
-            <Link href="/" className="inline-block group">
-              <span className="font-extrabold tracking-tight text-xl font-sans text-ink">
-                ART<span className="text-terracotta font-serif font-normal italic">//</span>CODE
+            <Link href="/" className="inline-block">
+              <span className="font-display font-black text-2xl text-ink">
+                ART<span className="text-vermilion font-editorial italic px-0.5">//</span>CODE
               </span>
             </Link>
-            <p className="font-editorial text-2xl text-ink leading-snug">
+            <h2 className="font-editorial text-3xl text-darkRed leading-snug">
               Welcome to the creative portal.
-            </p>
+            </h2>
             <p className="text-xs text-ink-secondary leading-relaxed">
               Sign in to manage your two-member team, access challenge problem statements, and submit your project draft.
             </p>
           </div>
 
-          <AuthArtwork className="my-auto" />
+          <div className="my-auto py-2">
+            <PosterArtwork compact className="max-w-[280px]" />
+          </div>
 
-          <div className="text-[11px] font-mono text-ink-muted">
-            DELTA // CHRIST COLLEGE OF ENGINEERING
+          <div className="text-[10px] font-mono text-darkRed uppercase tracking-wider font-bold">
+            DELTA • CHRIST COLLEGE OF ENGINEERING
           </div>
         </div>
 
         {/* Right Side: Auth Form */}
         <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center space-y-6">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-bold text-ink">Sign In to ART//CODE</h2>
-            <p className="text-xs text-ink-secondary">
-              Use your preferred OAuth identity or academic email to continue.
+          <div>
+            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-vermilion uppercase font-bold mb-1">
+              <RhombusMotif size={12} />
+              <span>Participant Portal</span>
+            </div>
+            <h2 className="text-2xl font-bold text-darkRed font-display">Sign In to ART//CODE</h2>
+            <p className="text-xs text-ink-secondary mt-1">
+              Use Google, GitHub, or your registered academic email.
             </p>
           </div>
 
           {errorMsg && (
-            <div className="p-3 rounded-lg border border-status-error/40 bg-red-50 text-status-error text-xs">
+            <div className="p-3 rounded-xl border border-vermilion/40 bg-vermilion/10 text-vermilion text-xs font-medium">
               {errorMsg}
             </div>
           )}
@@ -124,7 +131,7 @@ export default function LoginPage() {
             <button
               onClick={() => handleOAuthLogin("google")}
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-xl border border-border bg-white hover:bg-ivory-50 text-ink text-xs font-semibold flex items-center justify-center gap-3 transition-colors shadow-subtle disabled:opacity-60"
+              className="w-full py-3 px-4 rounded-xl border-2 border-mutedGold bg-cream hover:bg-paleCream text-ink text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-colors shadow-subtle disabled:opacity-60"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -150,26 +157,26 @@ export default function LoginPage() {
             <button
               onClick={() => handleOAuthLogin("github")}
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-xl border border-border bg-ink text-white hover:bg-ink-pure text-xs font-semibold flex items-center justify-center gap-3 transition-colors shadow-subtle disabled:opacity-60"
+              className="w-full py-3 px-4 rounded-xl border border-darkRed bg-darkRed text-cream hover:bg-vermilion text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-colors shadow-subtle disabled:opacity-60"
             >
-              <Github size={16} />
+              <Github size={16} className="text-accentGold" />
               <span>Continue with GitHub</span>
             </button>
           </div>
 
           <div className="relative flex py-2 items-center">
-            <div className="flex-grow border-t border-border"></div>
-            <span className="flex-shrink mx-4 text-ink-muted text-[11px] uppercase font-mono tracking-wider">
+            <div className="flex-grow border-t border-mutedGold"></div>
+            <span className="flex-shrink mx-4 text-darkRed text-[10px] uppercase font-mono tracking-widest font-bold">
               Or email sign in
             </span>
-            <div className="flex-grow border-t border-border"></div>
+            <div className="flex-grow border-t border-mutedGold"></div>
           </div>
 
           {/* Email form */}
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1.5">
-                Academic or Institutional Email
+              <label className="block text-xs font-bold text-darkRed mb-1.5 font-mono uppercase tracking-wider">
+                Academic or Personal Email
               </label>
               <input
                 type="email"
@@ -177,30 +184,28 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@cce.edu.in"
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-border bg-ivory-50 text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-terracotta"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 rounded-xl bg-ivory-200 hover:bg-ivory-300 text-ink text-xs font-semibold transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-vermilion hover:bg-darkRed text-cream text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-subtle"
             >
               <span>{isLoading ? "Signing in..." : "Continue with Email"}</span>
-              <ArrowRight size={14} />
+              <ArrowRight size={14} className="text-accentGold" />
             </button>
           </form>
 
-          <div className="pt-2 text-center text-[11px] text-ink-muted leading-relaxed">
-            By signing in, you agree to the{" "}
-            <Link href="/guidelines" className="text-terracotta underline">
-              Event Guidelines
-            </Link>{" "}
-            and the academic integrity policies of DELTA & Christ College of Engineering.
-          </div>
+          <p className="text-center text-xs text-ink-secondary">
+            Don't have an account yet?{" "}
+            <Link href="/register" className="text-vermilion font-bold hover:underline">
+              Register Team
+            </Link>
+          </p>
         </div>
       </div>
     </div>
   );
 }
-

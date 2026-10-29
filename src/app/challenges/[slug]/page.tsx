@@ -5,11 +5,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ProblemStatement, Team } from "@/types";
 import { ChallengeMotif } from "@/components/art/ChallengeMotif";
+import { RhombusMotif } from "@/components/art/CulturalMotifs";
 import {
   ArrowLeft,
   CheckCircle2,
-  AlertCircle,
-  ShieldCheck,
   Sparkles,
   ArrowRight,
   ExternalLink,
@@ -69,10 +68,10 @@ export default function ChallengeDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-ivory flex items-center justify-center p-8">
+      <div className="min-h-screen bg-cream flex items-center justify-center p-8">
         <div className="text-center space-y-3">
-          <div className="w-8 h-8 rounded-full border-2 border-terracotta border-t-transparent animate-spin mx-auto" />
-          <p className="text-xs font-mono text-ink-muted">Loading challenge specification...</p>
+          <div className="w-8 h-8 rounded-full border-2 border-vermilion border-t-transparent animate-spin mx-auto" />
+          <p className="text-xs font-mono text-darkRed">Loading challenge brief...</p>
         </div>
       </div>
     );
@@ -80,11 +79,11 @@ export default function ChallengeDetailPage() {
 
   if (!challenge) {
     return (
-      <div className="min-h-screen bg-ivory flex items-center justify-center p-8">
-        <div className="text-center space-y-4 max-w-md">
-          <h2 className="text-2xl font-bold text-ink">Challenge Not Found</h2>
-          <p className="text-xs text-ink-secondary">The requested challenge statement does not exist or has been archived.</p>
-          <Link href="/challenges" className="inline-flex items-center gap-2 text-xs font-semibold text-terracotta">
+      <div className="min-h-screen bg-cream flex items-center justify-center p-8">
+        <div className="text-center space-y-4 max-w-md bg-paleCream p-8 rounded-card border-2 border-mutedGold">
+          <h2 className="text-2xl font-bold text-darkRed">Challenge Not Found</h2>
+          <p className="text-xs text-ink-secondary">The requested challenge statement does not exist.</p>
+          <Link href="/challenges" className="inline-flex items-center gap-2 text-xs font-bold text-vermilion uppercase font-mono">
             <ArrowLeft size={14} /> Back to Challenges
           </Link>
         </div>
@@ -93,61 +92,61 @@ export default function ChallengeDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ivory py-12 md:py-20">
+    <div className="min-h-screen bg-cream text-ink py-12 md:py-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        {/* Navigation Breadcrumb */}
+        {/* Navigation Breadcrumb (Panel 07 Style) */}
         <div className="flex items-center justify-between">
           <Link
             href="/challenges"
-            className="text-xs font-semibold text-ink-secondary hover:text-terracotta inline-flex items-center gap-1.5 transition-colors"
+            className="text-xs font-mono font-bold uppercase tracking-wider text-secondaryRed hover:text-vermilion inline-flex items-center gap-1.5 transition-colors"
           >
-            <ArrowLeft size={14} /> Back to All Challenges
+            <ArrowLeft size={14} /> Back to Challenges
           </Link>
 
-          <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-white border border-border text-ink">
+          <span className="text-xs font-mono font-bold px-3 py-1 rounded bg-paleCream border border-mutedGold text-darkRed">
             {challenge.code}
           </span>
         </div>
 
         {/* Challenge Header Card */}
-        <div className="p-8 sm:p-10 rounded-card border border-border bg-white shadow-subtle space-y-6">
+        <div className="p-8 sm:p-10 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <span className="text-xs font-mono uppercase tracking-widest text-terracotta font-bold">
-                {challenge.category}
-              </span>
-              <h1 className="font-editorial text-3xl sm:text-4xl text-ink leading-tight">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-mono uppercase tracking-widest px-2.5 py-0.5 rounded bg-vermilion text-cream font-bold">
+                  {challenge.code}
+                </span>
+                <span className="text-xs font-mono uppercase tracking-widest px-2.5 py-0.5 rounded bg-accentGold text-darkRed font-bold">
+                  {challenge.category}
+                </span>
+              </div>
+              <h1 className="font-editorial text-3xl sm:text-5xl text-darkRed leading-tight">
                 {challenge.title}
               </h1>
             </div>
-            <ChallengeMotif
-              category={challenge.category}
-              accent={challenge.accentColor}
-              size={72}
-              className="flex-shrink-0"
-            />
+            <ChallengeMotif category={challenge.category} size={70} className="flex-shrink-0" />
           </div>
 
-          <p className="text-base text-ink-secondary leading-relaxed border-t border-border/70 pt-6">
+          <p className="text-sm sm:text-base text-ink-secondary leading-relaxed border-t border-mutedGold/60 pt-6">
             {challenge.shortDescription}
           </p>
 
           {/* Action / Selection Box */}
-          <div className="p-4 rounded-xl border border-border bg-ivory-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="p-5 rounded-xl border-2 border-mutedGold bg-cream flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               {isSelected ? (
-                <div className="flex items-center gap-2 text-xs font-semibold text-status-success">
+                <div className="flex items-center gap-2 text-xs font-bold text-status-success font-mono">
                   <CheckCircle2 size={16} />
-                  <span>Selected as your team's official challenge ({team?.name})</span>
+                  <span>Assigned to your team: {team?.name}</span>
                 </div>
               ) : team ? (
                 <div className="text-xs text-ink-secondary">
-                  Team: <strong className="text-ink">{team.name}</strong>{" "}
+                  Team: <strong className="text-darkRed font-semibold">{team.name}</strong>{" "}
                   {canSelect ? "(You can assign this challenge to your team)" : "(Only the team leader can change challenge)"}
                 </div>
               ) : (
                 <div className="text-xs text-ink-secondary">
-                  Sign in and join a team to choose this challenge for your submission.
+                  Sign in and form a team to choose this challenge for your submission.
                 </div>
               )}
             </div>
@@ -156,7 +155,7 @@ export default function ChallengeDetailPage() {
               <button
                 onClick={handleSelectChallenge}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-lg bg-ink text-white text-xs font-semibold hover:bg-ink-pure transition-colors disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors disabled:opacity-50 shadow-subtle"
               >
                 {isSubmitting ? "Selecting..." : "Select for My Team"}
               </button>
@@ -165,26 +164,27 @@ export default function ChallengeDetailPage() {
             {isSelected && (
               <Link
                 href="/submission"
-                className="px-4 py-2 rounded-lg bg-terracotta text-white text-xs font-semibold hover:bg-terracotta-600 transition-colors inline-flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors inline-flex items-center gap-1.5 shadow-subtle"
               >
                 <span>Go to Submission Draft</span>
-                <ArrowRight size={13} />
+                <ArrowRight size={13} className="text-accentGold" />
               </Link>
             )}
           </div>
 
           {actionMessage && (
-            <p className="text-xs font-medium text-terracotta text-center">{actionMessage}</p>
+            <p className="text-xs font-semibold text-vermilion text-center">{actionMessage}</p>
           )}
         </div>
 
         {/* 1. Context & Background */}
         <section className="space-y-3">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-indigo font-bold">
-            01 // Cultural Background & Context
-          </h2>
-          <div className="p-6 rounded-card border border-border bg-white shadow-subtle">
-            <p className="text-sm text-ink-secondary leading-relaxed">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+            <RhombusMotif size={14} />
+            <span>01 // Cultural Background & Context</span>
+          </div>
+          <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
+            <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
               {challenge.background}
             </p>
           </div>
@@ -192,11 +192,12 @@ export default function ChallengeDetailPage() {
 
         {/* 2. Problem Statement Description */}
         <section className="space-y-3">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-terracotta font-bold">
-            02 // Technical Problem Statement
-          </h2>
-          <div className="p-6 rounded-card border border-border bg-white shadow-subtle">
-            <p className="text-sm text-ink-secondary leading-relaxed">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+            <RhombusMotif size={14} />
+            <span>02 // Problem Description</span>
+          </div>
+          <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
+            <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
               {challenge.problemDescription}
             </p>
           </div>
@@ -204,28 +205,30 @@ export default function ChallengeDetailPage() {
 
         {/* 3. Objectives & Expected Outcomes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 rounded-card border border-border bg-white shadow-subtle space-y-4">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-saffron-600 font-bold">
-              03 // Required Objectives
-            </h3>
+          <div className="p-6 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-darkRed font-bold">
+              <RhombusMotif size={12} color="#F1B321" />
+              <span>03 // Required Objectives</span>
+            </div>
             <ul className="space-y-2.5 text-xs text-ink-secondary">
               {challenge.objectives.map((obj, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-saffron mt-1.5 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-vermilion mt-1.5 flex-shrink-0" />
                   <span className="leading-relaxed text-ink">{obj}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="p-6 rounded-card border border-border bg-white shadow-subtle space-y-4">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-sage-600 font-bold">
-              04 // Expected Deliverables
-            </h3>
+          <div className="p-6 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-darkRed font-bold">
+              <RhombusMotif size={12} color="#F1B321" />
+              <span>04 // Expected Deliverables</span>
+            </div>
             <ul className="space-y-2.5 text-xs text-ink-secondary">
               {challenge.expectedOutcomes.map((out, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-status-success mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 size={14} className="text-vermilion mt-0.5 flex-shrink-0" />
                   <span className="leading-relaxed text-ink">{out}</span>
                 </li>
               ))}
@@ -233,32 +236,17 @@ export default function ChallengeDetailPage() {
           </div>
         </div>
 
-        {/* 4. Constraints & Submission Guidance */}
-        <section className="p-6 sm:p-8 rounded-card border border-border bg-white shadow-subtle space-y-4">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-ink font-bold">
-            05 // Specific Submission Guidance & Constraints
+        {/* 4. Submission Guidance */}
+        <section className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-cream shadow-subtle space-y-4">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-darkRed font-bold flex items-center gap-2">
+            <RhombusMotif size={14} />
+            <span>05 // Submission Guidance & Constraints</span>
           </h2>
-          <p className="text-xs text-ink-secondary leading-relaxed">
+          <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
             {challenge.submissionGuidance}
           </p>
-          {challenge.constraints && challenge.constraints.length > 0 && (
-            <div className="pt-3 border-t border-border/60">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-terracotta font-semibold">
-                Boundary Constraints:
-              </span>
-              <ul className="mt-2 space-y-1.5 text-xs text-ink-secondary">
-                {challenge.constraints.map((c, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="w-1 h-1 rounded-full bg-ink-muted" />
-                    <span>{c}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </section>
       </div>
     </div>
   );
 }
-

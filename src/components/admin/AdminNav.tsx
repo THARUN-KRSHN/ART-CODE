@@ -26,10 +26,10 @@ export function AdminNav() {
   ];
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-border/80">
-      <div className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-terracotta-50 text-terracotta text-xs font-mono font-bold uppercase tracking-wider mr-2">
-        <Shield size={13} />
-        <span>Admin Mode</span>
+    <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-mutedGold/50">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accentGold/20 text-darkRed border border-accentGold/50 text-xs font-mono font-bold uppercase tracking-wider mr-2 flex-shrink-0">
+        <Shield size={13} className="text-vermilion" />
+        <span>Admin Console</span>
       </div>
 
       {links.map((link) => {
@@ -39,10 +39,10 @@ export function AdminNav() {
           <Link
             key={link.href}
             href={link.href}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
               isActive
-                ? "bg-ink text-white font-semibold shadow-subtle"
-                : "text-ink-secondary hover:bg-ivory-200 hover:text-ink"
+                ? "bg-vermilion text-cream shadow-sm"
+                : "text-darkRed hover:bg-paleCream/80 hover:text-vermilion border border-transparent hover:border-mutedGold/40"
             }`}
           >
             <Icon size={14} />
@@ -53,4 +53,3 @@ export function AdminNav() {
     </div>
   );
 }
-

@@ -82,6 +82,16 @@
       "phone": "7894561234",
       "department": "Computer Science & Engineering",
       "yearOfStudy": "3rd Year"
+    },
+    {
+      "id": "user-mvt5rgcz",
+      "name": "New Google Participant",
+      "email": "new.google@cce.edu.in",
+      "institution": "Christ College of Engineering (Autonomous), Irinjalakuda",
+      "role": "participant",
+      "provider": "google",
+      "teamId": null,
+      "createdAt": "2026-10-29T06:24:20.627Z"
     }
   ],
   "teams": [
@@ -376,6 +386,30 @@
   },
   "auditLogs": [
     {
+      "id": "log-1793255098074",
+      "timestamp": "2026-10-29T06:24:58.074Z",
+      "actorName": "Ananya Nair",
+      "actorEmail": "ananya.nair@cce.edu.in",
+      "action": "USER_SESSION_SWITCHED",
+      "details": "Switched active session to Ananya Nair (leader)"
+    },
+    {
+      "id": "log-1793255083545",
+      "timestamp": "2026-10-29T06:24:43.545Z",
+      "actorName": "Ananya Nair",
+      "actorEmail": "ananya.nair@cce.edu.in",
+      "action": "USER_SESSION_SWITCHED",
+      "details": "Switched active session to Ananya Nair (leader)"
+    },
+    {
+      "id": "log-1793255060630",
+      "timestamp": "2026-10-29T06:24:20.630Z",
+      "actorName": "New Google Participant",
+      "actorEmail": "new.google@cce.edu.in",
+      "action": "USER_REGISTERED",
+      "details": "Registered new participant via google"
+    },
+    {
       "id": "log-1793245069472",
       "timestamp": "2026-10-29T03:37:49.472Z",
       "actorName": "Dr. Arun Mohan",
@@ -576,5 +610,5 @@
       "details": "Joined Team KalaKriti via invite code. Team status updated to complete."
     }
   ],
-  "activeUserId": "user-admin"
+  "activeUserId": "user-ananya"
 }

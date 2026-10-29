@@ -1,21 +1,7 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-
-const sansFont = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const serifFont = DM_Serif_Display({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "ART//CODE 2026 — Virtual Hackathon Platform",
@@ -39,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sansFont.variable} ${serifFont.variable}`}>
-      <body className="min-h-screen bg-ivory text-ink flex flex-col antialiased selection:bg-terracotta/20 selection:text-terracotta-700">
+    <html lang="en">
+      <body className="min-h-screen bg-cream text-ink flex flex-col antialiased selection:bg-vermilion/20 selection:text-darkRed font-sans">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
@@ -48,4 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-

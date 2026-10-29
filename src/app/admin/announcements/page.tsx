@@ -69,8 +69,8 @@ export default function AdminAnnouncementsPage() {
   if (isLoading) {
     return (
       <div className="py-12 text-center">
-        <div className="w-8 h-8 rounded-full border-2 border-terracotta border-t-transparent animate-spin mx-auto mb-3" />
-        <p className="text-xs font-mono text-ink-muted">Loading announcements system...</p>
+        <div className="w-8 h-8 rounded-full border-2 border-vermilion border-t-transparent animate-spin mx-auto mb-3" />
+        <p className="text-xs font-mono text-ink/70">Loading announcements system...</p>
       </div>
     );
   }
@@ -78,15 +78,15 @@ export default function AdminAnnouncementsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-bold text-ink">Announcement & Notification Management</h1>
-        <p className="text-xs text-ink-secondary mt-0.5">
+        <h1 className="font-editorial text-2xl font-bold text-ink">Announcement & Notification Management</h1>
+        <p className="text-xs text-ink/80 mt-0.5">
           Broadcast official bulletins, reminders, and deadline alerts to target participant cohorts.
         </p>
       </div>
 
       {successMsg && (
-        <div className="p-4 rounded-xl border border-sage-200 bg-sage-50 text-status-success text-xs flex items-center gap-2">
-          <CheckCircle2 size={16} />
+        <div className="p-4 rounded-xl border border-accentGold/60 bg-accentGold/20 text-darkRed text-xs flex items-center gap-2 font-bold">
+          <CheckCircle2 size={16} className="text-vermilion" />
           <span>{successMsg}</span>
         </div>
       )}
@@ -94,9 +94,9 @@ export default function AdminAnnouncementsPage() {
       {/* Grid: Create Announcement (Left) + Publication History (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Create Form (5 cols) */}
-        <div className="lg:col-span-5 p-6 rounded-card border border-border bg-white shadow-subtle space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/80 pb-3">
-            <Plus size={16} className="text-terracotta" />
+        <div className="lg:col-span-5 p-6 rounded-2xl border-2 border-mutedGold/60 bg-paleCream/95 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 border-b border-mutedGold/50 pb-3">
+            <Plus size={16} className="text-vermilion" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-ink font-mono">
               Compose Announcement
             </h2>
@@ -104,7 +104,7 @@ export default function AdminAnnouncementsPage() {
 
           <form onSubmit={handlePublish} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">
+              <label className="block text-xs font-bold text-ink mb-1">
                 Announcement Title *
               </label>
               <input
@@ -113,17 +113,17 @@ export default function AdminAnnouncementsPage() {
                 placeholder="e.g. Final 24-Hour Submission Reminder"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs rounded-lg border border-border bg-ivory-50 text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-terracotta"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold/70 bg-cream/70 text-ink focus:bg-cream focus:outline-none focus:ring-1 focus:ring-vermilion font-medium"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-ink mb-1">Priority</label>
+                <label className="block text-xs font-bold text-ink mb-1">Priority</label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as NotificationPriority)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-ivory-50 text-ink"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-mutedGold/70 bg-cream/70 text-ink font-medium"
                 >
                   <option value="normal">Normal Bulletin</option>
                   <option value="important">Important</option>
@@ -132,11 +132,11 @@ export default function AdminAnnouncementsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-ink mb-1">Target Audience</label>
+                <label className="block text-xs font-bold text-ink mb-1">Target Audience</label>
                 <select
                   value={targetAudience}
                   onChange={(e) => setTargetAudience(e.target.value as NotificationAudience)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-ivory-50 text-ink"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-mutedGold/70 bg-cream/70 text-ink font-medium"
                 >
                   <option value="all">All Participants</option>
                   <option value="complete_teams">Complete Teams (2 Members)</option>
@@ -147,7 +147,7 @@ export default function AdminAnnouncementsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">
+              <label className="block text-xs font-bold text-ink mb-1">
                 Message Body *
               </label>
               <textarea
@@ -156,14 +156,14 @@ export default function AdminAnnouncementsPage() {
                 placeholder="Compose the full message content here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs rounded-lg border border-border bg-ivory-50 text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-terracotta"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold/70 bg-cream/70 text-ink focus:bg-cream focus:outline-none focus:ring-1 focus:ring-vermilion font-medium"
               />
             </div>
 
             <button
               type="submit"
               disabled={isPublishing}
-              className="w-full py-2.5 rounded-lg bg-ink text-white text-xs font-semibold hover:bg-ink-pure transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold hover:bg-darkRed transition-colors flex items-center justify-center gap-2 shadow-sm"
             >
               <Send size={13} />
               <span>{isPublishing ? "Publishing..." : "Broadcast Announcement"}</span>
@@ -172,33 +172,33 @@ export default function AdminAnnouncementsPage() {
         </div>
 
         {/* History (7 cols) */}
-        <div className="lg:col-span-7 p-6 rounded-card border border-border bg-white shadow-subtle space-y-4">
-          <div className="flex items-center justify-between border-b border-border/80 pb-3">
+        <div className="lg:col-span-7 p-6 rounded-2xl border-2 border-mutedGold/60 bg-paleCream/95 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-mutedGold/50 pb-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-ink font-mono">
               Published Bulletins ({announcements.length})
             </h2>
-            <span className="text-[11px] font-mono text-ink-muted">Active Stream</span>
+            <span className="text-[11px] font-mono text-ink/60 font-medium">Active Stream</span>
           </div>
 
           <div className="space-y-3">
             {announcements.map((item) => (
-              <div key={item.id} className="p-4 rounded-xl border border-border bg-ivory-50 space-y-2">
+              <div key={item.id} className="p-4 rounded-xl border border-mutedGold/50 bg-cream/80 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span
                       className={`text-[9px] font-mono uppercase px-2 py-0.5 rounded font-bold border ${
                         item.priority === "urgent"
-                          ? "bg-terracotta-50 text-terracotta border-terracotta-200"
+                          ? "bg-vermilion/15 text-vermilion border-vermilion/40"
                           : item.priority === "important"
-                          ? "bg-saffron-50 text-saffron-700 border-saffron-200"
-                          : "bg-ivory-200 text-ink-secondary border-border"
+                          ? "bg-accentGold/20 text-darkRed border-accentGold/60"
+                          : "bg-cream text-ink/70 border-mutedGold/60"
                       }`}
                     >
                       {item.priority}
                     </span>
                     <h3 className="text-xs font-bold text-ink">{item.title}</h3>
                   </div>
-                  <span className="text-[10px] font-mono text-ink-muted">
+                  <span className="text-[10px] font-mono text-ink/60 font-medium">
                     {new Date(item.createdAt).toLocaleDateString("en-IN", {
                       day: "2-digit",
                       month: "short",
@@ -206,11 +206,11 @@ export default function AdminAnnouncementsPage() {
                   </span>
                 </div>
 
-                <p className="text-xs text-ink-secondary leading-relaxed">{item.message}</p>
+                <p className="text-xs text-ink/80 leading-relaxed font-sans">{item.message}</p>
 
-                <div className="pt-2 border-t border-border/60 flex items-center justify-between text-[10px] font-mono text-ink-muted">
+                <div className="pt-2 border-t border-mutedGold/30 flex items-center justify-between text-[10px] font-mono text-ink/60">
                   <span>Audience: {item.targetAudience}</span>
-                  <span>Read by {item.readBy?.length || 0} participants</span>
+                  <span className="text-darkRed font-semibold">Read by {item.readBy?.length || 0} participants</span>
                 </div>
               </div>
             ))}
@@ -220,4 +220,3 @@ export default function AdminAnnouncementsPage() {
     </div>
   );
 }
-

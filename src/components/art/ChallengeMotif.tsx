@@ -2,146 +2,92 @@ import React from "react";
 
 interface ChallengeMotifProps {
   category?: string;
-  accent?: "terracotta" | "indigo" | "saffron" | "sage";
   className?: string;
   size?: number;
 }
 
 export function ChallengeMotif({
   category = "Heritage & AI",
-  accent = "terracotta",
   className = "",
-  size = 64,
+  size = 56,
 }: ChallengeMotifProps) {
-  const getColors = () => {
-    switch (accent) {
-      case "indigo":
-        return { primary: "#414B75", secondary: "#D7DBED", highlight: "#D5A545" };
-      case "saffron":
-        return { primary: "#D5A545", secondary: "#F6ECCF", highlight: "#C66A4A" };
-      case "sage":
-        return { primary: "#82947B", secondary: "#E4E9E2", highlight: "#414B75" };
-      case "terracotta":
-      default:
-        return { primary: "#C66A4A", secondary: "#F5DFD7", highlight: "#414B75" };
-    }
-  };
-
-  const { primary, secondary, highlight } = getColors();
-
   return (
     <div
-      className={`inline-flex items-center justify-center rounded-xl p-2 border border-border/80 bg-white/80 shadow-subtle ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl p-2 border border-mutedGold bg-paleCream shadow-subtle ${className}`}
       style={{ width: size, height: size }}
     >
       <svg
-        viewBox="0 0 100 100"
+        viewBox="0 0 80 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-full"
       >
         {category.includes("Heritage") && (
-          // Inpainting / Archival Motif: Arch combined with geometric pixel grid
+          // Temple Gopuram / Mural Archway Motif
           <>
-            <path
-              d="M 20 80 C 20 40, 80 40, 80 80 Z"
-              fill={secondary}
-              stroke={primary}
-              strokeWidth="2"
-            />
-            <circle cx="50" cy="40" r="16" fill={primary} opacity="0.8" />
-            <rect x="42" y="60" width="8" height="8" fill={highlight} />
-            <rect x="50" y="60" width="8" height="8" fill="#20201E" />
-            <rect x="42" y="68" width="8" height="8" fill="#FAF8F3" stroke="#20201E" strokeWidth="1" />
-            <circle cx="50" cy="40" r="5" fill="#FAF8F3" />
+            <path d="M 40 10 L 65 35 L 60 70 L 20 70 L 15 35 Z" fill="#FDF4E4" stroke="#A32516" strokeWidth="2" />
+            <path d="M 28 70 L 28 45 Q 40 38 52 45 L 52 70 Z" fill="#A32516" />
+            <circle cx="40" cy="26" r="6" fill="#F1B321" stroke="#A32516" strokeWidth="1.5" />
+            <line x1="15" y1="35" x2="65" y2="35" stroke="#F1B321" strokeWidth="2" />
           </>
         )}
 
         {category.includes("Performing") && (
-          // Dance & Kinetic Mudra Motif: Overlapping flowing arcs and rhythm pulses
+          // Classical Mudra (Hastas & Dance Rhythm)
           <>
-            <circle cx="50" cy="50" r="34" stroke={secondary} strokeWidth="6" />
-            <path
-              d="M 25 70 Q 50 15 75 70"
-              stroke={primary}
-              strokeWidth="3.5"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 35 35 C 45 45, 55 25, 65 35"
-              stroke={highlight}
-              strokeWidth="3"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <circle cx="50" cy="50" r="6" fill={primary} />
-            <circle cx="35" cy="65" r="4" fill={highlight} />
-            <circle cx="65" cy="65" r="4" fill={highlight} />
+            <circle cx="40" cy="40" r="28" stroke="#D9B88A" strokeWidth="3" strokeDasharray="3 4" />
+            <path d="M 25 55 Q 40 18 55 55" stroke="#A32516" strokeWidth="3" fill="none" strokeLinecap="round" />
+            <circle cx="40" cy="38" r="7" fill="#F1B321" stroke="#A32516" strokeWidth="1.5" />
+            <circle cx="28" cy="52" r="3.5" fill="#8C3D20" />
+            <circle cx="52" cy="52" r="3.5" fill="#8C3D20" />
           </>
         )}
 
         {category.includes("Calligraphy") && (
-          // Stylus & Ligature Motif: Flowing stroke and mathematical angle
+          // Iron Stylus (Narayam) & Fluid Palm-Leaf Ligature
           <>
-            <line x1="20" y1="80" x2="80" y2="20" stroke={secondary} strokeWidth="8" strokeLinecap="round" />
-            <path
-              d="M 25 75 C 30 40, 60 40, 75 25"
-              stroke={primary}
-              strokeWidth="4"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 35 75 A 20 20 0 1 1 65 60"
-              stroke={highlight}
-              strokeWidth="2.5"
-              fill="none"
-            />
-            <rect x="70" y="20" width="10" height="10" transform="rotate(45 75 25)" fill="#20201E" />
+            <line x1="20" y1="65" x2="65" y2="20" stroke="#F1B321" strokeWidth="5" strokeLinecap="round" />
+            <path d="M 22 62 C 30 35, 50 35, 60 22" stroke="#A32516" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+            <circle cx="40" cy="40" r="10" stroke="#8C3D20" strokeWidth="2" fill="none" />
+            <rect x="58" y="16" width="8" height="8" transform="rotate(45 62 20)" fill="#1F1A14" />
           </>
         )}
 
         {category.includes("Craftsmanship") && (
-          // Handloom Warp/Weft Matrix
+          // Kasavu Handloom Warp / Weft Matrix
           <>
-            <rect x="20" y="20" width="60" height="60" rx="8" fill={secondary} stroke={primary} strokeWidth="1.5" />
-            <line x1="35" y1="20" x2="35" y2="80" stroke={primary} strokeWidth="2" />
-            <line x1="50" y1="20" x2="50" y2="80" stroke={primary} strokeWidth="2" strokeDasharray="3 3" />
-            <line x1="65" y1="20" x2="65" y2="80" stroke={primary} strokeWidth="2" />
-            <line x1="20" y1="35" x2="80" y2="35" stroke={highlight} strokeWidth="2" />
-            <line x1="20" y1="50" x2="80" y2="50" stroke={highlight} strokeWidth="2" strokeDasharray="3 3" />
-            <line x1="20" y1="65" x2="80" y2="65" stroke={highlight} strokeWidth="2" />
-            <circle cx="50" cy="50" r="5" fill="#20201E" />
+            <rect x="18" y="18" width="44" height="44" rx="6" fill="#FAF3E3" stroke="#A32516" strokeWidth="1.8" />
+            <line x1="32" y1="18" x2="32" y2="62" stroke="#A32516" strokeWidth="2" />
+            <line x1="48" y1="18" x2="48" y2="62" stroke="#A32516" strokeWidth="2" />
+            <line x1="18" y1="32" x2="62" y2="32" stroke="#F1B321" strokeWidth="2" />
+            <line x1="18" y1="48" x2="62" y2="48" stroke="#F1B321" strokeWidth="2" />
+            <circle cx="40" cy="40" r="5" fill="#8C3D20" />
           </>
         )}
 
         {category.includes("Interactive") && (
-          // Acoustic Chamber / Spatial Resonance
+          // Sacred Resonance / Stone Acoustic Chamber
           <>
-            <rect x="25" y="25" width="50" height="50" fill={secondary} rx="4" />
-            <circle cx="50" cy="50" r="32" stroke={primary} strokeWidth="1.5" strokeDasharray="4 4" />
-            <circle cx="50" cy="50" r="20" stroke={highlight} strokeWidth="2" />
-            <circle cx="50" cy="50" r="8" fill={primary} />
-            <polygon points="50,15 54,23 46,23" fill="#20201E" />
-            <polygon points="50,85 54,77 46,77" fill="#20201E" />
+            <circle cx="40" cy="40" r="28" fill="#FAF3E3" stroke="#A32516" strokeWidth="1.5" />
+            <circle cx="40" cy="40" r="20" stroke="#F1B321" strokeWidth="2" strokeDasharray="3 3" />
+            <circle cx="40" cy="40" r="10" fill="#A32516" />
+            <polygon points="40,14 44,22 36,22" fill="#F1B321" />
+            <polygon points="40,66 44,58 36,58" fill="#F1B321" />
           </>
         )}
 
-        {/* Fallback geometric composition if not matched */}
         {!category.includes("Heritage") &&
           !category.includes("Performing") &&
           !category.includes("Calligraphy") &&
           !category.includes("Craftsmanship") &&
           !category.includes("Interactive") && (
             <>
-              <circle cx="50" cy="50" r="30" fill={secondary} stroke={primary} strokeWidth="2" />
-              <rect x="35" y="35" width="30" height="30" fill={primary} rx="4" />
-              <circle cx="50" cy="50" r="6" fill={highlight} />
+              <circle cx="40" cy="40" r="24" fill="#FAF3E3" stroke="#A32516" strokeWidth="2" />
+              <rect x="30" y="30" width="20" height="20" transform="rotate(45 40 40)" fill="#F1B321" stroke="#A32516" strokeWidth="1" />
+              <circle cx="40" cy="40" r="4" fill="#6B2B12" />
             </>
           )}
       </svg>
     </div>
   );
 }
-

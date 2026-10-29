@@ -43,10 +43,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-ivory flex items-center justify-center p-8">
+      <div className="min-h-screen bg-cream flex items-center justify-center p-8">
         <div className="text-center space-y-3">
-          <div className="w-8 h-8 rounded-full border-2 border-terracotta border-t-transparent animate-spin mx-auto" />
-          <p className="text-xs font-mono text-ink-muted">Verifying administrator authorization...</p>
+          <div className="w-8 h-8 rounded-full border-2 border-vermilion border-t-transparent animate-spin mx-auto" />
+          <p className="text-xs font-mono text-ink/70">Verifying administrator authorization...</p>
         </div>
       </div>
     );
@@ -54,19 +54,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!currentUser || currentUser.role !== "admin") {
     return (
-      <div className="min-h-screen bg-ivory py-16 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white p-8 rounded-card border border-border shadow-elevated text-center space-y-4">
-          <div className="w-12 h-12 rounded-full bg-terracotta-50 text-terracotta flex items-center justify-center mx-auto">
+      <div className="min-h-screen bg-cream bg-mandala-grid py-16 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-paleCream/95 p-8 rounded-2xl border-2 border-mutedGold/60 shadow-elevated text-center space-y-4">
+          <div className="w-12 h-12 rounded-full bg-accentGold/20 border border-accentGold/40 text-vermilion flex items-center justify-center mx-auto">
             <Shield size={24} />
           </div>
-          <h2 className="text-xl font-bold text-ink">Administrator Access Required</h2>
-          <p className="text-xs text-ink-secondary leading-relaxed">
-            You are currently signed in as <strong>{currentUser ? currentUser.name : "Public Visitor"}</strong> ({currentUser ? currentUser.role : "unauthenticated"}). The admin portal is restricted to authorized committee members.
+          <h2 className="font-editorial text-2xl font-bold text-ink">Administrator Access Required</h2>
+          <p className="text-xs text-ink/80 leading-relaxed font-sans">
+            You are currently signed in as <strong>{currentUser ? currentUser.name : "Public Visitor"}</strong> ({currentUser ? currentUser.role : "unauthenticated"}). The admin portal is restricted to authorized DELTA committee members.
           </p>
           <div className="pt-2">
             <button
               onClick={switchToAdmin}
-              className="w-full py-2.5 rounded-xl bg-ink text-white text-xs font-semibold hover:bg-ink-pure transition-colors shadow-subtle"
+              className="w-full py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold hover:bg-darkRed transition-colors shadow-sm"
             >
               Switch to Dr. Arun Mohan (Admin Demo Persona)
             </button>
@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-ivory py-8 sm:py-12">
+    <div className="min-h-screen bg-cream bg-mandala-grid py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <AdminNav />
         {children}
@@ -85,4 +85,3 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
-

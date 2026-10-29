@@ -3,13 +3,15 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthArtwork } from "@/components/art/AuthArtwork";
+import { PosterArtwork } from "@/components/art/PosterArtwork";
+import { RhombusMotif } from "@/components/art/CulturalMotifs";
 import { Github, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [institution, setInstitution] = useState("Christ College of Engineering (Autonomous), Irinjalakuda");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -35,6 +37,18 @@ export default function RegisterPage() {
       });
       const data = await res.json();
       if (res.ok) {
+        // Also save phone and institution if provided
+        if (phone || institution) {
+          await fetch("/api/profile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: name.trim(),
+              phone: phone.trim(),
+              institution: institution.trim(),
+            }),
+          });
+        }
         router.push("/onboarding");
       } else {
         setErrorMsg(data.error || "Registration failed");
@@ -70,49 +84,55 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-4xl bg-white rounded-card border border-border shadow-elevated overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-        {/* Left Side */}
-        <div className="lg:col-span-5 bg-ivory-50 p-8 sm:p-10 border-b lg:border-b-0 lg:border-r border-border flex flex-col justify-between space-y-6">
+    <div className="min-h-screen bg-cream text-ink flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-4xl bg-paleCream rounded-card border-2 border-mutedGold shadow-poster overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        {/* Left Side: Illustrated Panel (Panel 10 Style) */}
+        <div className="lg:col-span-5 bg-cream p-8 sm:p-10 border-b lg:border-b-0 lg:border-r-2 border-mutedGold flex flex-col justify-between space-y-6">
           <div className="space-y-3">
-            <Link href="/" className="inline-block group">
-              <span className="font-extrabold tracking-tight text-xl font-sans text-ink">
-                ART<span className="text-terracotta font-serif font-normal italic">//</span>CODE
+            <Link href="/" className="inline-block">
+              <span className="font-display font-black text-2xl text-ink">
+                ART<span className="text-vermilion font-editorial italic px-0.5">//</span>CODE
               </span>
             </Link>
-            <p className="font-editorial text-2xl text-ink leading-snug">
+            <h2 className="font-editorial text-3xl text-darkRed leading-snug">
               Begin your participant journey.
-            </p>
+            </h2>
             <p className="text-xs text-ink-secondary leading-relaxed">
-              Create your account to unlock team creation, generate your teammate invite code, and submit your project.
+              Create your account to form a team, get your invite code, and submit your project.
             </p>
           </div>
 
-          <AuthArtwork className="my-auto" />
+          <div className="my-auto py-2">
+            <PosterArtwork compact className="max-w-[280px]" />
+          </div>
 
-          <div className="space-y-2 text-xs text-ink-secondary">
+          <div className="space-y-1.5 text-xs text-darkRed font-medium">
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={14} className="text-status-success" />
-              <span>Two-member collaborative teams</span>
+              <CheckCircle2 size={13} className="text-vermilion" />
+              <span>Two-member pair programming</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={14} className="text-status-success" />
+              <CheckCircle2 size={13} className="text-vermilion" />
               <span>₹3,000 cash prize pool</span>
             </div>
           </div>
         </div>
 
-        {/* Right Side */}
+        {/* Right Side: Registration Form (Panel 10 Style) */}
         <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center space-y-6">
           <div>
-            <h2 className="text-2xl font-bold text-ink">Participant Registration</h2>
+            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-vermilion uppercase font-bold mb-1">
+              <RhombusMotif size={12} />
+              <span>Participant Portal</span>
+            </div>
+            <h2 className="text-2xl font-bold text-darkRed font-display">Participant Registration</h2>
             <p className="text-xs text-ink-secondary mt-1">
               Join ART//CODE 2026. Fast sign up using OAuth or institutional email.
             </p>
           </div>
 
           {errorMsg && (
-            <div className="p-3 rounded-lg border border-status-error/40 bg-red-50 text-status-error text-xs">
+            <div className="p-3 rounded-xl border border-vermilion/40 bg-vermilion/10 text-vermilion text-xs font-medium">
               {errorMsg}
             </div>
           )}
@@ -122,7 +142,7 @@ export default function RegisterPage() {
             <button
               onClick={() => handleOAuth("google")}
               disabled={isLoading}
-              className="py-2.5 px-3 rounded-xl border border-border bg-white hover:bg-ivory-50 text-ink text-xs font-semibold flex items-center justify-center gap-2 shadow-subtle"
+              className="py-2.5 px-3 rounded-xl border-2 border-mutedGold bg-cream hover:bg-paleCream text-ink text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-subtle"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -148,70 +168,89 @@ export default function RegisterPage() {
             <button
               onClick={() => handleOAuth("github")}
               disabled={isLoading}
-              className="py-2.5 px-3 rounded-xl border border-border bg-ink text-white hover:bg-ink-pure text-xs font-semibold flex items-center justify-center gap-2 shadow-subtle"
+              className="py-2.5 px-3 rounded-xl border border-darkRed bg-darkRed text-cream hover:bg-vermilion text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-subtle"
             >
-              <Github size={15} />
+              <Github size={15} className="text-accentGold" />
               <span>GitHub</span>
             </button>
           </div>
 
           <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-border"></div>
-            <span className="flex-shrink mx-3 text-ink-muted text-[10px] uppercase font-mono tracking-wider">
+            <div className="flex-grow border-t border-mutedGold"></div>
+            <span className="flex-shrink mx-3 text-darkRed text-[10px] uppercase font-mono tracking-widest font-bold">
               Or direct registration
             </span>
-            <div className="flex-grow border-t border-border"></div>
+            <div className="flex-grow border-t border-mutedGold"></div>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">Full Legal Name</label>
+              <label className="block text-xs font-bold text-darkRed mb-1 font-mono uppercase tracking-wider">
+                Full Name *
+              </label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Ananya Nair"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-border bg-ivory-50 text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-terracotta"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">Email Address</label>
+              <label className="block text-xs font-bold text-darkRed mb-1 font-mono uppercase tracking-wider">
+                Email Address *
+              </label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@cce.edu.in"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-border bg-ivory-50 text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-terracotta"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">Institution</label>
+              <label className="block text-xs font-bold text-darkRed mb-1 font-mono uppercase tracking-wider">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+91 98471 00000"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-darkRed mb-1 font-mono uppercase tracking-wider">
+                Institution
+              </label>
               <input
                 type="text"
                 required
                 value={institution}
                 onChange={(e) => setInstitution(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-border bg-ivory-50 text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-terracotta"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 rounded-xl bg-ink text-white text-xs font-semibold hover:bg-ink-pure transition-colors flex items-center justify-center gap-2 pt-2"
+              className="w-full py-3 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors flex items-center justify-center gap-2 shadow-subtle pt-2"
             >
               <span>{isLoading ? "Creating Profile..." : "Register & Set Up Profile"}</span>
-              <ArrowRight size={14} />
+              <ArrowRight size={14} className="text-accentGold" />
             </button>
           </form>
 
           <p className="text-center text-xs text-ink-secondary">
             Already registered?{" "}
-            <Link href="/login" className="text-terracotta font-semibold hover:underline">
+            <Link href="/login" className="text-vermilion font-bold hover:underline">
               Sign In
             </Link>
           </p>
@@ -220,4 +259,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
