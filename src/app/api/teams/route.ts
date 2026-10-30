@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
 import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
 import { TeamRow } from "@/lib/supabase/mappers";
-import { sendEmail, teamCreatedTemplate } from "@/lib/email";
 
 function generateInviteCode(): string {
   return `ART-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -108,14 +107,6 @@ export async function POST(req: NextRequest) {
       "TEAM_CREATED",
       `Created team "${teamRow.name}" (Code: ${teamRow.invitation_code})`
     );
-
-    // Fire-and-forget leader notification
-    try {
-      const t = teamCreatedTemplate(teamRow.name, teamRow.invitation_code);
-      await sendEmail({ to: [session.user.email], subject: t.subject, html: t.html, text: t.text });
-    } catch (e) {
-      console.warn("team created email failed", e);
-    }
 
     return withCookies(NextResponse.json({ success: true, team }), pending);
   } catch (err: any) {
