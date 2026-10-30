@@ -3,6 +3,7 @@ import { createAdminSupabase } from "@/lib/supabase/admin";
 import { getSession, getSettings, loadTeam, logAudit, withCookies } from "@/lib/auth";
 import { mapSubmission, ProblemRow, SubmissionRow } from "@/lib/supabase/mappers";
 import { z } from "zod";
+import { sendEmail, submissionConfirmationTemplate } from "@/lib/email";
 
 const submissionSchema = z.object({
   projectTitle: z.string().min(5, "Project title must be at least 5 characters long"),
@@ -170,6 +171,17 @@ export async function POST(req: NextRequest) {
       "SUBMISSION_FINALIZED",
       `Finalized submission ${refCode} for "${team.name}" (Project: ${submission.projectTitle})`
     );
+
+    // Notify both team members (best-effort, non-blocking)
+    try {
+      const to = team.members.map((m) => m.email).filter(Boolean) as string[];
+      if (to.length > 0) {
+        const tpl = submissionConfirmationTemplate(team.name, submission.projectTitle, refCode);
+        await sendEmail({ to, subject: tpl.subject, html: tpl.html, text: tpl.text });
+      }
+    } catch (e) {
+      console.warn("submission confirmation email failed", e);
+    }
 
     return withCookies(
       NextResponse.json({ success: true, submission, message: "Your project has been officially submitted and locked." }),
