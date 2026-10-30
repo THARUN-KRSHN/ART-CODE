@@ -80,7 +80,7 @@ export default async function HomePage() {
                   <img
                     src="/img/logotype.png"
                     alt="ART // CODE"
-                    className="h-20 sm:h-28 lg:h-32 w-auto select-none"
+                    className="h-24 sm:h-36 lg:h-48 w-auto select-none"
                     draggable={false as any}
                   />
                   <span className="text-[12px] sm:text-[13px] font-mono px-2 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/70 font-semibold">2026</span>
