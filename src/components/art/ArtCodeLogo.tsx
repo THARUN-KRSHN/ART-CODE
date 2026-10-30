@@ -5,7 +5,7 @@ export function ArtCodeLogo({ className = "", compact = false }: { className?: s
   if (compact) {
     return (
       <Link href="/" className={`inline-flex items-center gap-2 group ${className}`}>
-        <img src="/img/logotype.png" alt="ART // CODE" className="h-7 w-auto block opacity-90 group-hover:opacity-100 transition-opacity" />
+        <img src="/img/logotype.png" alt="ART // CODE" className="h-10 md:h-11 w-auto block opacity-90 group-hover:opacity-100 transition-opacity" />
         <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/60 font-semibold">2026</span>
         <span className="sr-only">ART CODE 2026 — DELTA CCE</span>
       </Link>

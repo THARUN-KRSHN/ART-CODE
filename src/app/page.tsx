@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { PosterArtwork } from "@/components/art/PosterArtwork";
 import { ChallengeMotif } from "@/components/art/ChallengeMotif";
 import { RhombusMotif, CulturalDivider } from "@/components/art/CulturalMotifs";
 import { ProblemStatement } from "@/types";
@@ -75,16 +74,17 @@ export default async function HomePage() {
                 <span>DELTA PRESENTS // VIRTUAL HACKATHON</span>
               </div>
 
-              {/* Iconic Display Title from Reference Poster */}
-              <div className="space-y-1">
-                <h1 className="font-display font-black text-5xl sm:text-7xl lg:text-8xl tracking-tight text-ink leading-[0.95]">
-                  <span className="text-vermilion drop-shadow-sm">ART</span>
-                  <span className="text-accentGold font-editorial italic font-normal px-2">//</span>
-                  <br />
-                  <span className="text-darkRed text-4xl sm:text-6xl font-extrabold mr-3">2026</span>
-                  <span className="text-vermilion drop-shadow-sm">CODE</span>
+              {/* Brand Title in Badhorse display style (golden wordmark) */}
+              <div className="space-y-3">
+                <h1 className="font-display font-black text-accentGold text-6xl sm:text-8xl lg:text-9xl leading-[0.9] tracking-tight">
+                  <span>ART</span>
+                  <span className="px-3 align-middle">//</span>
+                  <span>CODE</span>
                 </h1>
-                <p className="font-editorial text-2xl sm:text-3xl text-darkRed italic font-normal pt-2">
+                <div className="inline-flex items-center gap-2">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/70 font-semibold">2026</span>
+                </div>
+                <p className="font-editorial text-2xl sm:text-3xl text-darkRed italic font-normal">
                   WHERE CREATIVITY MEETS TECHNOLOGY.
                 </p>
               </div>
@@ -117,11 +117,11 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Poster Artwork Image */}
+            {/* Right Column: Poster Artwork Image (user-provided) */}
             <div className="lg:col-span-5 flex justify-center">
               <div className="relative w-full max-w-[520px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
                 <img
-                  src="/img/poster.jpg"
+                  src="/img/hero-card.jpg"
                   alt="Classical Indian art figure — cultural inspiration"
                   className="w-full h-auto rounded-xl object-cover"
                 />
