@@ -1,6 +1,6 @@
 -- ART//CODE 2026 Virtual Hackathon Platform
 -- Database schema for Supabase PostgreSQL
--- Organiser: DELTA — Data Science Department Association
+-- Organiser: DELTA - Data Science Department Association
 -- Institution: Christ College of Engineering (Autonomous), Irinjalakuda
 --
 -- Apply with: psql <schema.sql>  (or paste into the Supabase SQL editor)
@@ -195,7 +195,7 @@ create table if not exists public.event_settings (
   id integer primary key check (id = 1),
   event_name text not null default 'ART//CODE 2026',
   tagline text not null default 'Where Creativity Meets Technology.',
-  organiser text not null default 'DELTA — Data Oriented Thinkers'' Association',
+  organiser text not null default 'DELTA - Data Oriented Thinkers'' Association',
   institution text not null default 'Christ College of Engineering (Autonomous), Irinjalakuda',
   department text not null default 'Department of Computer Science and Engineering (Data Science)',
   theme text not null default 'Art, Culture, Heritage & Creative Technology',

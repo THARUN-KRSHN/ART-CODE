@@ -171,6 +171,6 @@ export async function loadTeamFromRow(teamRow: TeamRow): Promise<Team> {
 export async function getSettings(): Promise<EventSettings> {
   const admin = createAdminSupabase();
   const { data } = await admin.from("event_settings").select("*").eq("id", 1).maybeSingle<SettingsRow>();
-  if (!data) throw new Error("Event settings row missing — run supabase/schema.sql + seed.sql");
+  if (!data) throw new Error("Event settings row missing - run supabase/schema.sql + seed.sql");
   return mapSettings(data);
 }

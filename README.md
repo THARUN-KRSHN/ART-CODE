@@ -1,7 +1,7 @@
-# ART//CODE 2026 — Virtual Hackathon Platform
+# ART//CODE 2026 - Virtual Hackathon Platform
 **Where Creativity Meets Technology.**
 
-Organised by **DELTA — Data Science Department Association**  
+Organised by **DELTA - Data Science Department Association**  
 **Christ College of Engineering (Autonomous), Irinjalakuda**  
 **Event Theme:** Art, Culture, Heritage & Creative Technology  
 
@@ -27,11 +27,11 @@ ART//CODE 2026 is a responsive web application designed to manage the complete l
    - **Hero Section**: Editorial split-layout with bespoke exhibition-grade abstract poster SVG (`HeroArtwork`).
    - **4 Key Stat Cards**: Virtual format, strictly 2 members per team, 8 Nov deadline, ₹3,000 cash pool.
    - **5 Curated Problem Statements**:
-     - `CH-01`: Living Archives — Generative AI for Indigenous Mural & Fresco Restoration
-     - `CH-02`: Symphony of Mudras — Real-time Computer Vision for Classical Dance Synthesis
-     - `CH-03`: Kalam & Code — Dynamic Typography Engine for Dravidian Calligraphy
-     - `CH-04`: Woven Geometry — Algorithmic Loom & Pattern Synthesis for Traditional Handloom
-     - `CH-05`: Temple of Resonance — Spatial Audio & Interactive Web AR for Heritage Architecture
+     - `CH-01`: Living Archives - Generative AI for Indigenous Mural & Fresco Restoration
+     - `CH-02`: Symphony of Mudras - Real-time Computer Vision for Classical Dance Synthesis
+     - `CH-03`: Kalam & Code - Dynamic Typography Engine for Dravidian Calligraphy
+     - `CH-04`: Woven Geometry - Algorithmic Loom & Pattern Synthesis for Traditional Handloom
+     - `CH-05`: Temple of Resonance - Spatial Audio & Interactive Web AR for Heritage Architecture
    - **Timeline & Milestones**: Horizontal/vertical milestones with critical deadline callout.
    - **Prizes Section**: 1st (₹1,500), 2nd (₹1,000), 3rd (₹500).
    - **Guidelines & 100-Point Rubric**: Copyable README template, video and presentation specifications, and disqualification criteria.
@@ -99,4 +99,3 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-

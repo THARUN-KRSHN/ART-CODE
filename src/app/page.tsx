@@ -35,7 +35,7 @@ export default async function HomePage() {
   const timelineMilestones = [
     { date: fmt(settings.registrationOpens), title: "Team Registration Opens", desc: "Participant onboarding and two-member team formation commences", status: "active" },
     { date: fmt(settings.submissionOpens), title: "Project Submission Opens", desc: "Teams can begin drafting problem statements and deliverables", status: "upcoming" },
-    { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "11:59 PM IST — Final project locking and confirmation", status: "upcoming", highlight: true },
+    { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "11:59 PM IST - Final project locking and confirmation", status: "upcoming", highlight: true },
     { date: fmt(settings.winnerAnnouncement), title: "Winner Announcement", desc: "Official announcement of results and prize citations", status: "upcoming" },
   ];
 
@@ -76,7 +76,7 @@ export default async function HomePage() {
 
               {/* Brand Title in Badhorse display style (golden wordmark) */}
               <div className="space-y-3">
-                <h1 className="font-display font-black text-accentGold text-6xl sm:text-8xl lg:text-9xl leading-[0.9] tracking-tight">
+                <h1 className="font-display font-black text-accentGold text-6xl sm:text-8xl lg:text-[9rem] leading-[0.9] tracking-tight">
                   <span>ART</span>
                   <span className="px-3 align-middle">//</span>
                   <span>CODE</span>
@@ -122,7 +122,7 @@ export default async function HomePage() {
               <div className="relative w-full max-w-[520px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
                 <img
                   src="/img/hero-card.jpg"
-                  alt="Classical Indian art figure — cultural inspiration"
+                  alt="Classical Indian art figure - cultural inspiration"
                   className="w-full h-auto rounded-xl object-cover"
                 />
               </div>
@@ -191,7 +191,7 @@ export default async function HomePage() {
                   Bringing together student innovators, digital artists, and cultural enthusiasts to reimagine heritage, performing arts, folklore, and traditional craftsmanship through computational intelligence.
                 </p>
                 <p>
-                  Unlike generic hackathons, ART//CODE 2026 asks students to draw inspiration from authentic Indian traditions—from the mineral pigment physics of Kerala frescoes and Kathakali Mudras to Dravidian script ligatures and Kasavu handloom geometry.
+                  Unlike generic hackathons, ART//CODE 2026 asks students to draw inspiration from authentic Indian traditions - from the mineral pigment physics of Kerala frescoes and Kathakali Mudras to Dravidian script ligatures and Kasavu handloom geometry.
                 </p>
               </div>
 

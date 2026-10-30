@@ -4,7 +4,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "ART//CODE 2026 — Virtual Hackathon Platform",
+  title: "ART//CODE 2026 - Virtual Hackathon Platform",
   description:
     "Where Creativity Meets Technology. A virtual hackathon platform by DELTA, Data Science Department Association, Christ College of Engineering (Autonomous), Irinjalakuda.",
   keywords: [

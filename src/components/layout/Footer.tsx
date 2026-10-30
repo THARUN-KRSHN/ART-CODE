@@ -102,7 +102,7 @@ export async function Footer() {
             <p className="text-xs text-cream/80">{settings?.department}</p>
             <p className="text-xs text-cream/80">{settings?.institution}</p>
             <p className="text-xs text-cream/70">
-              Irinjalakuda, Thrissur, Kerala — 680125
+              Irinjalakuda, Thrissur, Kerala - 680125
             </p>
             <p className="text-xs font-mono text-accentGold pt-1">Contact: {settings?.contactEmail || "delta@cce.edu.in"}</p>
             <div className="flex items-center gap-4 pt-3">

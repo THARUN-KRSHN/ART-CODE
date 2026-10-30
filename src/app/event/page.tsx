@@ -47,7 +47,7 @@ export default function EventPage() {
             ART//CODE 2026 is grounded in the conviction that indigenous art forms—from the mineral pigment chemistry of Kerala temple murals to classical dance Mudras and ancient scripts—embody sophisticated mathematical and physical principles.
           </p>
           <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
-            Organised by DELTA (Department of Computer Science and Engineering — Data Science) at Christ College of Engineering (Autonomous), Irinjalakuda, this platform challenges students to apply computer vision, machine learning, generative design, and spatial audio to preserve, document, and celebrate living cultural heritage.
+            Organised by DELTA (Department of Computer Science and Engineering - Data Science) at Christ College of Engineering (Autonomous), Irinjalakuda, this platform challenges students to apply computer vision, machine learning, generative design, and spatial audio to preserve, document, and celebrate living cultural heritage.
           </p>
         </section>
 
@@ -117,7 +117,7 @@ export default function EventPage() {
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <span className="font-bold text-darkRed">Organising Body</span>
               <span className="sm:col-span-2 text-ink">
-                DELTA — Department of Computer Science and Engineering (Data Science)
+                DELTA - Department of Computer Science and Engineering (Data Science)
               </span>
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
