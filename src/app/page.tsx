@@ -4,6 +4,7 @@ import { PosterArtwork } from "@/components/art/PosterArtwork";
 import { ChallengeMotif } from "@/components/art/ChallengeMotif";
 import { RhombusMotif, CulturalDivider } from "@/components/art/CulturalMotifs";
 import { ProblemStatement } from "@/types";
+import { headers } from "next/headers";
 // Data fetched from real database via API routes (no build-time JSON)
 import {
   Calendar,
@@ -18,9 +19,14 @@ import {
 } from "lucide-react";
 
 export default async function HomePage() {
+  const h = headers();
+  const host = h.get("x-forwarded-host") || h.get("host");
+  const proto = h.get("x-forwarded-proto") || "https";
+  const base = `${proto}://${host}`;
+
   const [settingsRes, challengesRes] = await Promise.all([
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/settings`, { cache: "no-store" }).catch(() => fetch(`/api/settings`, { cache: "no-store" })),
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/challenges`, { cache: "no-store" }).catch(() => fetch(`/api/challenges`, { cache: "no-store" })),
+    fetch(`${base}/api/settings`, { cache: "no-store" }),
+    fetch(`${base}/api/challenges`, { cache: "no-store" }),
   ]);
   const { settings } = await settingsRes.json();
   const cj = await challengesRes.json();

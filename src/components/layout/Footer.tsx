@@ -1,9 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
+import { headers } from "next/headers";
 
 export async function Footer() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/settings`, { cache: "no-store" }).catch(() => fetch(`/api/settings`, { cache: "no-store" }));
+  const h = headers();
+  const host = h.get("x-forwarded-host") || h.get("host");
+  const proto = h.get("x-forwarded-proto") || "https";
+  const base = `${proto}://${host}`;
+  const res = await fetch(`${base}/api/settings`, { cache: "no-store" });
   const { settings } = await res.json();
   return (
     <footer className="border-t-2 border-mutedGold bg-darkRed text-cream pt-14 pb-12">
