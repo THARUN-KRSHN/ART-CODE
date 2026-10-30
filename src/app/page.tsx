@@ -74,15 +74,16 @@ export default async function HomePage() {
                 <span>DELTA PRESENTS // VIRTUAL HACKATHON</span>
               </div>
 
-              {/* Brand Title in Badhorse display style (golden wordmark) */}
-              <div className="space-y-3">
-                <h1 className="font-display font-black text-accentGold text-6xl sm:text-8xl lg:text-[9rem] leading-[0.9] tracking-tight">
-                  <span>ART</span>
-                  <span className="px-3 align-middle">//</span>
-                  <span>CODE</span>
-                </h1>
-                <div className="inline-flex items-center gap-2">
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/70 font-semibold">2026</span>
+              {/* Brand Title as image + year */}
+              <div className="space-y-4">
+                <div className="flex items-end gap-3">
+                  <img
+                    src="/img/logotype.png"
+                    alt="ART // CODE"
+                    className="h-20 sm:h-28 lg:h-32 w-auto select-none"
+                    draggable={false as any}
+                  />
+                  <span className="text-[12px] sm:text-[13px] font-mono px-2 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/70 font-semibold">2026</span>
                 </div>
                 <p className="font-editorial text-2xl sm:text-3xl text-darkRed italic font-normal">
                   WHERE CREATIVITY MEETS TECHNOLOGY.
@@ -119,7 +120,7 @@ export default async function HomePage() {
 
             {/* Right Column: Poster Artwork Image (user-provided) */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-[520px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
+              <div className="relative w-full max-w-[420px] md:max-w-[440px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
                 <img
                   src="/img/hero-card.jpg"
                   alt="Classical Indian art figure - cultural inspiration"
