@@ -117,9 +117,15 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Poster Artwork (Kathakali / Theyyam Performer) */}
+            {/* Right Column: Poster Artwork Image */}
             <div className="lg:col-span-5 flex justify-center">
-              <PosterArtwork />
+              <div className="relative w-full max-w-[520px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
+                <img
+                  src="/img/poster.jpg"
+                  alt="Classical Indian art figure — cultural inspiration"
+                  className="w-full h-auto rounded-xl object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>

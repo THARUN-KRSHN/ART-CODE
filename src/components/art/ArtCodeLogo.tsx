@@ -5,22 +5,9 @@ export function ArtCodeLogo({ className = "", compact = false }: { className?: s
   if (compact) {
     return (
       <Link href="/" className={`inline-flex items-center gap-2 group ${className}`}>
-        <div className="w-8 h-8 rounded-lg bg-vermilion flex items-center justify-center text-accentGold font-bold font-serif text-sm tracking-tighter shadow-subtle group-hover:bg-darkRed transition-colors">
-          //
-        </div>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-1.5 font-display text-lg font-bold tracking-tight text-ink leading-none">
-            <span className="text-vermilion">ART</span>
-            <span className="text-accentGold font-normal italic px-0.5">//</span>
-            <span>CODE</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/60 font-semibold">
-              2026
-            </span>
-          </div>
-          <span className="text-[9px] font-mono tracking-widest text-ink-muted uppercase">
-            DELTA • CCE
-          </span>
-        </div>
+        <img src="/img/logotype.png" alt="ART // CODE" className="h-7 w-auto block opacity-90 group-hover:opacity-100 transition-opacity" />
+        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-paleCream text-darkRed border border-mutedGold/60 font-semibold">2026</span>
+        <span className="sr-only">ART CODE 2026 — DELTA CCE</span>
       </Link>
     );
   }
@@ -42,4 +29,3 @@ export function ArtCodeLogo({ className = "", compact = false }: { className?: s
     </div>
   );
 }
-
