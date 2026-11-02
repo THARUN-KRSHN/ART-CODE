@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PosterArtwork } from "@/components/art/PosterArtwork";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
 import { Github, ArrowRight, CheckCircle2 } from "lucide-react";
 
@@ -91,8 +90,14 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <div className="my-auto py-2">
-            <PosterArtwork compact className="max-w-[280px]" />
+          <div className="my-auto py-2 flex justify-center">
+            <div className="relative w-full max-w-[280px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
+              <img
+                src="/img/hero-card.jpg"
+                alt="Classical Indian art figure - cultural inspiration"
+                className="w-full h-auto rounded-xl object-cover"
+              />
+            </div>
           </div>
 
           <div className="space-y-1.5 text-xs text-darkRed font-medium">
