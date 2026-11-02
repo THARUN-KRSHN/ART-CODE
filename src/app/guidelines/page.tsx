@@ -35,7 +35,7 @@ export default function GuidelinesPage() {
     { id: "sec-presentation", label: "7. Presentation Requirements" },
     { id: "sec-video", label: "8. Demo Video Requirements" },
     { id: "sec-rubric", label: "9. Judging & Scoring Rubric" },
-    { id: "sec-prizes", label: "10. Prizes & Citations" },
+    { id: "sec-prizes", label: "10. Prizes & Awards" },
     { id: "sec-disqualification", label: "11. Disqualification Conditions" },
     { id: "sec-contact", label: "12. Contact & Organisers" },
   ];

@@ -109,6 +109,10 @@ export default function RegisterPage() {
               <CheckCircle2 size={13} className="text-vermilion" />
               <span>₹3,000 cash prize pool</span>
             </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={13} className="text-vermilion" />
+              <span>Participation certificates for all</span>
+            </div>
           </div>
         </div>
 

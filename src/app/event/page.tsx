@@ -140,7 +140,7 @@ export default function EventPage() {
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <span className="font-bold text-darkRed">Prizes</span>
-              <span className="sm:col-span-2 text-ink font-semibold">₹3,000 Total Pool (₹1,500 1st • ₹1,000 2nd • ₹500 3rd)</span>
+              <span className="sm:col-span-2 text-ink font-semibold">₹3,000 Total Pool (₹1,500 1st • ₹1,000 2nd • ₹500 3rd) • Participation certificates for all</span>
             </div>
           </div>
         </section>

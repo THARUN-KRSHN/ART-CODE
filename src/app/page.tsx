@@ -36,7 +36,7 @@ export default async function HomePage() {
     { date: fmt(settings.registrationOpens), title: "Team Registration Opens", desc: "Participant onboarding and two-member team formation commences", status: "active" },
     { date: fmt(settings.submissionOpens), title: "Project Submission Opens", desc: "Teams can begin drafting problem statements and deliverables", status: "upcoming" },
     { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "11:59 PM IST - Final project locking and confirmation", status: "upcoming", highlight: true },
-    { date: fmt(settings.winnerAnnouncement), title: "Winner Announcement", desc: "Official announcement of results and prize citations", status: "upcoming" },
+    { date: fmt(settings.winnerAnnouncement), title: "Winner Announcement", desc: "Official announcement of results and prize distribution", status: "upcoming" },
   ];
 
   const faqs = [
@@ -160,7 +160,7 @@ export default async function HomePage() {
               </div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-darkRed font-semibold">Prize Pool</div>
               <div className="text-lg font-bold text-ink mt-0.5">{settings.totalPrizePool} Cash Pool</div>
-              <div className="text-xs text-ink-secondary mt-1">Plus participation certificates</div>
+              <div className="text-xs text-ink-secondary mt-1">Participation certificates for all</div>
             </div>
 
             <div className="p-6 rounded-card border-2 border-mutedGold bg-cream shadow-subtle flex flex-col justify-between">
@@ -343,7 +343,7 @@ export default async function HomePage() {
               Prizes & Merit Awards
             </h2>
             <p className="text-xs sm:text-sm text-ink-secondary">
-              Total prize pool of ₹3,000 along with participation certificates for eligible participants.
+              Total prize pool of ₹3,000. Every participant also receives a participation certificate.
             </p>
           </div>
 
@@ -369,18 +369,14 @@ export default async function HomePage() {
                 Grand Winner
               </div>
               <div>
-                <div className="w-12 h-12 rounded-full bg-accentGold/20 text-vermilion mx-auto flex items-center justify-center mb-2 mt-2">
-                  <Award size={26} />
-                </div>
                 <div className="text-xs font-mono uppercase tracking-widest text-vermilion font-bold">1st Place</div>
                 <div className="font-editorial text-5xl font-black text-vermilion mt-2">₹1,500</div>
-                <div className="text-xs font-bold text-darkRed mt-1">Gold Citation & Certificate</div>
                 <p className="text-xs text-ink-secondary mt-4 leading-relaxed">
                   Best overall hackathon project evaluated across Innovation, Implementation, Cultural Relevance, UX, and Impact.
                 </p>
               </div>
               <div className="pt-6 border-t border-mutedGold mt-6 text-[11px] font-mono text-vermilion font-bold">
-                Gold Citation & Trophy
+                Official DELTA Certificate
               </div>
             </div>
 

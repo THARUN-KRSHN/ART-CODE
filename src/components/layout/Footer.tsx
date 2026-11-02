@@ -56,7 +56,7 @@ export async function Footer() {
               </li>
               <li>
                 <Link href="/#prizes" className="hover:text-accentGold transition-colors">
-                  Prizes & Citations
+                  Prizes & Awards
                 </Link>
               </li>
             </ul>

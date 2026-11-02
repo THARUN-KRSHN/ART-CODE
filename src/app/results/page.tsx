@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { EventSettings, WinnerResult } from "@/types";
 import { CulturalDivider } from "@/components/art/CulturalMotifs";
-import { Award, Clock, ArrowLeft, Sparkles, Trophy, Medal } from "lucide-react";
+import { Award, Clock, ArrowLeft, Sparkles, Medal } from "lucide-react";
 
 export default function ResultsPage() {
   const [settings, setSettings] = useState<EventSettings | null>(null);
@@ -126,10 +126,10 @@ export default function ResultsPage() {
               ★ Grand Winner ★
             </div>
             <div className="w-16 h-16 rounded-full bg-accentGold/20 border-2 border-accentGold mx-auto flex items-center justify-center text-vermilion shadow-sm">
-              <Trophy size={32} />
+              <Award size={32} />
             </div>
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-vermilion block">
-              1st Place // Gold Citation
+              1st Place // Winner
             </span>
             <div className="font-editorial text-5xl font-bold text-vermilion">
               {byRank(1)?.prizeAmount}
@@ -143,7 +143,7 @@ export default function ResultsPage() {
                 {(byRank(1)?.members || []).join(', ')}
               </div>
               <div className="text-[10px] text-darkRed font-mono font-bold pt-1">
-                {byRank(1)?.score ? `Score: ${byRank(1)?.score} / 100 • Gold Citation & Certificate` : 'Gold Citation & Certificate'}
+                {byRank(1)?.score ? `Score: ${byRank(1)?.score} / 100 • Official DELTA Certificate` : 'Official DELTA Certificate'}
               </div>
             </div>
           </div>
