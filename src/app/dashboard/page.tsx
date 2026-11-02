@@ -215,7 +215,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-ink-secondary">
                     {submission?.referenceId
                       ? `Ref: ${submission.referenceId}`
-                      : "Submission portal opens 30 October 2026"}
+                      : "Submission portal opens 6 November 2026"}
                   </p>
                 </div>
 
@@ -242,14 +242,14 @@ export default function DashboardPage() {
                       11:59 PM IST
                     </span>
                   </div>
-                  <div className="text-xl font-bold text-vermilion pt-2">8 Nov 2026</div>
+                  <div className="text-xl font-bold text-vermilion pt-2">10 Nov 2026</div>
                   <p className="text-xs text-ink-secondary">
                     Submission Gateway Hard Stop. All participant editing locks permanently.
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-mutedGold/60 text-xs font-mono text-darkRed font-bold">
-                  Time Remaining: ~10 Days
+                  Time Remaining: ~8 Days
                 </div>
               </div>
             </div>

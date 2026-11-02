@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 let cached: SupabaseClient | null = null;
 
 /**
- * Service-role client. Bypasses RLS — server-side use only.
+ * Service-role client. Bypasses RLS. Server-side use only.
  * Never import from client components.
  */
 export function createAdminSupabase(): SupabaseClient {

@@ -25,7 +25,7 @@ ART//CODE 2026 is a responsive web application designed to manage the complete l
 
 1. **Public Website (`/`, `/event`, `/challenges`, `/guidelines`, `/results`)**
    - **Hero Section**: Editorial split-layout with bespoke exhibition-grade abstract poster SVG (`HeroArtwork`).
-   - **4 Key Stat Cards**: Virtual format, strictly 2 members per team, 8 Nov deadline, ₹3,000 cash pool.
+   - **4 Key Stat Cards**: Virtual format, strictly 2 members per team, 10 Nov deadline, ₹3,000 cash pool.
    - **5 Curated Problem Statements**:
      - `CH-01`: Living Archives - Generative AI for Indigenous Mural & Fresco Restoration
      - `CH-02`: Symphony of Mudras - Real-time Computer Vision for Classical Dance Synthesis

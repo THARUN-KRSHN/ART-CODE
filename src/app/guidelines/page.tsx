@@ -145,11 +145,11 @@ export default function GuidelinesPage() {
             <section id="sec-development" className="p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4 scroll-mt-24">
               <h2 className="text-xl font-bold text-darkRed font-display">3. Project Development Window</h2>
               <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
-                All development must occur during the official hackathon window (30 October 2026 – 8 November 2026).
+                All development must occur during the official hackathon window (3 November 2026 – 10 November 2026).
               </p>
               <div className="p-4 rounded-xl border-2 border-vermilion bg-cream text-xs text-darkRed font-mono space-y-1">
                 <div className="font-bold uppercase tracking-wider text-vermilion">Submission Hard Stop:</div>
-                <div className="text-sm font-bold">8 November 2026, 11:59 PM IST (Indian Standard Time)</div>
+                <div className="text-sm font-bold">10 November 2026, 11:59 PM IST (Indian Standard Time)</div>
                 <div className="text-[11px] text-ink-secondary">Late submissions will not be received by the platform gateway.</div>
               </div>
             </section>

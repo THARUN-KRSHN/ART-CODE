@@ -52,7 +52,7 @@ export default function AdminOverviewPage() {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs font-mono px-3.5 py-1.5 rounded-xl bg-cream border border-mutedGold/70 text-darkRed font-bold">
-            Deadline: 8 Nov 2026, 11:59 PM IST
+            Deadline: 10 Nov 2026, 11:59 PM IST
           </span>
         </div>
       </div>

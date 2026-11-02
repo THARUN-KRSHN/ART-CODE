@@ -1,14 +1,14 @@
--- ART//CODE 2026 — seed data
+-- ART//CODE 2026 seed data
 -- 5 official problem statements + event settings defaults.
 -- Safe to re-run (upserts). Contains no user accounts.
 
 insert into public.event_settings (id) values (1) on conflict (id) do nothing;
 
 update public.event_settings set
-  registration_opens   = '2026-10-31T00:00:00+05:30',
-  submission_opens     = '2026-11-01T00:00:00+05:30',
-  submission_deadline  = '2026-11-08T23:59:59+05:30',
-  winner_announcement  = '2026-11-14T18:00:00+05:30',
+  registration_opens   = '2026-11-03T00:00:00+05:30',
+  submission_opens     = '2026-11-06T00:00:00+05:30',
+  submission_deadline  = '2026-11-10T23:59:59+05:30',
+  winner_announcement  = '2026-11-15T18:00:00+05:30',
   team_size            = 2,
   total_prize_pool     = '₹3,000',
   first_prize          = '₹1,500',
@@ -34,7 +34,7 @@ insert into public.problem_statements (
   'Beginner–Intermediate',
   'Heritage & AI',
   'vermilion',
-  'A community-centred digital platform where people document, organise, search, and learn about living cultural heritage — with origin, language, creator, and community context always attached.',
+  'A community-centred digital platform where people document, organise, search, and learn about living cultural heritage, with origin, language, creator, and community context always attached.',
   'Traditional stories, folk songs, craft techniques, regional customs, local art forms, and oral histories are often documented inconsistently or scattered across different platforms. Important context can be lost when this knowledge is recorded without information about its origin, language, creator, or community.',
   'Develop a community-centred digital platform that enables people to document, organise, search, and learn about living cultural heritage while respecting the knowledge holders and their permissions.',
   '["Upload text, images, audio recordings, or short videos.", "Add metadata such as art form, language, region, contributor, and date.", "Browse and search stories by category and location.", "Include contributor attribution and consent settings.", "Allow authorised reviewers to approve, correct, or remove entries."]',
@@ -69,7 +69,7 @@ insert into public.problem_statements (
   'Beginner–Intermediate',
   'Digital Craftsmanship',
   'gold',
-  'A lightweight digital showcase that helps a traditional artist build a professional online identity and share the story behind their work — without needing advanced digital skills.',
+  'A lightweight digital showcase that helps a traditional artist build a professional online identity and share the story behind their work without needing advanced digital skills.',
   'Traditional artists and small artisan communities can struggle to present their work professionally online, explain the cultural significance of their creations, and help interested people discover or contact them. Simply posting photographs on social media may not provide a consistent, searchable portfolio of the artist''s work and background.',
   'Build a lightweight digital showcase that helps an artist create a professional online identity and share the story behind their work without requiring advanced digital skills.',
   '["A simple artist profile with biography, location, and art form.", "A gallery of artworks and craft products.", "Shareable artwork cards with artist attribution and cultural context.", "Templates for creating social-media captions in English and a selected regional language.", "A contact or commission enquiry form.", "A mobile-friendly portfolio that can be shared through a link or QR code."]',

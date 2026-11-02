@@ -160,7 +160,7 @@ export default function SubmissionConfirmationPage() {
           </p>
           <p className="text-darkRed font-bold flex items-center justify-center gap-1.5">
             <Sparkles size={13} className="text-accentGold" />
-            <span>Winner announcement will be published on 14 November 2026.</span>
+            <span>Winner announcement will be published on 15 November 2026.</span>
           </p>
         </div>
 

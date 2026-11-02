@@ -229,7 +229,7 @@ export default function TeamWorkspacePage() {
                   <RhombusMotif size={12} color="#A32516" />
                   <span>Project Submission Status</span>
                 </h2>
-                <span className="text-xs font-mono text-darkRed font-semibold">Deadline: 8 Nov 2026</span>
+                <span className="text-xs font-mono text-darkRed font-semibold">Deadline: 10 Nov 2026</span>
               </div>
 
               {submission ? (
@@ -327,7 +327,7 @@ export default function TeamWorkspacePage() {
               </div>
               <div className="text-sm font-bold text-darkRed">Submission Hard Stop</div>
               <p className="text-xs text-ink-secondary">
-                8 November 2026, 11:59 PM IST. Ensure both members and deliverables are confirmed well in advance.
+                10 November 2026, 11:59 PM IST. Ensure both members and deliverables are confirmed well in advance.
               </p>
             </div>
           </div>
