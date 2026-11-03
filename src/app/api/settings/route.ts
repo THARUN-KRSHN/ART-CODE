@@ -15,6 +15,8 @@ export async function GET() {
           registrationOpens: ScheduleISO.registrationOpens,
           submissionOpens: ScheduleISO.submissionOpens,
           submissionDeadline: ScheduleISO.submissionDeadline,
+          top8Announcement: ScheduleISO.top8Announcement,
+          presentationDay: ScheduleISO.presentationDay,
           winnerAnnouncement: ScheduleISO.winnerAnnouncement,
         },
       });
@@ -30,6 +32,8 @@ export async function GET() {
         registrationOpens: ScheduleISO.registrationOpens,
         submissionOpens: ScheduleISO.submissionOpens,
         submissionDeadline: ScheduleISO.submissionDeadline,
+        top8Announcement: ScheduleISO.top8Announcement,
+        presentationDay: ScheduleISO.presentationDay,
         winnerAnnouncement: ScheduleISO.winnerAnnouncement,
       },
     });
@@ -40,6 +44,8 @@ export async function GET() {
         registrationOpens: ScheduleISO.registrationOpens,
         submissionOpens: ScheduleISO.submissionOpens,
         submissionDeadline: ScheduleISO.submissionDeadline,
+        top8Announcement: ScheduleISO.top8Announcement,
+        presentationDay: ScheduleISO.presentationDay,
         winnerAnnouncement: ScheduleISO.winnerAnnouncement,
       },
     });

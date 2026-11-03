@@ -11,6 +11,8 @@ export const MOCK_EVENT_SETTINGS: EventSettings = {
   registrationOpens: ScheduleISO.registrationOpens,
   submissionOpens: ScheduleISO.submissionOpens,
   submissionDeadline: ScheduleISO.submissionDeadline,
+  top8Announcement: ScheduleISO.top8Announcement,
+  presentationDay: ScheduleISO.presentationDay,
   winnerAnnouncement: ScheduleISO.winnerAnnouncement,
   teamSize: 2,
   firstPrize: "₹1,500",

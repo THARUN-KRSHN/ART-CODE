@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
     if (body.registrationOpens) patch.registration_opens = new Date(body.registrationOpens).toISOString();
     if (body.submissionOpens) patch.submission_opens = new Date(body.submissionOpens).toISOString();
     if (body.submissionDeadline) patch.submission_deadline = new Date(body.submissionDeadline).toISOString();
+    if (body.top8Announcement) patch.top8_announcement = new Date(body.top8Announcement).toISOString();
+    if (body.presentationDay) patch.presentation_day = new Date(body.presentationDay).toISOString();
     if (body.winnerAnnouncement) patch.winner_announcement = new Date(body.winnerAnnouncement).toISOString();
     if (typeof body.teamSize === "number") patch.team_size = body.teamSize;
     if (body.firstPrize) patch.first_prize = String(body.firstPrize);

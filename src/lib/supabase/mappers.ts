@@ -122,6 +122,8 @@ export interface SettingsRow {
   registration_opens: string;
   submission_opens: string;
   submission_deadline: string;
+  top8_announcement?: string;
+  presentation_day?: string;
   winner_announcement: string;
   team_size: number;
   first_prize: string;
@@ -274,6 +276,8 @@ export function mapSettings(row: SettingsRow): EventSettings {
     registrationOpens: row.registration_opens,
     submissionOpens: row.submission_opens,
     submissionDeadline: row.submission_deadline,
+    top8Announcement: row.top8_announcement,
+    presentationDay: row.presentation_day,
     winnerAnnouncement: row.winner_announcement,
     teamSize: row.team_size,
     firstPrize: row.first_prize,

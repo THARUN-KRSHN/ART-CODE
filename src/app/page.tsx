@@ -18,6 +18,7 @@ import {
   Shield,
   FileCode,
 } from "lucide-react";
+import { ScheduleISO } from "@/lib/event-schedule";
 
 export default async function HomePage() {
   const h = headers();
@@ -38,6 +39,8 @@ export default async function HomePage() {
     { date: fmt(settings.registrationOpens), title: "Team Registration Opens", desc: "Participant onboarding and two-member team formation commences", status: "active" },
     { date: fmt(settings.submissionOpens), title: "Project Submission Opens", desc: "Teams can begin drafting problem statements and deliverables", status: "upcoming" },
     { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "11:59 PM IST - Final project locking and confirmation", status: "upcoming", highlight: true },
+    { date: fmt(settings.top8Announcement || ScheduleISO.top8Announcement), title: "Top 8 Teams Announced", desc: "Shortlist published for final presentations", status: "upcoming" },
+    { date: fmt(settings.presentationDay || ScheduleISO.presentationDay), title: "Presentation Day", desc: "Presentations with Resource Person Judge", status: "upcoming" },
     { date: fmt(settings.winnerAnnouncement), title: "Winner Announcement", desc: "Official announcement of results and prize distribution", status: "upcoming" },
   ];
 

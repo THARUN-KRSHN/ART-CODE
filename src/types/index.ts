@@ -115,6 +115,8 @@ export interface EventSettings {
   registrationOpens: string;
   submissionOpens: string;
   submissionDeadline: string;
+  top8Announcement?: string;
+  presentationDay?: string;
   winnerAnnouncement: string;
   teamSize: number;
   firstPrize: string;
