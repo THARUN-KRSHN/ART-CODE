@@ -99,3 +99,18 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Hero figure and ink aura
+
+The homepage uses the transparent cutout at `public/img/hero-figure.webp`.
+
+- **Primary controls:** edit the exported constants at the top of `src/components/art/InkAura.tsx`: `INTRO_DURATION` (7000ms), `STRING_COUNT` (72), `STRING_MIN_WIDTH` (1.5px), `STRING_MAX_WIDTH` (3.5px), `STREAM_COUNT` (12), `STREAM_OPACITY_NEAR` (0.55), and `STREAM_OPACITY_FAR` (0.125). Mobile uses half of both counts. Fifteen percent of strings can reach 5px before tapering.
+- **Palette and continuous speed:** `AURA_CONFIG` retains the 60% ink / 40% paint mix and 0.3× string parallax. `speed: 0.5` halves the continuous motion without changing the intro duration. Its six paint colors also color the waterfall.
+- **Waterfall shape:** `STREAM_CONFIG` controls 0.85× stream parallax, 30–140px ribbon widths, and 12–20s flow cycles. Tiny pre-rendered feathered pigment sprites avoid per-frame blur filters on desktop and mobile.
+- **Attachment points:** `ANCHORS` in the same file are normalized image coordinates for the hair, hands, saree and ribbons. Every strand remains connected to one of these points.
+- **Optional ripple:** set `ENABLE_RIPPLE = false` in `src/components/art/HeroFigure.tsx` to remove the SVG filter entirely. It is automatically disabled below 768px and for reduced motion.
+- **Figure size, hem dissolve and animations:** edit `.hero-figure`, the image mask (opaque through 78%, transparent at 100%), and the `hf-*` keyframes in `src/app/globals.css` (520px desktop, up to 360px mobile).
+
+The dependency-free canvas shares one animation clock and one 0–1 intro progress value for strings and waterfall. Strings unfurl over roughly 6s; staggered streams start around 1.5s and reach the footer by 7s. The intro runs on the initial homepage document load only, not on client-side navigation. Content is immediately visible throughout.
+
+The canvas is viewport-sized, caps device pixel ratio at 2, pauses in hidden tabs, draws only visible stream rows, and protects text and solid cards using a cached feathered viewport mask. Reduced motion skips the intro and renders the final composition statically; scrolling only repositions that drawing. The effect covers the homepage through its shared footer and is removed on navigation to other routes.

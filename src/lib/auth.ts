@@ -84,15 +84,19 @@ export async function resolveSessionForAuthUser(
  * queued cookies must be attached to the outgoing response).
  */
 export async function getSession(): Promise<{ session: SessionContext | null; pending: PendingCookie[] }> {
-  const { supabase, pending } = createRouteSupabase();
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
+  try {
+    const { supabase, pending } = createRouteSupabase();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
 
-  if (!authUser) return { session: null, pending };
+    if (!authUser) return { session: null, pending };
 
-  const session = await resolveSessionForAuthUser(authUser, pending);
-  return { session, pending };
+    const session = await resolveSessionForAuthUser(authUser, pending);
+    return { session, pending };
+  } catch {
+    return { session: null, pending: [] };
+  }
 }
 
 export function unauthorized(message = "Unauthorized"): NextResponse {

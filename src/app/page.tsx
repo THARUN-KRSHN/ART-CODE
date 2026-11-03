@@ -4,6 +4,8 @@ import { ChallengeMotif } from "@/components/art/ChallengeMotif";
 import { RhombusMotif, CulturalDivider } from "@/components/art/CulturalMotifs";
 import { ProblemStatement } from "@/types";
 import { headers } from "next/headers";
+import { HeroFigure } from "@/components/art/HeroFigure";
+import { InkAura } from "@/components/art/InkAura";
 // Data fetched from real database via API routes (no build-time JSON)
 import {
   Calendar,
@@ -59,16 +61,17 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-cream text-ink">
+    <div className="artcode-home flex flex-col min-h-screen bg-cream text-ink">
+      <InkAura />
       {/* 1. HERO SECTION (Panel 04 Layout) */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-24 border-b-2 border-mutedGold bg-gradient-to-b from-cream via-paleCream/60 to-cream">
+      <section className="relative pt-12 pb-20 md:pt-16 md:pb-24 border-b-2 border-mutedGold bg-gradient-to-b from-cream via-paleCream/60 to-cream">
         {/* Subtle traditional Indian pattern texture */}
         <div className="absolute inset-0 bg-cultural-pattern opacity-15 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="hero-copy lg:col-span-7 space-y-6 text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-paleCream border border-mutedGold text-xs font-mono font-bold tracking-widest text-vermilion uppercase shadow-subtle">
                 <span className="text-accentGold">Δ</span>
                 <span>DELTA PRESENTS // VIRTUAL HACKATHON</span>
@@ -118,15 +121,9 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Poster Artwork Image (user-provided) */}
+            {/* Unframed cutout; its linework continues into the page-wide aura. */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-[420px] md:max-w-[440px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
-                <img
-                  src="/img/hero-card.jpg"
-                  alt="Classical Indian art figure - cultural inspiration"
-                  className="w-full h-auto rounded-xl object-cover"
-                />
-              </div>
+              <HeroFigure />
             </div>
           </div>
         </div>
@@ -509,7 +506,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9. FINAL CALL TO ACTION (Full-width Vermilion Banner as specified in Section 4) */}
-      <section className="py-20 bg-vermilion text-cream text-center relative overflow-hidden">
+      <section className="home-cta py-20 bg-vermilion text-cream text-center relative">
         <div className="absolute inset-0 bg-ornate-weave opacity-10 pointer-events-none" />
 
         <div className="max-w-3xl mx-auto px-4 relative z-10 space-y-6">

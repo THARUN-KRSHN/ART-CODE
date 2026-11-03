@@ -6,6 +6,10 @@ let cached: SupabaseClient | null = null;
  * Service-role client. Bypasses RLS. Server-side use only.
  * Never import from client components.
  */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SECRET_KEY);
+}
+
 export function createAdminSupabase(): SupabaseClient {
   if (cached) return cached;
 

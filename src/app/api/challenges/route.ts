@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
-import { createAdminSupabase } from "@/lib/supabase/admin";
+import { createAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { mapProblem, ProblemRow } from "@/lib/supabase/mappers";
+import { MOCK_CHALLENGES } from "@/lib/mock-data";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ challenges: MOCK_CHALLENGES });
+    }
+
     const admin = createAdminSupabase();
     const { data, error } = await admin
       .from("problem_statements")
@@ -17,6 +22,6 @@ export async function GET() {
 
     return NextResponse.json({ challenges: (data || []).map((row) => mapProblem(row as ProblemRow)) });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ challenges: MOCK_CHALLENGES });
   }
 }

@@ -94,3 +94,97 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #A32516;
 }
+
+/* One document-space drawing, viewport-sized for memory/performance.
+   Only content/cards sit above it; section boundaries never clip the threads. */
+body:has(.artcode-home) { isolation: isolate; }
+.artcode-home > section {
+  overflow: visible;
+  background-color: transparent;
+  background-image: none;
+}
+.artcode-home > .home-cta { background-color: rgb(163 37 22 / 92%); }
+.ink-aura {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.artcode-home > section > :not(.hero-content):not(.pointer-events-none),
+body:has(.artcode-home) footer > div,
+.hero-copy {
+  position: relative;
+  z-index: 2;
+}
+.hero-figure {
+  position: relative;
+  z-index: 2;
+  width: min(520px, 90vw);
+  flex-shrink: 0;
+  aspect-ratio: 760 / 1155;
+}
+.hero-figure__halo {
+  position: absolute;
+  inset: 8% -6% 4%;
+  background: radial-gradient(closest-side at 55% 45%, rgba(255,168,40,.28), transparent 70%),
+    radial-gradient(closest-side at 35% 70%, rgba(214,40,110,.18), transparent 70%);
+  filter: blur(30px);
+  animation: hf-halo 7s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-figure__art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  transform-origin: 50% 90%;
+  animation: hf-float 8s ease-in-out infinite;
+}
+.hero-figure[data-ripple="true"] .hero-figure__art { filter: url(#hf-ripple); }
+.hero-figure__filter { position: absolute; pointer-events: none; }
+.hero-figure__flecks { position: absolute; inset: 0; pointer-events: none; }
+.hero-figure__flecks span {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: hf-drift var(--duration, 9s) ease-in-out var(--delay, 0s) infinite;
+}
+.hero-figure__flecks span:nth-child(1) { left: 12%; top: 70%; width: 9px; height: 9px; background: #e8a317; }
+.hero-figure__flecks span:nth-child(2) { left: 80%; top: 62%; width: 6px; height: 6px; background: #d6286e; --duration: 11s; --delay: 2s; }
+.hero-figure__flecks span:nth-child(3) { left: 22%; top: 38%; width: 5px; height: 5px; background: #2a8fc4; --duration: 10s; --delay: 4s; }
+.hero-figure__flecks span:nth-child(4) { left: 70%; top: 25%; width: 8px; height: 8px; background: #f08a1c; --duration: 12s; --delay: 1s; }
+.hero-figure__flecks span:nth-child(5) { left: 8%; top: 52%; width: 4px; height: 4px; background: #d6286e; --duration: 8s; --delay: 5s; }
+.hero-figure__flecks span:nth-child(6) { left: 88%; top: 44%; width: 5px; height: 5px; background: #e8a317; --duration: 13s; --delay: 3s; }
+.hero-figure.is-paused .hero-figure__art,
+.hero-figure.is-paused .hero-figure__halo,
+.hero-figure.is-paused .hero-figure__flecks span { animation-play-state: paused; }
+.hero-figure.is-paused .hero-figure__art { filter: none; }
+@keyframes hf-float {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  35% { transform: translateY(-10px) rotate(.5deg) scale(1.008); }
+  70% { transform: translateY(-4px) rotate(-.4deg) scale(1.014); }
+}
+@keyframes hf-halo {
+  0%, 100% { opacity: .6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+@keyframes hf-drift {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: .85; }
+  100% { opacity: 0; transform: translate(14px, -90px); }
+}
+@media (max-width: 767px) {
+  .hero-figure { width: min(360px, 86vw); }
+  .hero-figure[data-ripple="true"] .hero-figure__art { filter: none; }
+  .hero-figure__filter { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-figure__art, .hero-figure__halo, .hero-figure__flecks span { animation: none; }
+  .hero-figure[data-ripple="true"] .hero-figure__art { filter: none; }
+  .hero-figure__filter { display: none; }
+}

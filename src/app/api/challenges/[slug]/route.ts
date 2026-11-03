@@ -1,26 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminSupabase } from "@/lib/supabase/admin";
+import { createAdminSupabase, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
 import { mapProblem, ProblemRow } from "@/lib/supabase/mappers";
+import { MOCK_CHALLENGES } from "@/lib/mock-data";
 
-async function findChallenge(identifier: string): Promise<ProblemRow | null> {
+async function findChallenge(identifier: string): Promise<ProblemRow | any | null> {
   if (!/^[A-Za-z0-9_-]+$/.test(identifier)) return null;
-  const admin = createAdminSupabase();
-  const bySlug = await admin
-    .from("problem_statements")
-    .select("*")
-    .eq("slug", identifier)
-    .eq("is_published", true)
-    .maybeSingle<ProblemRow>();
-  if (bySlug.data) return bySlug.data;
 
-  const byId = await admin
-    .from("problem_statements")
-    .select("*")
-    .or(`id.eq.${identifier},code.eq.${identifier.toUpperCase()}`)
-    .eq("is_published", true)
-    .maybeSingle<ProblemRow>();
-  return byId.data;
+  if (!isSupabaseConfigured()) {
+    const found = MOCK_CHALLENGES.find(
+      (c) =>
+        c.slug === identifier ||
+        c.id === identifier ||
+        c.code.toUpperCase() === identifier.toUpperCase()
+    );
+    return found || null;
+  }
+
+  try {
+    const admin = createAdminSupabase();
+    const bySlug = await admin
+      .from("problem_statements")
+      .select("*")
+      .eq("slug", identifier)
+      .eq("is_published", true)
+      .maybeSingle<ProblemRow>();
+    if (bySlug.data) return bySlug.data;
+
+    const byId = await admin
+      .from("problem_statements")
+      .select("*")
+      .or(`id.eq.${identifier},code.eq.${identifier.toUpperCase()}`)
+      .eq("is_published", true)
+      .maybeSingle<ProblemRow>();
+    return byId.data;
+  } catch {
+    const found = MOCK_CHALLENGES.find(
+      (c) =>
+        c.slug === identifier ||
+        c.id === identifier ||
+        c.code.toUpperCase() === identifier.toUpperCase()
+    );
+    return found || null;
+  }
 }
 
 export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
@@ -35,7 +57,7 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
     const isSelectedByTeam = team?.selectedChallengeId === row.id;
 
     return NextResponse.json({
-      challenge: mapProblem(row),
+      challenge: "shortDescription" in row ? row : mapProblem(row),
       team,
       isSelectedByTeam,
       canSelect: Boolean(session && team && team.leaderId === session.userId),
