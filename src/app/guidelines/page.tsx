@@ -145,7 +145,7 @@ export default function GuidelinesPage() {
             <section id="sec-development" className="p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4 scroll-mt-24">
               <h2 className="text-xl font-bold text-darkRed font-display">3. Project Development Window</h2>
               <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
-                All development must occur during the official hackathon window (3 November 2026 – 10 November 2026).
+                All development must occur during the official hackathon window (3 November 2026 - 10 November 2026).
               </p>
               <div className="p-4 rounded-xl border-2 border-vermilion bg-cream text-xs text-darkRed font-mono space-y-1">
                 <div className="font-bold uppercase tracking-wider text-vermilion">Submission Hard Stop:</div>
@@ -179,7 +179,7 @@ export default function GuidelinesPage() {
                 <div className="p-4 rounded-xl border border-mutedGold bg-cream text-xs space-y-2">
                   <div className="flex items-center gap-2 font-bold text-darkRed">
                     <Video size={16} className="text-secondaryRed" />
-                    <span>2. Demo Video (3–5 min)</span>
+                    <span>2. Demo Video (3-5 min)</span>
                   </div>
                   <p className="text-ink-secondary leading-relaxed">
                     Hosted on Google Drive or YouTube walking through problem, architecture, and live prototype.
@@ -189,7 +189,7 @@ export default function GuidelinesPage() {
                 <div className="p-4 rounded-xl border border-mutedGold bg-cream text-xs space-y-2">
                   <div className="flex items-center gap-2 font-bold text-darkRed">
                     <FileText size={16} className="text-vermilion" />
-                    <span>3. Presentation (6–10 Slides)</span>
+                    <span>3. Presentation (6-10 Slides)</span>
                   </div>
                   <p className="text-ink-secondary leading-relaxed">
                     PDF presentation deck highlighting problem context, tech stack, innovation, and limitations.

@@ -590,7 +590,7 @@ export default function SubmissionPortalPage() {
                 <div className="py-3 flex items-start gap-3">
                   <CheckCircle2 size={16} className="text-vermilion mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="font-bold text-darkRed">Demonstration Video (3–5 min)</div>
+                    <div className="font-bold text-darkRed">Demonstration Video (3-5 min)</div>
                     <div className="text-ink-secondary mt-0.5">
                       Uploaded to Google Drive as an MP4 or public YouTube link, walking through the working software.
                     </div>
@@ -600,7 +600,7 @@ export default function SubmissionPortalPage() {
                 <div className="py-3 flex items-start gap-3">
                   <CheckCircle2 size={16} className="text-vermilion mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="font-bold text-darkRed">Project Presentation (6–10 Slides)</div>
+                    <div className="font-bold text-darkRed">Project Presentation (6-10 Slides)</div>
                     <div className="text-ink-secondary mt-0.5">
                       Exported as a clean PDF covering problem, solution, technology, impact, and future scope.
                     </div>

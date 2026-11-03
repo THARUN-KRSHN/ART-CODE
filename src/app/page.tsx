@@ -50,7 +50,7 @@ export default async function HomePage() {
     },
     {
       q: "What deliverables are required during final submission?",
-      a: "Teams must provide: (1) Project title, architecture, and cultural description, (2) A public GitHub repository with comprehensive README, (3) A working prototype or live demo, and (4) A Google Drive folder containing a 3–5 min demonstration video and 6–10 slide presentation.",
+      a: "Teams must provide: (1) Project title, architecture, and cultural description, (2) A public GitHub repository with comprehensive README, (3) A working prototype or live demo, and (4) A Google Drive folder containing a 3-5 min demonstration video and 6-10 slide presentation.",
     },
     {
       q: "Can we edit our submission after finalizing?",
@@ -168,7 +168,7 @@ export default async function HomePage() {
                 <Clock size={20} />
               </div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-darkRed font-semibold">Event Dates</div>
-              <div className="text-lg font-bold text-ink mt-0.5">{new Date(settings.registrationOpens).toLocaleDateString("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" })} – {new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })}</div>
+              <div className="text-lg font-bold text-ink mt-0.5">{new Date(settings.registrationOpens).toLocaleDateString("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" })} - {new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })}</div>
               <div className="text-xs text-ink-secondary mt-1">Submission closes 11:59 PM IST</div>
             </div>
           </div>

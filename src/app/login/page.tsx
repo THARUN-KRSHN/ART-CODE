@@ -3,9 +3,8 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PosterArtwork } from "@/components/art/PosterArtwork";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
-import { Github, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 function LoginInner() {
   const router = useRouter();
@@ -92,8 +91,15 @@ function LoginInner() {
             </p>
           </div>
 
-          <div className="my-auto py-2">
-            <PosterArtwork compact className="max-w-[280px]" />
+          {/* Use the same hero image block as Home/Register for visual consistency */}
+          <div className="my-auto py-2 flex justify-center">
+            <div className="relative w-full max-w-[280px] rounded-2xl border-2 border-mutedGold bg-cream p-3 shadow-poster overflow-hidden">
+              <img
+                src="/img/hero-card.jpg"
+                alt="Classical Indian art figure - cultural inspiration"
+                className="w-full h-auto rounded-xl object-cover"
+              />
+            </div>
           </div>
 
           <div className="text-[10px] font-mono text-darkRed uppercase tracking-wider font-bold">

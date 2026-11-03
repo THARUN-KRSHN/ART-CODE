@@ -136,7 +136,7 @@ export default function EventPage() {
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <span className="font-bold text-darkRed">Submission Window</span>
-              <span className="sm:col-span-2 text-ink">6 November 2026 – 10 November 2026 (11:59 PM IST)</span>
+              <span className="sm:col-span-2 text-ink">6 November 2026 - 10 November 2026 (11:59 PM IST)</span>
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <span className="font-bold text-darkRed">Prizes</span>
