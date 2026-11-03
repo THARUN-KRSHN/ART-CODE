@@ -14,16 +14,32 @@ import {
   ArrowRight,
   ShieldAlert,
 } from "lucide-react";
+import { ScheduleISO } from "@/lib/event-schedule";
+import { EventSettings } from "@/types";
 
 export default function GuidelinesPage() {
   const [activeSection, setActiveSection] = useState<string>("sec-eligibility");
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [settings, setSettings] = useState<EventSettings | null>(null);
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedText(id);
     setTimeout(() => setCopiedText(null), 2000);
   };
+
+  // Load settings so dates reflect the live configuration
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/settings", { cache: "no-store" });
+        const js = await res.json();
+        setSettings(js.settings || null);
+      } catch {
+        setSettings(null);
+      }
+    })();
+  }, []);
 
   const sections = [
     { id: "sec-eligibility", label: "1. Eligibility & Scope" },
@@ -145,11 +161,17 @@ export default function GuidelinesPage() {
             <section id="sec-development" className="p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4 scroll-mt-24">
               <h2 className="text-xl font-bold text-darkRed font-display">3. Project Development Window</h2>
               <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
-                All development must occur during the official hackathon window (3 November 2026 - 10 November 2026).
+                All development must occur during the official hackathon window (
+                {new Date((settings?.registrationOpens || ScheduleISO.registrationOpens)).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}
+                {" - "}
+                {new Date((settings?.submissionDeadline || ScheduleISO.submissionDeadline)).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}
+                ).
               </p>
               <div className="p-4 rounded-xl border-2 border-vermilion bg-cream text-xs text-darkRed font-mono space-y-1">
                 <div className="font-bold uppercase tracking-wider text-vermilion">Submission Hard Stop:</div>
-                <div className="text-sm font-bold">10 November 2026, 11:59 PM IST (Indian Standard Time)</div>
+                <div className="text-sm font-bold">
+                  {new Date((settings?.submissionDeadline || ScheduleISO.submissionDeadline)).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 11:59 PM IST (Indian Standard Time)
+                </div>
                 <div className="text-[11px] text-ink-secondary">Late submissions will not be received by the platform gateway.</div>
               </div>
             </section>
