@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
 import { ArrowLeft, Sparkles, Award, Users, Calendar, ArrowRight } from "lucide-react";
+import { ScheduleISO } from "@/lib/event-schedule";
 
 export default function EventPage() {
   return (
@@ -136,7 +137,12 @@ export default function EventPage() {
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <span className="font-bold text-darkRed">Submission Window</span>
-              <span className="sm:col-span-2 text-ink">6 November 2026 - 10 November 2026 (11:59 PM IST)</span>
+              <span className="sm:col-span-2 text-ink">
+                {new Date(ScheduleISO.submissionOpens).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}
+                {" - "}
+                {new Date(ScheduleISO.submissionDeadline).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}
+                {" (11:59 PM IST)"}
+              </span>
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <span className="font-bold text-darkRed">Prizes</span>

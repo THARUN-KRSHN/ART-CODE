@@ -52,7 +52,7 @@ export default function AdminOverviewPage() {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs font-mono px-3.5 py-1.5 rounded-xl bg-cream border border-mutedGold/70 text-darkRed font-bold">
-            Deadline: 10 Nov 2026, 11:59 PM IST
+            Deadline: {new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })}, 11:59 PM IST
           </span>
         </div>
       </div>

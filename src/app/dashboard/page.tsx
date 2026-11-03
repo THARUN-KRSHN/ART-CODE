@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { UserProfile, Team, ProjectSubmission, NotificationItem } from "@/types";
+import { UserProfile, Team, ProjectSubmission, NotificationItem, EventSettings } from "@/types";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
 import {
@@ -31,6 +31,7 @@ export default function DashboardPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [settings, setSettings] = useState<EventSettings | null>(null);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -58,6 +59,11 @@ export default function DashboardPage() {
         const notifRes = await fetch("/api/notifications");
         const notifData = await notifRes.json();
         setNotifications(notifData.notifications || []);
+
+        // Fetch global settings for dynamic dates
+        const setRes = await fetch("/api/settings", { cache: "no-store" });
+        const setJson = await setRes.json();
+        setSettings(setJson.settings);
       } catch (err) {
         console.error(err);
       } finally {
@@ -215,7 +221,9 @@ export default function DashboardPage() {
                   <p className="text-xs text-ink-secondary">
                     {submission?.referenceId
                       ? `Ref: ${submission.referenceId}`
-                      : "Submission portal opens 6 November 2026"}
+                      : settings
+                      ? `Submission portal opens ${new Date(settings.submissionOpens).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}`
+                      : "Submission portal opens"}
                   </p>
                 </div>
 
@@ -242,10 +250,12 @@ export default function DashboardPage() {
                       11:59 PM IST
                     </span>
                   </div>
-                  <div className="text-xl font-bold text-vermilion pt-2">10 Nov 2026</div>
-                  <p className="text-xs text-ink-secondary">
-                    Submission Gateway Hard Stop. All participant editing locks permanently.
-                  </p>
+                  <div className="text-xl font-bold text-vermilion pt-2">
+                    {settings
+                      ? new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })
+                      : "--"}
+                  </div>
+                  <p className="text-xs text-ink-secondary">Submission Gateway Hard Stop. All participant editing locks permanently.</p>
                 </div>
 
                 <div className="pt-3 border-t border-mutedGold/60 text-xs font-mono text-darkRed font-bold">

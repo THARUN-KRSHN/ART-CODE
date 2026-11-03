@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Team, UserProfile, ProjectSubmission, ProblemStatement } from "@/types";
+import { Team, UserProfile, ProjectSubmission, ProblemStatement, EventSettings } from "@/types";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { ChallengeMotif } from "@/components/art/ChallengeMotif";
 import { RhombusMotif } from "@/components/art/CulturalMotifs";
@@ -26,6 +26,7 @@ export default function TeamWorkspacePage() {
   const [challenge, setChallenge] = useState<ProblemStatement | null>(null);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [settings, setSettings] = useState<EventSettings | null>(null);
 
   useEffect(() => {
     async function loadWorkspace() {
@@ -50,6 +51,11 @@ export default function TeamWorkspacePage() {
             setChallenge(chData.challenge);
           }
         }
+
+        // Load global settings for dynamic deadlines
+        const setRes = await fetch("/api/settings", { cache: "no-store" });
+        const setJson = await setRes.json();
+        setSettings(setJson.settings);
       } catch (err) {
         console.error(err);
       } finally {
@@ -229,7 +235,9 @@ export default function TeamWorkspacePage() {
                   <RhombusMotif size={12} color="#A32516" />
                   <span>Project Submission Status</span>
                 </h2>
-                <span className="text-xs font-mono text-darkRed font-semibold">Deadline: 10 Nov 2026</span>
+                <span className="text-xs font-mono text-darkRed font-semibold">
+                  Deadline: {settings ? new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" }) : "--"}
+                </span>
               </div>
 
               {submission ? (
@@ -327,7 +335,9 @@ export default function TeamWorkspacePage() {
               </div>
               <div className="text-sm font-bold text-darkRed">Submission Hard Stop</div>
               <p className="text-xs text-ink-secondary">
-                10 November 2026, 11:59 PM IST. Ensure both members and deliverables are confirmed well in advance.
+                {settings
+                  ? `${new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 11:59 PM IST. Ensure both members and deliverables are confirmed well in advance.`
+                  : "--"}
               </p>
             </div>
           </div>
