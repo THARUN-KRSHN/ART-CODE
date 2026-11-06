@@ -18,7 +18,16 @@ export async function GET() {
   const submissions = await Promise.all(
     (subRows || []).map(async (s: any) => {
       const team = await loadTeam(s.team_id);
-      return mapSubmission(s as SubmissionRow, team?.name, undefined);
+      let challengeTitle = "";
+      if (s.challenge_id) {
+        const { data: prob } = await admin
+          .from("problem_statements")
+          .select("title")
+          .eq("id", s.challenge_id)
+          .maybeSingle<{ title: string }>();
+        challengeTitle = prob?.title || "";
+      }
+      return mapSubmission(s as SubmissionRow, team?.name, challengeTitle);
     })
   );
 
