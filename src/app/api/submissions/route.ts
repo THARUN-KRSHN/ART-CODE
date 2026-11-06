@@ -72,15 +72,33 @@ export async function POST(req: NextRequest) {
 
     // Determine challenge
     const selectedChallengeId = payload.challengeId || team.selectedChallengeId;
-    let challengeTitle = "";
-    if (selectedChallengeId) {
-      const { data: prob } = await admin
-        .from("problem_statements")
-        .select("title")
-        .eq("id", selectedChallengeId)
-        .maybeSingle<Pick<ProblemRow, "title">>();
-      challengeTitle = prob?.title || "";
+    if (!selectedChallengeId) {
+      return withCookies(
+        NextResponse.json(
+          { error: "Please select a challenge track before saving your draft.", fieldErrors: { challengeId: "A challenge track is required." } },
+          { status: 422 }
+        ),
+        pending
+      );
     }
+
+    let challengeTitle = "";
+    const { data: prob } = await admin
+      .from("problem_statements")
+      .select("title")
+      .eq("id", selectedChallengeId)
+      .maybeSingle<Pick<ProblemRow, "title">>();
+
+    if (!prob) {
+      return withCookies(
+        NextResponse.json(
+          { error: "Please select a valid challenge track.", fieldErrors: { challengeId: "The selected challenge track is no longer available. Please choose a track again." } },
+          { status: 422 }
+        ),
+        pending
+      );
+    }
+    challengeTitle = prob.title;
 
     // Existing draft?
     const { data: existing } = await admin

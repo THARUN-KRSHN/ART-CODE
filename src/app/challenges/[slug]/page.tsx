@@ -207,8 +207,8 @@ export default function ChallengeDetailPage() {
           </div>
         </section>
 
-        {/* 3. Objectives & Expected Outcomes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* 3. Objectives */}
+        <div>
           <div className="p-6 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-darkRed font-bold">
               <RhombusMotif size={12} color="#F1B321" />
@@ -224,27 +224,13 @@ export default function ChallengeDetailPage() {
             </ul>
           </div>
 
-          <div className="p-6 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-darkRed font-bold">
-              <RhombusMotif size={12} color="#F1B321" />
-              <span>04 // Expected Deliverables</span>
-            </div>
-            <ul className="space-y-2.5 text-xs text-ink-secondary">
-              {challenge.expectedOutcomes.map((out, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-vermilion mt-0.5 flex-shrink-0" />
-                  <span className="leading-relaxed text-ink">{out}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         {/* 4. Submission Guidance */}
         <section className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-cream shadow-subtle space-y-4">
           <h2 className="text-xs font-mono uppercase tracking-widest text-darkRed font-bold flex items-center gap-2">
             <RhombusMotif size={14} />
-            <span>05 // Submission Guidance & Constraints</span>
+            <span>04 // Submission Guidance & Constraints</span>
           </h2>
           <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.submissionGuidance}</p>
         </section>
@@ -254,7 +240,7 @@ export default function ChallengeDetailPage() {
           <section className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
               <RhombusMotif size={14} />
-              <span>06 // Minimum Viable Prototype</span>
+              <span>05 // Minimum Viable Prototype</span>
             </div>
             <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
               <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.mvp}</p>
@@ -266,7 +252,7 @@ export default function ChallengeDetailPage() {
           <section className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
               <RhombusMotif size={14} />
-              <span>07 // Success Criteria</span>
+              <span>06 // Success Criteria</span>
             </div>
             <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
               <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.successCriteria}</p>
@@ -278,7 +264,7 @@ export default function ChallengeDetailPage() {
           <section className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
               <RhombusMotif size={14} />
-              <span>08 // Scope Limitations</span>
+              <span>07 // Scope Limitations</span>
             </div>
             <ul className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-2 text-xs sm:text-sm text-ink-secondary">
               {challenge.constraints.map((c, i) => (
@@ -295,7 +281,7 @@ export default function ChallengeDetailPage() {
           <section className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
               <RhombusMotif size={14} />
-              <span>09 // Research Connection</span>
+              <span>08 // Research Connection</span>
             </div>
             <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
               <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{challenge.researchConnection}</p>

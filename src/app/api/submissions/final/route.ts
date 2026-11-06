@@ -124,7 +124,21 @@ export async function POST(req: NextRequest) {
       .select("title")
       .eq("id", validData.challengeId)
       .maybeSingle<Pick<ProblemRow, "title">>();
-    challengeTitle = prob?.title || "Challenge Statement";
+
+    // The selected track must be a real, published challenge statement
+    if (!prob) {
+      return withCookies(
+        NextResponse.json(
+          {
+            error: "Please select a valid challenge track before submitting.",
+            fieldErrors: { challengeId: "The selected challenge track is no longer available. Please choose a track again." },
+          },
+          { status: 422 }
+        ),
+        pending
+      );
+    }
+    challengeTitle = prob.title;
 
     const upsert = {
       id: existing?.id,

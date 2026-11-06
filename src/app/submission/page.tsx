@@ -71,7 +71,7 @@ export default function SubmissionPortalPage() {
             const sub: ProjectSubmission = subData.submission;
             setSubmission(sub);
             setProjectTitle(sub.projectTitle || "");
-            setChallengeId(sub.challengeId || teamData.team.selectedChallengeId || "ch-01");
+            setChallengeId(sub.challengeId || teamData.team.selectedChallengeId || "");
             setShortDescription(sub.shortDescription || "");
             setProblemDescription(sub.problemDescription || "");
             setProposedSolution(sub.proposedSolution || "");
@@ -365,12 +365,26 @@ export default function SubmissionPortalPage() {
                   onChange={(e) => setChallengeId(e.target.value)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion disabled:opacity-60"
                 >
+                  <option value="" disabled>
+                    {challenges.length === 0
+                      ? "No challenge tracks are currently available"
+                      : "— Select a challenge track —"}
+                  </option>
                   {challenges.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.code}: {c.title} ({c.category})
                     </option>
                   ))}
                 </select>
+                {fieldErrors.challengeId ? (
+                  <p className="text-[11px] text-vermilion font-bold mt-1">{fieldErrors.challengeId}</p>
+                ) : (
+                  !challengeId && (
+                    <p className="text-[11px] text-ink-muted mt-1">
+                      You must choose a challenge track before your project can be submitted.
+                    </p>
+                  )
+                )}
               </div>
 
               <div>
@@ -549,7 +563,14 @@ export default function SubmissionPortalPage() {
 
               <button
                 type="button"
-                onClick={() => setCurrentStep(2)}
+                onClick={() => {
+                  if (!challengeId) {
+                    setFieldErrors((e) => ({ ...e, challengeId: "Please select a challenge track to continue." }));
+                    return;
+                  }
+                  setFieldErrors((e) => ({ ...e, challengeId: "" }));
+                  setCurrentStep(2);
+                }}
                 className="px-6 py-2.5 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed inline-flex items-center gap-1.5 ml-auto shadow-subtle"
               >
                 <span>Continue to Deliverables</span>
@@ -733,7 +754,7 @@ export default function SubmissionPortalPage() {
                 <button
                   type="button"
                   onClick={handleFinalSubmit}
-                  disabled={isSubmitting || !acknowledged}
+                  disabled={isSubmitting || !acknowledged || !challengeId}
                   className="px-6 py-3 rounded-xl bg-vermilion hover:bg-darkRed text-cream text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-poster disabled:opacity-50"
                 >
                   <ShieldCheck size={16} className="text-accentGold" />
