@@ -178,9 +178,9 @@ export default function AdminSubmissionsPage() {
 
       {/* Detail / Inspection Modal */}
       {selectedSub && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="w-full max-w-2xl bg-paleCream rounded-2xl border-2 border-mutedGold/70 shadow-elevated p-6 sm:p-8 space-y-6 my-8 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-start justify-between border-b border-mutedGold/50 pb-4">
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="w-full max-w-2xl max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3rem)] flex flex-col bg-paleCream rounded-2xl border-2 border-mutedGold/70 shadow-elevated overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-start justify-between gap-3 border-b border-mutedGold/50 p-6 pb-4 sm:px-8 shrink-0">
               <div>
                 <span className="text-[10px] font-mono text-vermilion uppercase font-bold tracking-wider">
                   Submission Ref: {selectedSub.referenceId || "Draft"}
@@ -198,7 +198,7 @@ export default function AdminSubmissionsPage() {
               </button>
             </div>
 
-            <div className="space-y-4 text-xs">
+            <div className="space-y-4 text-xs p-6 sm:px-8 overflow-y-auto overscroll-contain flex-1 min-h-0">
               <div>
                 <span className="text-ink/60 font-mono uppercase text-[10px] font-bold">Challenge Track:</span>
                 <p className="font-bold text-ink mt-0.5">{selectedSub.challengeTitle}</p>
@@ -321,7 +321,7 @@ export default function AdminSubmissionsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-mutedGold/40">
+            <div className="flex justify-end pt-4 border-t border-mutedGold/40 px-6 pb-6 sm:px-8 sm:pb-8 shrink-0">
               <button
                 onClick={() => setSelectedSub(null)}
                 className="px-4 py-2 rounded-xl bg-cream border border-mutedGold/70 text-darkRed text-xs font-bold hover:bg-mutedGold/30"
