@@ -336,7 +336,7 @@ export default function TeamWorkspacePage() {
               <div className="text-sm font-bold text-darkRed">Submission Hard Stop</div>
               <p className="text-xs text-ink-secondary">
                 {settings
-                  ? `${new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 11:59 PM IST. Ensure both members and deliverables are confirmed well in advance.`
+                  ? `${new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 10:00 AM IST. Ensure both members and deliverables are confirmed well in advance.`
                   : "--"}
               </p>
             </div>

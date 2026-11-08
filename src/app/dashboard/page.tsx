@@ -247,7 +247,7 @@ export default function DashboardPage() {
                       <span>Next Deadline</span>
                     </span>
                     <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-accentGold text-darkRed">
-                      11:59 PM IST
+                      10:00 AM IST
                     </span>
                   </div>
                   <div className="text-xl font-bold text-vermilion pt-2">

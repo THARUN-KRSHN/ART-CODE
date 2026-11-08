@@ -38,7 +38,7 @@ export default async function HomePage() {
   const timelineMilestones = [
     { date: fmt(settings.registrationOpens), title: "Team Registration Opens", desc: "Participant onboarding and two-member team formation commences", status: "active" },
     { date: fmt(settings.submissionOpens), title: "Project Submission Opens", desc: "Teams can begin drafting problem statements and deliverables", status: "upcoming" },
-    { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "11:59 PM IST - Final project locking and confirmation", status: "upcoming", highlight: true },
+    { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "10:00 AM IST - Final project locking and confirmation", status: "upcoming", highlight: true },
     { date: fmt(settings.top8Announcement || ScheduleISO.top8Announcement), title: "Top 8 Teams Announced", desc: "Shortlist published for final presentations", status: "upcoming" },
     { date: fmt(settings.presentationDay || ScheduleISO.presentationDay), title: "Presentation Day", desc: "Presentations with Resource Person Judge", status: "upcoming" },
     { date: fmt(settings.winnerAnnouncement), title: "Winner Announcement", desc: "Official announcement of results and prize distribution", status: "upcoming" },
@@ -169,7 +169,7 @@ export default async function HomePage() {
               </div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-darkRed font-semibold">Event Dates</div>
               <div className="text-lg font-bold text-ink mt-0.5">{new Date(settings.registrationOpens).toLocaleDateString("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" })} - {new Date(settings.submissionDeadline).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" })}</div>
-              <div className="text-xs text-ink-secondary mt-1">Submission closes 11:59 PM IST</div>
+              <div className="text-xs text-ink-secondary mt-1">Submission closes 10:00 AM IST</div>
             </div>
           </div>
         </div>

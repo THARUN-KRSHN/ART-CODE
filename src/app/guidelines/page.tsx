@@ -170,7 +170,7 @@ export default function GuidelinesPage() {
               <div className="p-4 rounded-xl border-2 border-vermilion bg-cream text-xs text-darkRed font-mono space-y-1">
                 <div className="font-bold uppercase tracking-wider text-vermilion">Submission Hard Stop:</div>
                 <div className="text-sm font-bold">
-                  {new Date((settings?.submissionDeadline || ScheduleISO.submissionDeadline)).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 11:59 PM IST (Indian Standard Time)
+                  {new Date((settings?.submissionDeadline || ScheduleISO.submissionDeadline)).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 10:00 AM IST (Indian Standard Time)
                 </div>
                 <div className="text-[11px] text-ink-secondary">Late submissions will not be received by the platform gateway.</div>
               </div>

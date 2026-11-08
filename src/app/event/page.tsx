@@ -141,7 +141,7 @@ export default function EventPage() {
                 {new Date(ScheduleISO.submissionOpens).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}
                 {" - "}
                 {new Date(ScheduleISO.submissionDeadline).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}
-                {" (11:59 PM IST)"}
+                {" (10:00 AM IST)"}
               </span>
             </div>
             <div className="py-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2">

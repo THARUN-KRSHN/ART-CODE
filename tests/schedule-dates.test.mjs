@@ -7,7 +7,7 @@
 const expected = {
   registrationOpens: "2026-11-03T00:00:00+05:30",
   submissionOpens: "2026-11-06T00:00:00+05:30",
-  submissionDeadline: "2026-11-10T23:59:59+05:30",
+  submissionDeadline: "2026-11-09T10:00:00+05:30",
   winnerAnnouncement: "2026-11-15T18:00:00+05:30",
 };
 
