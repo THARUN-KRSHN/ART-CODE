@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { getSession, getRegistrationClose, loadTeam, logAudit, registrationClosed, withCookies } from "@/lib/auth";
 import { TeamRow } from "@/lib/supabase/mappers";
 
 function generateInviteCode(): string {
@@ -27,6 +27,11 @@ export async function POST(req: NextRequest) {
         NextResponse.json({ error: "You must be signed in to create a team" }, { status: 401 }),
         pending
       );
+    }
+
+    const registrationCloses = await getRegistrationClose();
+    if (Date.now() > registrationCloses.getTime()) {
+      return withCookies(registrationClosed(registrationCloses), pending);
     }
 
     if (session.profile.team_id) {

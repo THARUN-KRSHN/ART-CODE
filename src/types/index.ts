@@ -113,6 +113,7 @@ export interface EventSettings {
   department: string;
   theme: string;
   registrationOpens: string;
+  registrationCloses: string;
   submissionOpens: string;
   submissionDeadline: string;
   top8Announcement?: string;

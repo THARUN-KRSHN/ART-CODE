@@ -6,6 +6,7 @@ insert into public.event_settings (id) values (1) on conflict (id) do nothing;
 
 update public.event_settings set
   registration_opens   = '2026-11-03T00:00:00+05:30',
+  registration_closes  = '2026-11-09T10:00:00+05:30',
   submission_opens     = '2026-11-06T00:00:00+05:30',
   submission_deadline  = '2026-11-09T10:00:00+05:30',
   top8_announcement    = '2026-11-09T18:00:00+05:30',

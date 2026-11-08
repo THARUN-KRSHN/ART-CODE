@@ -146,6 +146,10 @@ export default function GuidelinesPage() {
                 <p className="text-sm font-semibold leading-snug">
                   Each team must consist of exactly two registered members. Both members must be present in the team before the submission process becomes available.
                 </p>
+                <p className="text-xs leading-relaxed">
+                  Registration and team formation close on{" "}
+                  {new Date((settings?.registrationCloses || ScheduleISO.registrationCloses)).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })}, 10:00 AM IST. After that no new accounts or teams can be created.
+                </p>
               </div>
 
               <div className="space-y-2 pt-2 text-xs text-ink-secondary">

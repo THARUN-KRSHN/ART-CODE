@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteSupabase } from "@/lib/supabase/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { logAudit, resolveSessionForAuthUser, withCookies } from "@/lib/auth";
+import { logAudit, getRegistrationClose, registrationClosed, resolveSessionForAuthUser, withCookies } from "@/lib/auth";
 
 const DEFAULT_INSTITUTION = "Christ College of Engineering (Autonomous), Irinjalakuda";
 
@@ -17,6 +17,11 @@ export async function POST(req: NextRequest) {
     }
     if (!password || String(password).length < 8) {
       return NextResponse.json({ error: "Password must be at least 8 characters long." }, { status: 400 });
+    }
+
+    const registrationCloses = await getRegistrationClose();
+    if (Date.now() > registrationCloses.getTime()) {
+      return registrationClosed(registrationCloses);
     }
 
     const admin = createAdminSupabase();

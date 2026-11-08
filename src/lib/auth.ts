@@ -11,6 +11,7 @@ import {
   TeamRow,
 } from "@/lib/supabase/mappers";
 import { EventSettings, Team, UserProfile, UserRole } from "@/types";
+import { ScheduleISO } from "@/lib/event-schedule";
 
 export interface SessionContext {
   userId: string;
@@ -177,4 +178,24 @@ export async function getSettings(): Promise<EventSettings> {
   const { data } = await admin.from("event_settings").select("*").eq("id", 1).maybeSingle<SettingsRow>();
   if (!data) throw new Error("Event settings row missing - run supabase/schema.sql + seed.sql");
   return mapSettings(data);
+}
+
+// Registration shuts together with the submission deadline.
+export async function getRegistrationClose(): Promise<Date> {
+  try {
+    const closes = (await getSettings()).registrationCloses;
+    if (closes) return new Date(closes);
+  } catch {
+    // Settings row unavailable — fall back to the canonical schedule.
+  }
+  return new Date(ScheduleISO.registrationCloses);
+}
+
+export function registrationClosed(closes: Date): NextResponse {
+  return NextResponse.json(
+    {
+      error: `Registration is closed. The window shut on ${closes.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST.`,
+    },
+    { status: 400 }
+  );
 }

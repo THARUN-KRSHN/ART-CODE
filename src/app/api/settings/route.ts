@@ -13,6 +13,7 @@ export async function GET() {
         settings: {
           ...MOCK_EVENT_SETTINGS,
           registrationOpens: ScheduleISO.registrationOpens,
+          registrationCloses: ScheduleISO.registrationCloses,
           submissionOpens: ScheduleISO.submissionOpens,
           submissionDeadline: ScheduleISO.submissionDeadline,
           top8Announcement: ScheduleISO.top8Announcement,
@@ -30,6 +31,7 @@ export async function GET() {
       settings: {
         ...base,
         registrationOpens: ScheduleISO.registrationOpens,
+        registrationCloses: ScheduleISO.registrationCloses,
         submissionOpens: ScheduleISO.submissionOpens,
         submissionDeadline: ScheduleISO.submissionDeadline,
         top8Announcement: ScheduleISO.top8Announcement,
@@ -42,6 +44,7 @@ export async function GET() {
       settings: {
         ...MOCK_EVENT_SETTINGS,
         registrationOpens: ScheduleISO.registrationOpens,
+        registrationCloses: ScheduleISO.registrationCloses,
         submissionOpens: ScheduleISO.submissionOpens,
         submissionDeadline: ScheduleISO.submissionDeadline,
         top8Announcement: ScheduleISO.top8Announcement,

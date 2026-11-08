@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { getSession, getSettings, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { getSession, getRegistrationClose, getSettings, loadTeam, logAudit, registrationClosed, withCookies } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,6 +10,11 @@ export async function POST(req: NextRequest) {
         NextResponse.json({ error: "You must be signed in to join a team." }, { status: 401 }),
         pending
       );
+    }
+
+    const registrationCloses = await getRegistrationClose();
+    if (Date.now() > registrationCloses.getTime()) {
+      return withCookies(registrationClosed(registrationCloses), pending);
     }
 
     const { invitationCode } = await req.json();

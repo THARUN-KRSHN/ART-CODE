@@ -200,6 +200,7 @@ create table if not exists public.event_settings (
   department text not null default 'Department of Computer Science and Engineering (Data Science)',
   theme text not null default 'Art, Culture, Heritage & Creative Technology',
   registration_opens timestamptz not null default '2026-11-03T00:00:00+05:30',
+  registration_closes timestamptz not null default '2026-11-09T10:00:00+05:30',
   submission_opens timestamptz not null default '2026-11-06T00:00:00+05:30',
   submission_deadline timestamptz not null default '2026-11-09T10:00:00+05:30',
   top8_announcement timestamptz not null default '2026-11-09T18:00:00+05:30',

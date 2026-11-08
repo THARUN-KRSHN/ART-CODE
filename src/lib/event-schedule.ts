@@ -1,4 +1,6 @@
 export const RegistrationOpens = new Date('2026-11-03T00:00:00+05:30');
+// Registration shuts with the submission deadline
+export const RegistrationCloses = new Date('2026-11-09T10:00:00+05:30');
 export const SubmissionOpens = new Date('2026-11-06T00:00:00+05:30');
 // Submission closes on the 9th at 10:00 AM (IST)
 export const SubmissionDeadline = new Date('2026-11-09T10:00:00+05:30');
@@ -18,6 +20,7 @@ export const fmt = (d: Date) =>
 
 export const ScheduleISO = {
   registrationOpens: '2026-11-03T00:00:00+05:30',
+  registrationCloses: '2026-11-09T10:00:00+05:30',
   submissionOpens: '2026-11-06T00:00:00+05:30',
   // Closes on the 9th at 10:00 AM
   submissionDeadline: '2026-11-09T10:00:00+05:30',

@@ -140,6 +140,18 @@ export default function AdminSettingsPage() {
 
             <div>
               <label className="block text-xs font-bold text-ink mb-1">
+                Registration Closes
+              </label>
+              <input
+                type="text"
+                value={settings.registrationCloses || ""}
+                onChange={(e) => setSettings({ ...settings, registrationCloses: e.target.value })}
+                className="w-full px-3.5 py-2 text-xs font-mono rounded-xl border border-mutedGold/70 bg-cream/70 text-ink focus:bg-cream font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-ink mb-1">
                 Submission Window Opens
               </label>
               <input

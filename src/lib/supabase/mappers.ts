@@ -120,6 +120,7 @@ export interface SettingsRow {
   department: string;
   theme: string;
   registration_opens: string;
+  registration_closes: string;
   submission_opens: string;
   submission_deadline: string;
   top8_announcement?: string;
@@ -274,6 +275,7 @@ export function mapSettings(row: SettingsRow): EventSettings {
     department: row.department,
     theme: row.theme,
     registrationOpens: row.registration_opens,
+    registrationCloses: row.registration_closes,
     submissionOpens: row.submission_opens,
     submissionDeadline: row.submission_deadline,
     top8Announcement: row.top8_announcement,

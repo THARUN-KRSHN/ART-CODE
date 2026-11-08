@@ -37,6 +37,7 @@ export default async function HomePage() {
   const fmt = (d: string) => new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
   const timelineMilestones = [
     { date: fmt(settings.registrationOpens), title: "Team Registration Opens", desc: "Participant onboarding and two-member team formation commences", status: "active" },
+    { date: fmt(settings.registrationCloses || ScheduleISO.registrationCloses), title: "Registration Closes", desc: "10:00 AM IST - Signups and team formation shut for good", status: "upcoming" },
     { date: fmt(settings.submissionOpens), title: "Project Submission Opens", desc: "Teams can begin drafting problem statements and deliverables", status: "upcoming" },
     { date: fmt(settings.submissionDeadline), title: "Submission Deadline", desc: "10:00 AM IST - Final project locking and confirmation", status: "upcoming", highlight: true },
     { date: fmt(settings.top8Announcement || ScheduleISO.top8Announcement), title: "Top 8 Teams Announced", desc: "Shortlist published for final presentations", status: "upcoming" },

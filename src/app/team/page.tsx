@@ -28,6 +28,21 @@ export default function TeamFormationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [isRegistrationClosed, setIsRegistrationClosed] = useState(false);
+  const [registrationClosesAt, setRegistrationClosesAt] = useState<Date | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        const closes = new Date(data?.settings?.registrationCloses || "");
+        if (!Number.isNaN(closes.getTime())) {
+          setRegistrationClosesAt(closes);
+          if (Date.now() > closes.getTime()) setIsRegistrationClosed(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const loadTeamData = async () => {
     try {
@@ -157,6 +172,22 @@ export default function TeamFormationPage() {
           <div className="p-4 rounded-xl border border-emerald-300 bg-emerald-50 text-status-success text-xs flex items-center gap-2 font-medium">
             <CheckCircle2 size={16} className="flex-shrink-0" />
             <span>{successMsg}</span>
+          </div>
+        )}
+
+        {isRegistrationClosed && !currentTeam && (
+          <div className="p-4 rounded-xl border border-vermilion/40 bg-vermilion/5 text-xs text-darkRed space-y-1 font-medium">
+            <div className="font-mono uppercase tracking-widest text-vermilion font-bold">Registration Closed</div>
+            <p>
+              Team creation and joining closed on{" "}
+              {registrationClosesAt?.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+                timeZone: "Asia/Kolkata",
+              })}
+              , 10:00 AM IST. Teams already formed can still edit and submit their projects.
+            </p>
           </div>
         )}
 

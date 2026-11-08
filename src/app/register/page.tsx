@@ -15,6 +15,21 @@ export default function RegisterPage() {
   const [institution, setInstitution] = useState("Christ College of Engineering (Autonomous), Irinjalakuda");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isClosed, setIsClosed] = useState(false);
+  const [closesAt, setClosesAt] = useState<Date | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        const closes = new Date(data?.settings?.registrationCloses || "");
+        if (!Number.isNaN(closes.getTime())) {
+          setClosesAt(closes);
+          if (Date.now() > closes.getTime()) setIsClosed(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +75,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/oauth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider: "google", next: "/onboarding" }),
+        body: JSON.stringify({ provider: "google", next: "/onboarding", mode: "register" }),
       });
       const data = await res.json();
       if (res.ok && data.url) window.location.href = data.url;
@@ -134,6 +149,38 @@ export default function RegisterPage() {
               {errorMsg}
             </div>
           )}
+
+          {isClosed && (
+            <div className="p-5 rounded-xl border-2 border-vermilion bg-vermilion/5 text-ink space-y-2">
+              <div className="text-xs font-mono uppercase tracking-widest text-vermilion font-bold">
+                Registration Closed
+              </div>
+              <p className="text-sm font-semibold leading-snug">
+                New registrations and team formation closed on{" "}
+                {closesAt?.toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                  timeZone: "Asia/Kolkata",
+                })}
+                , 10:00 AM IST. Registered teams can still sign in and finish their submissions.
+              </p>
+              <div className="flex items-center gap-3 pt-1">
+                <Link
+                  href="/login"
+                  className="py-2 px-4 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link href="/guidelines" className="text-xs text-vermilion font-bold hover:underline">
+                  Read the guidelines
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {!isClosed && (
+            <>
 
           {/* Google sign-up */}
           <div className="grid grid-cols-1 gap-3">
@@ -250,6 +297,8 @@ export default function RegisterPage() {
               <ArrowRight size={14} className="text-accentGold" />
             </button>
           </form>
+            </>
+          )}
 
           <p className="text-center text-xs text-ink-secondary">
             Already registered?{" "}

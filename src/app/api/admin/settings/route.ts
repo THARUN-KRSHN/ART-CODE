@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
     if (body.department) patch.department = String(body.department);
     if (body.theme) patch.theme = String(body.theme);
     if (body.registrationOpens) patch.registration_opens = new Date(body.registrationOpens).toISOString();
+    if (body.registrationCloses) patch.registration_closes = new Date(body.registrationCloses).toISOString();
     if (body.submissionOpens) patch.submission_opens = new Date(body.submissionOpens).toISOString();
     if (body.submissionDeadline) patch.submission_deadline = new Date(body.submissionDeadline).toISOString();
     if (body.top8Announcement) patch.top8_announcement = new Date(body.top8Announcement).toISOString();

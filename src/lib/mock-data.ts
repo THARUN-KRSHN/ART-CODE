@@ -9,6 +9,7 @@ export const MOCK_EVENT_SETTINGS: EventSettings = {
   department: "Computer Science & Engineering (Data Science)",
   theme: "Art, Culture, Heritage & Creative Technology",
   registrationOpens: ScheduleISO.registrationOpens,
+  registrationCloses: ScheduleISO.registrationCloses,
   submissionOpens: ScheduleISO.submissionOpens,
   submissionDeadline: ScheduleISO.submissionDeadline,
   top8Announcement: ScheduleISO.top8Announcement,
