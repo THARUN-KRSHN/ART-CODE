@@ -144,7 +144,7 @@ export default function DashboardPage() {
                   <span className="text-base font-mono font-bold text-darkRed">{team.invitationCode}</span>
                   <button
                     onClick={() => copyCode(team.invitationCode)}
-                    className="p-1 rounded text-darkRed hover:text-vermilion"
+                    className="p-2.5 rounded text-darkRed hover:text-vermilion"
                     title="Copy code"
                   >
                     {copied ? <Check size={14} className="text-status-success" /> : <Copy size={14} />}

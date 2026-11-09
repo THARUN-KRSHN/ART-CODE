@@ -261,7 +261,7 @@ export default function SubmissionPortalPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
             <span className="text-xs font-mono uppercase tracking-widest text-vermilion font-bold flex items-center gap-1.5">
               <RhombusMotif size={12} color="#A32516" />
               <span>Gateway // ART//CODE 2026</span>
@@ -298,7 +298,7 @@ export default function SubmissionPortalPage() {
         <div className="grid grid-cols-3 gap-3 p-2 bg-paleCream rounded-xl border-2 border-mutedGold shadow-subtle">
           <button
             onClick={() => setCurrentStep(1)}
-            className={`py-2 px-3 rounded-lg text-xs font-bold uppercase font-mono tracking-wider transition-colors ${
+            className={`py-2.5 px-2 rounded-lg text-[10px] sm:text-xs leading-tight font-bold uppercase font-mono tracking-wider transition-colors ${
               currentStep === 1
                 ? "bg-vermilion text-cream shadow-subtle"
                 : "text-darkRed hover:bg-cream"
@@ -308,7 +308,7 @@ export default function SubmissionPortalPage() {
           </button>
           <button
             onClick={() => setCurrentStep(2)}
-            className={`py-2 px-3 rounded-lg text-xs font-bold uppercase font-mono tracking-wider transition-colors ${
+            className={`py-2.5 px-2 rounded-lg text-[10px] sm:text-xs leading-tight font-bold uppercase font-mono tracking-wider transition-colors ${
               currentStep === 2
                 ? "bg-vermilion text-cream shadow-subtle"
                 : "text-darkRed hover:bg-cream"
@@ -318,7 +318,7 @@ export default function SubmissionPortalPage() {
           </button>
           <button
             onClick={() => setCurrentStep(3)}
-            className={`py-2 px-3 rounded-lg text-xs font-bold uppercase font-mono tracking-wider transition-colors ${
+            className={`py-2.5 px-2 rounded-lg text-[10px] sm:text-xs leading-tight font-bold uppercase font-mono tracking-wider transition-colors ${
               currentStep === 3
                 ? "bg-vermilion text-cream shadow-subtle"
                 : "text-darkRed hover:bg-cream"
@@ -548,7 +548,7 @@ export default function SubmissionPortalPage() {
             </div>
 
             {/* Step 1 Actions */}
-            <div className="pt-6 border-t border-mutedGold flex items-center justify-between">
+            <div className="pt-6 border-t border-mutedGold flex flex-wrap items-center justify-between gap-3">
               {isLeader && (
                 <button
                   type="button"
@@ -740,11 +740,11 @@ export default function SubmissionPortalPage() {
             </div>
 
             {/* Actions */}
-            <div className="pt-6 border-t border-mutedGold flex items-center justify-between">
+            <div className="pt-6 border-t border-mutedGold flex flex-wrap items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="px-4 py-2.5 rounded-xl border border-mutedGold bg-cream hover:bg-paleCream text-darkRed text-xs font-bold uppercase font-mono inline-flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl border border-mutedGold bg-cream hover:bg-paleCream text-darkRed text-xs font-bold uppercase font-mono inline-flex items-center gap-1.5 shrink-0"
               >
                 <ArrowLeft size={13} />
                 <span>Back to Deliverables</span>
@@ -755,7 +755,7 @@ export default function SubmissionPortalPage() {
                   type="button"
                   onClick={handleFinalSubmit}
                   disabled={isSubmitting || !acknowledged || !challengeId}
-                  className="px-6 py-3 rounded-xl bg-vermilion hover:bg-darkRed text-cream text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-poster disabled:opacity-50"
+                  className="px-6 py-3 rounded-xl bg-vermilion hover:bg-darkRed text-cream text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-poster disabled:opacity-50 shrink-0"
                 >
                   <ShieldCheck size={16} className="text-accentGold" />
                   <span>{isSubmitting ? "Locking & Submitting..." : "Finalize & Lock Submission"}</span>

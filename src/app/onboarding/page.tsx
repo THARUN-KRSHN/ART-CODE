@@ -80,7 +80,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-xl bg-paleCream/95 backdrop-blur-sm rounded-2xl border-2 border-mutedGold/60 shadow-elevated p-8 sm:p-10 space-y-8">
         {/* Progress indicator */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-ink/70 font-semibold">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[11px] font-mono uppercase tracking-wider text-ink/70 font-semibold">
             <span>Step 01 of 02 // Profile Setup</span>
             <span className="text-vermilion font-bold">50% Completed</span>
           </div>

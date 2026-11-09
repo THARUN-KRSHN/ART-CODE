@@ -192,7 +192,7 @@ export default function AdminSubmissionsPage() {
               </div>
               <button
                 onClick={() => setSelectedSub(null)}
-                className="p-1 rounded-xl text-ink/60 hover:text-vermilion hover:bg-cream"
+                className="p-2.5 rounded-xl text-ink/60 hover:text-vermilion hover:bg-cream"
               >
                 <X size={20} />
               </button>
@@ -247,7 +247,7 @@ export default function AdminSubmissionsPage() {
                       rel="noreferrer"
                       className="text-vermilion hover:underline font-mono inline-flex items-center gap-1 font-bold"
                     >
-                      <span>{selectedSub.githubUrl}</span>
+                      <span className="break-all">{selectedSub.githubUrl}</span>
                       <ExternalLink size={11} />
                     </a>
                   </div>
@@ -259,7 +259,7 @@ export default function AdminSubmissionsPage() {
                       rel="noreferrer"
                       className="text-darkRed hover:underline font-mono inline-flex items-center gap-1 font-bold"
                     >
-                      <span>{selectedSub.googleDriveUrl}</span>
+                      <span className="break-all">{selectedSub.googleDriveUrl}</span>
                       <ExternalLink size={11} />
                     </a>
                   </div>
@@ -272,7 +272,7 @@ export default function AdminSubmissionsPage() {
                         rel="noreferrer"
                         className="text-darkRed hover:underline font-mono inline-flex items-center gap-1 font-bold"
                       >
-                        <span>{selectedSub.liveUrl}</span>
+                        <span className="break-all">{selectedSub.liveUrl}</span>
                         <ExternalLink size={11} />
                       </a>
                     </div>
@@ -302,7 +302,7 @@ export default function AdminSubmissionsPage() {
                     <button
                       onClick={() => handleReopenOrLock(selectedSub.id, "reopen")}
                       disabled={isProcessing}
-                      className="px-4 py-2 rounded-xl bg-vermilion text-cream text-xs font-bold hover:bg-darkRed transition-colors flex items-center gap-1.5 shadow-sm"
+                      className="px-4 py-2 rounded-xl bg-vermilion text-cream text-xs font-bold hover:bg-darkRed transition-colors flex flex-wrap items-center gap-1.5 shadow-sm"
                     >
                       <Unlock size={13} />
                       <span>{isProcessing ? "Processing..." : "Reopen Submission (Unlock for Leader)"}</span>

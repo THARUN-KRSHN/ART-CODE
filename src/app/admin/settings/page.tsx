@@ -237,7 +237,7 @@ export default function AdminSettingsPage() {
           </div>
 
           {/* Results publication switch */}
-          <div className="pt-4 border-t border-mutedGold/40 flex items-center justify-between">
+          <div className="pt-4 border-t border-mutedGold/40 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-xs font-bold text-ink">Publish Final Winners to Public</div>
               <div className="text-[11px] text-ink/70">
@@ -245,7 +245,7 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex items-center cursor-pointer shrink-0">
               <input
                 type="checkbox"
                 checked={settings.resultsPublished}

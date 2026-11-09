@@ -87,7 +87,7 @@ export default function AdminTeamsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filtered.map((t) => (
           <div key={t.id} className="p-6 rounded-2xl border-2 border-mutedGold/60 bg-paleCream/95 shadow-sm space-y-4 hover:shadow-elevated transition-shadow">
-            <div className="flex items-start justify-between gap-2 border-b border-mutedGold/40 pb-3">
+            <div className="flex flex-wrap items-start justify-between gap-2 border-b border-mutedGold/40 pb-3">
               <div>
                 <h3 className="text-lg font-bold text-ink">{t.name}</h3>
                 <div className="flex items-center gap-2 mt-1">
@@ -96,7 +96,7 @@ export default function AdminTeamsPage() {
                   </span>
                   <button
                     onClick={() => handleCopy(t.invitationCode)}
-                    className="p-1 rounded text-ink/60 hover:text-vermilion"
+                    className="p-2.5 rounded text-ink/60 hover:text-vermilion"
                     title="Copy invite code"
                   >
                     {copiedCode === t.invitationCode ? <Check size={13} className="text-darkRed" /> : <Copy size={13} />}

@@ -230,7 +230,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Ananya Nair"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
@@ -244,7 +244,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
@@ -258,7 +258,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@cce.edu.in"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
@@ -271,7 +271,7 @@ export default function RegisterPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98471 00000"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
@@ -284,14 +284,14 @@ export default function RegisterPage() {
                 required
                 value={institution}
                 onChange={(e) => setInstitution(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-mutedGold bg-cream text-ink focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors flex items-center justify-center gap-2 shadow-subtle pt-2"
+              className="w-full py-3 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors flex items-center justify-center gap-2 shadow-subtle"
             >
               <span>{isLoading ? "Creating Profile..." : "Register & Set Up Profile"}</span>
               <ArrowRight size={14} className="text-accentGold" />

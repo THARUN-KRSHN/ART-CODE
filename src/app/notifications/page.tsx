@@ -128,7 +128,7 @@ export default function NotificationsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setFilterUnreadOnly(false)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors ${
               !filterUnreadOnly
                 ? "bg-vermilion text-cream shadow-sm"
                 : "bg-paleCream/80 border border-mutedGold/60 text-ink/70 hover:bg-cream"
@@ -138,7 +138,7 @@ export default function NotificationsPage() {
           </button>
           <button
             onClick={() => setFilterUnreadOnly(true)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors ${
               filterUnreadOnly
                 ? "bg-vermilion text-cream shadow-sm"
                 : "bg-paleCream/80 border border-mutedGold/60 text-ink/70 hover:bg-cream"
@@ -195,7 +195,7 @@ export default function NotificationsPage() {
                       {currentUser && !isRead && (
                         <button
                           onClick={() => handleMarkAsRead(n.id)}
-                          className="text-[11px] font-bold text-vermilion hover:underline inline-flex items-center gap-1"
+                          className="text-[11px] font-bold text-vermilion hover:underline inline-flex items-center gap-1 px-2 py-2 -my-2"
                         >
                           <Check size={12} /> Mark read
                         </button>
@@ -207,7 +207,7 @@ export default function NotificationsPage() {
                     {n.message}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-mutedGold/40 flex items-center justify-between text-[11px] font-mono text-ink/60">
+                  <div className="mt-4 pt-3 border-t border-mutedGold/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-[11px] font-mono text-ink/60">
                     <span>Target Audience: {n.targetAudience}</span>
                     <span className="text-darkRed font-semibold">Organising Committee (DELTA)</span>
                   </div>

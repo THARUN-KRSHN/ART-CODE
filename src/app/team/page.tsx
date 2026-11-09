@@ -200,7 +200,7 @@ export default function TeamFormationPage() {
                   <div className="text-xs font-mono text-darkRed uppercase font-bold">Registered Team</div>
                   <h2 className="text-2xl font-bold text-darkRed mt-1">{currentTeam.name}</h2>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <StatusBadge status={currentTeam.status === "complete" ? "complete" : "incomplete"} />
                   <span className="text-xs font-mono text-ink-muted">
                     {currentTeam.members.length}/2 Members

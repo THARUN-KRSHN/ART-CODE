@@ -116,7 +116,7 @@ export default function TeamWorkspacePage() {
             <h1 className="text-3xl font-display font-bold text-darkRed">{team.name}</h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <StatusBadge status={team.status} />
             {submission && (
               <StatusBadge
@@ -133,7 +133,7 @@ export default function TeamWorkspacePage() {
           <div className="lg:col-span-8 space-y-8">
             {/* Section 1: Team Members */}
             <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-6">
-              <div className="flex items-center justify-between border-b border-mutedGold pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-mutedGold pb-4">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-darkRed font-mono flex items-center gap-2">
                   <RhombusMotif size={12} color="#A32516" />
                   <span>Team Members ({team.members.length}/2 Active)</span>
@@ -178,7 +178,7 @@ export default function TeamWorkspacePage() {
 
             {/* Section 2: Selected Challenge */}
             <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-4">
-              <div className="flex items-center justify-between border-b border-mutedGold pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-mutedGold pb-4">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-darkRed font-mono flex items-center gap-2">
                   <RhombusMotif size={12} color="#A32516" />
                   <span>Assigned Problem Statement</span>
@@ -186,7 +186,7 @@ export default function TeamWorkspacePage() {
                 {isLeader && (
                   <Link
                     href="/challenges"
-                    className="text-xs font-bold uppercase font-mono text-vermilion hover:underline inline-flex items-center gap-1"
+                    className="text-xs font-bold uppercase font-mono text-vermilion hover:underline inline-flex items-center gap-1 shrink-0"
                   >
                     <span>Change Track</span>
                     <ArrowRight size={12} />
@@ -230,7 +230,7 @@ export default function TeamWorkspacePage() {
 
             {/* Section 3: Project Submission Status */}
             <div className="p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-6">
-              <div className="flex items-center justify-between border-b border-mutedGold pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-mutedGold pb-4">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-darkRed font-mono flex items-center gap-2">
                   <RhombusMotif size={12} color="#A32516" />
                   <span>Project Submission Status</span>
@@ -317,7 +317,7 @@ export default function TeamWorkspacePage() {
                 </span>
                 <button
                   onClick={() => copyCode(team.invitationCode)}
-                  className="p-2 rounded-lg bg-paleCream border border-mutedGold hover:bg-cream text-darkRed shadow-subtle transition-colors"
+                  className="p-2.5 rounded-lg bg-paleCream border border-mutedGold hover:bg-cream text-darkRed shadow-subtle transition-colors"
                   title="Copy code"
                 >
                   {copied ? <Check size={14} className="text-status-success" /> : <Copy size={14} />}

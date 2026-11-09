@@ -39,7 +39,7 @@ export function AdminNav() {
           <Link
             key={link.href}
             href={link.href}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
               isActive
                 ? "bg-vermilion text-cream shadow-sm"
                 : "text-darkRed hover:bg-paleCream/80 hover:text-vermilion border border-transparent hover:border-mutedGold/40"

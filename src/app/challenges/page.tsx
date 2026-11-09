@@ -60,7 +60,7 @@ export default function ChallengesPage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                className={`inline-flex items-center min-h-10 px-3.5 rounded-lg text-xs font-bold transition-colors ${
                   selectedCategory === cat
                     ? "bg-vermilion text-cream shadow-subtle"
                     : "bg-cream text-ink-secondary border border-mutedGold hover:bg-paleCream hover:text-darkRed"
@@ -79,7 +79,7 @@ export default function ChallengesPage() {
               placeholder="Search challenges..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-mutedGold bg-cream text-ink placeholder:text-ink-muted focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
+              className="w-full min-h-10 pl-9 pr-4 py-2 text-xs rounded-lg border border-mutedGold bg-cream text-ink placeholder:text-ink-muted focus:bg-white focus:outline-none focus:ring-1 focus:ring-vermilion"
             />
           </div>
         </div>

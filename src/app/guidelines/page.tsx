@@ -76,19 +76,19 @@ export default function GuidelinesPage() {
         {/* Layout with sticky sidebar on desktop (Panel 08 Style) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Navigation Index */}
-          <div className="lg:col-span-4 sticky top-24 space-y-4">
+          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
             <div className="p-5 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-2">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-darkRed flex items-center gap-2">
                 <RhombusMotif size={12} color="#A32516" />
                 <span>Document Sections</span>
               </span>
-              <nav className="flex flex-col space-y-1 pt-2">
+              <nav className="flex gap-2 overflow-x-auto pb-1 pt-2 -mx-1 px-1 lg:flex-col lg:space-y-1 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0">
                 {sections.map((s) => (
                   <a
                     key={s.id}
                     href={`#${s.id}`}
                     onClick={() => setActiveSection(s.id)}
-                    className={`px-3 py-2 text-xs rounded-lg transition-colors text-left font-semibold ${
+                    className={`shrink-0 whitespace-nowrap inline-flex items-center min-h-10 px-3 text-xs rounded-lg transition-colors text-left font-semibold ${
                       activeSection === s.id
                         ? "bg-vermilion text-cream shadow-subtle font-bold"
                         : "text-ink-secondary hover:bg-cream hover:text-darkRed"
@@ -106,7 +106,7 @@ export default function GuidelinesPage() {
               <p>Form your team of two and begin drafting your solution.</p>
               <Link
                 href="/register"
-                className="w-full text-center block py-2.5 rounded-xl bg-vermilion text-cream font-bold text-xs uppercase tracking-wider hover:bg-darkRed transition-colors shadow-subtle"
+                className="w-full text-center block py-3 rounded-xl bg-vermilion text-cream font-bold text-xs uppercase tracking-wider hover:bg-darkRed transition-colors shadow-subtle"
               >
                 Register Team
               </Link>
@@ -245,7 +245,7 @@ export default function GuidelinesPage() {
                       "readme"
                     )
                   }
-                  className="px-3.5 py-1.5 rounded-lg border border-mutedGold bg-cream hover:bg-paleCream text-xs font-bold uppercase font-mono text-darkRed flex items-center gap-1.5 shadow-subtle"
+                  className="px-3.5 min-h-10 rounded-lg border border-mutedGold bg-cream hover:bg-paleCream text-xs font-bold uppercase font-mono text-darkRed inline-flex items-center gap-1.5 shadow-subtle"
                 >
                   {copiedText === "readme" ? <Check size={13} className="text-status-success" /> : <Copy size={13} />}
                   <span>{copiedText === "readme" ? "Copied" : "Copy Template"}</span>

@@ -115,9 +115,9 @@ export async function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-cream/70 gap-4">
           <p>© 2026 DELTA, Christ College of Engineering. All rights reserved.</p>
-          <div className="flex items-center gap-4 font-mono">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono sm:justify-end">
             <span>Contemporary Indian Cultural Editorial Design</span>
-            <span>•</span>
+            <span aria-hidden>•</span>
             <span className="text-accentGold font-semibold">ART × CULTURE × CODE</span>
           </div>
         </div>

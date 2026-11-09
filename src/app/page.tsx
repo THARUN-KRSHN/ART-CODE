@@ -76,7 +76,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="hero-copy lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-paleCream border border-mutedGold text-xs font-mono font-bold tracking-widest text-vermilion uppercase shadow-subtle">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-paleCream border border-mutedGold text-[10px] sm:text-xs font-mono font-bold tracking-widest sm:tracking-widest text-vermilion uppercase shadow-subtle">
                 <span className="text-accentGold">Δ</span>
                 <span>DELTA PRESENTS // VIRTUAL HACKATHON</span>
               </div>
@@ -118,9 +118,9 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="pt-4 flex items-center gap-4 text-xs font-mono text-darkRed/80">
+              <div className="pt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-darkRed/80">
                 <span className="font-bold">CHRIST COLLEGE OF ENGINEERING</span>
-                <span>•</span>
+                <span aria-hidden>•</span>
                 <span>AUTONOMOUS INSTITUTION</span>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default async function HomePage() {
       {/* 2. EVENT AT A GLANCE (4 Compact Cards) */}
       <section className="py-12 bg-paleCream border-b-2 border-mutedGold">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 rounded-card border-2 border-mutedGold bg-cream shadow-subtle flex flex-col justify-between">
               <div className="w-10 h-10 rounded-xl bg-vermilion/10 text-vermilion flex items-center justify-center mb-3">
                 <Sparkles size={20} />
@@ -443,34 +443,34 @@ export default async function HomePage() {
 
             {/* Rubric Card */}
             <div className="lg:col-span-6 p-6 sm:p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle">
-              <h3 className="text-xs font-bold text-darkRed uppercase tracking-wider font-mono border-b border-mutedGold pb-3 flex items-center justify-between">
+              <h3 className="text-xs font-bold text-darkRed uppercase tracking-wider font-mono border-b border-mutedGold pb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <span>Evaluation Rubric (100 Points)</span>
                 <span className="text-vermilion font-bold">DELTA FACULTY RUBRIC</span>
               </h3>
               <div className="divide-y divide-mutedGold/60 text-xs">
-                <div className="py-3 flex justify-between items-center">
+                <div className="py-3 flex justify-between items-center gap-3">
                   <span className="font-semibold text-ink">Innovation and Originality</span>
-                  <span className="font-mono font-bold text-vermilion">25 Marks</span>
+                  <span className="font-mono font-bold text-vermilion shrink-0">25 Marks</span>
                 </div>
-                <div className="py-3 flex justify-between items-center">
+                <div className="py-3 flex justify-between items-center gap-3">
                   <span className="font-semibold text-ink">Technical Implementation & Architecture</span>
-                  <span className="font-mono font-bold text-darkRed">25 Marks</span>
+                  <span className="font-mono font-bold text-darkRed shrink-0">25 Marks</span>
                 </div>
-                <div className="py-3 flex justify-between items-center">
+                <div className="py-3 flex justify-between items-center gap-3">
                   <span className="font-semibold text-ink">Relevance to Heritage & Cultural Theme</span>
-                  <span className="font-mono font-bold text-vermilion">20 Marks</span>
+                  <span className="font-mono font-bold text-vermilion shrink-0">20 Marks</span>
                 </div>
-                <div className="py-3 flex justify-between items-center">
+                <div className="py-3 flex justify-between items-center gap-3">
                   <span className="font-semibold text-ink">User Experience, Design & Accessibility</span>
-                  <span className="font-mono font-bold text-secondaryRed">15 Marks</span>
+                  <span className="font-mono font-bold text-secondaryRed shrink-0">15 Marks</span>
                 </div>
-                <div className="py-3 flex justify-between items-center">
+                <div className="py-3 flex justify-between items-center gap-3">
                   <span className="font-semibold text-ink">Potential Impact and Feasibility</span>
-                  <span className="font-mono font-bold text-ink">15 Marks</span>
+                  <span className="font-mono font-bold text-ink shrink-0">15 Marks</span>
                 </div>
-                <div className="pt-4 flex justify-between items-center font-bold text-sm text-darkRed border-t-2 border-mutedGold">
+                <div className="pt-4 flex justify-between items-center gap-3 font-bold text-sm text-darkRed border-t-2 border-mutedGold">
                   <span>Total Mark Capacity</span>
-                  <span className="font-mono text-base text-vermilion">100 / 100</span>
+                  <span className="font-mono text-base text-vermilion shrink-0">100 / 100</span>
                 </div>
               </div>
             </div>

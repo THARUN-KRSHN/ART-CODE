@@ -98,7 +98,7 @@ export default function EventPage() {
 
         {/* Section 4: Official Event Information Table */}
         <section className="p-8 rounded-card border-2 border-mutedGold bg-paleCream shadow-subtle space-y-6">
-          <div className="border-b-2 border-mutedGold pb-3 flex items-center justify-between">
+          <div className="border-b-2 border-mutedGold pb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
             <h2 className="text-xs font-mono uppercase tracking-widest text-darkRed font-bold flex items-center gap-2">
               <RhombusMotif size={14} />
               <span>03 // Official Event Registry</span>

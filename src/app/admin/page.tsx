@@ -100,7 +100,7 @@ export default function AdminOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left: Challenge Distribution (7 cols) */}
         <div className="lg:col-span-7 p-6 rounded-2xl border-2 border-mutedGold/60 bg-paleCream/95 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-mutedGold/50 pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-mutedGold/50 pb-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-ink font-mono">
               Submissions by Problem Statement
             </h2>
