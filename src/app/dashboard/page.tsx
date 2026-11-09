@@ -12,6 +12,7 @@ import {
   FileCode,
   Bell,
   ArrowRight,
+  Award,
   ShieldCheck,
   CheckCircle2,
   AlertTriangle,
@@ -99,6 +100,7 @@ export default function DashboardPage() {
     { label: "Submission", href: "/submission", icon: FileCode },
     { label: "Notifications", href: "/notifications", icon: Bell },
     { label: "Profile", href: "/onboarding", icon: User },
+    { label: "Certificate", href: "/certificate", icon: Award },
   ];
 
   return (

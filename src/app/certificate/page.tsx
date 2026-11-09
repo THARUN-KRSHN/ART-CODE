@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Award, Loader2, Download, Printer, ArrowLeft, Lock } from "lucide-react";
 import { CulturalDivider } from "@/components/art/CulturalMotifs";
 
@@ -162,6 +163,7 @@ function drawCertificate(
 
 export default function CertificatePage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [teams, setTeams] = useState<TeamOption[]>([]);
   const [selectedTeamId, setSelectedTeamId] = useState("");
@@ -172,13 +174,41 @@ export default function CertificatePage() {
   const [blocked, setBlocked] = useState<{ opensAt: string; message: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Initial load: gate + team list
+  // Access gate: signed-in participants must submit feedback first (admins bypass),
+  // then the availability window decides whether the generator unlocks.
   useEffect(() => {
+    let cancelled = false;
     const preview =
       typeof window !== "undefined" && new URLSearchParams(window.location.search).get("preview") === "1";
-    fetch(`/api/certificate${preview ? "?preview=1" : ""}`)
-      .then(async (res) => {
+
+    (async () => {
+      try {
+        const sessionRes = await fetch("/api/auth/session");
+        const session = await sessionRes.json().catch(() => ({}));
+        if (cancelled) return;
+
+        if (!session?.user) {
+          router.replace("/login?next=/certificate");
+          return;
+        }
+
+        if (session.user.role !== "admin") {
+          const fbRes = await fetch("/api/feedback");
+          const fb = await fbRes.json().catch(() => ({}));
+          if (cancelled) return;
+          if (!fbRes.ok || !fb.submitted) {
+            router.replace("/feedback?next=/certificate");
+            return;
+          }
+        }
+      } catch {
+        // Session probe failed; the availability API below still decides.
+      }
+
+      try {
+        const res = await fetch(`/api/certificate${preview ? "?preview=1" : ""}`);
         const json = await res.json();
+        if (cancelled) return;
         if (!res.ok || json.available === false) {
           setBlocked({
             opensAt: json.opensAt || "",
@@ -187,12 +217,17 @@ export default function CertificatePage() {
           return;
         }
         setTeams(json.teams || []);
-        if (json.settings?.eventName) setEventName(json.settings.eventName);
-        if (json.settings?.organiser) setOrganiser(json.settings.organiser);
-      })
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
+      } catch (e: any) {
+        if (!cancelled) setError(e.message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   // Load chosen team
   useEffect(() => {
