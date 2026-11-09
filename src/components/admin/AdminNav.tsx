@@ -11,6 +11,7 @@ import {
   Bell,
   Settings,
   Shield,
+  MessageSquareHeart,
 } from "lucide-react";
 
 export function AdminNav() {
@@ -22,6 +23,7 @@ export function AdminNav() {
     { href: "/admin/teams", label: "Teams", icon: FolderKanban },
     { href: "/admin/submissions", label: "Submissions", icon: FileCode },
     { href: "/admin/announcements", label: "Announcements", icon: Bell },
+    { href: "/admin/feedback", label: "Feedback", icon: MessageSquareHeart },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
 
