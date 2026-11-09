@@ -23,142 +23,64 @@ type CertificateData = {
 const W = 1600;
 const H = 1131;
 
-// Art//Code 2026 palette
-const COLORS = {
-  cream: "#F7E7C6",
-  paleCream: "#FCE9CC",
-  vermilion: "#A32516",
-  gold: "#F1B321",
-  darkRed: "#6B2B12",
-  secondaryRed: "#8C3D20",
-  mutedGold: "#D9B88A",
-  ink: "#1F1A14",
-};
 
-function drawCertificate(
+const TEMPLATE_SRC = "/img/certificate-template.png";
+const NAME_FONT_SIZE = 96.4;
+const NAME_FONT_FAMILY = "Badhorse Display";
+const NAME_COLOR = "#F0B40A";
+const NAME_CENTER_X = 910;
+const NAME_CENTER_Y = 633;
+const NAME_MAX_WIDTH = 1250;
+
+let templatePromise: Promise<HTMLImageElement | null> | null = null;
+
+function loadTemplate(): Promise<HTMLImageElement | null> {
+  if (!templatePromise) {
+    templatePromise = new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = TEMPLATE_SRC;
+    });
+  }
+  return templatePromise;
+}
+
+async function drawCertificate(
   ctx: CanvasRenderingContext2D,
-  data: CertificateData,
-  memberName: string,
-  eventName: string,
-  organiser: string
-) {
-  const { team } = data;
+  memberName: string
+): Promise<void> {
   ctx.clearRect(0, 0, W, H);
 
-  // Background
-  ctx.fillStyle = COLORS.paleCream;
-  ctx.fillRect(0, 0, W, H);
-
-  // Subtle mandala-ish corner arcs
-  ctx.save();
-  ctx.globalAlpha = 0.16;
-  ctx.strokeStyle = COLORS.vermilion;
-  for (let i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.arc(0, 0, 180 + i * 70, 0, Math.PI / 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(W, H, 180 + i * 70, Math.PI, Math.PI * 1.5);
-    ctx.stroke();
+  const template = await loadTemplate();
+  if (template) {
+    ctx.drawImage(template, 0, 0, W, H);
+  } else {
+    ctx.fillStyle = "#C0341D";
+    ctx.fillRect(0, 0, W, H);
   }
-  ctx.restore();
 
-  // Outer border
-  ctx.strokeStyle = COLORS.vermilion;
-  ctx.lineWidth = 14;
-  ctx.strokeRect(34, 34, W - 68, H - 68);
+  try {
+    await document.fonts.load(`${NAME_FONT_SIZE}px "${NAME_FONT_FAMILY}"`, memberName);
+  } catch {
+    // Draw anyway; the canvas falls back if the font never arrives.
+  }
 
-  // Inner gold border
-  ctx.strokeStyle = COLORS.gold;
-  ctx.lineWidth = 3;
-  ctx.strokeRect(58, 58, W - 116, H - 116);
-
-  // Thin inner rule
-  ctx.strokeStyle = COLORS.mutedGold;
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(74, 74, W - 148, H - 148);
-
+  ctx.fillStyle = NAME_COLOR;
   ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  ctx.font = `${NAME_FONT_SIZE}px "${NAME_FONT_FAMILY}"`;
 
-  // Header band label
-  ctx.fillStyle = COLORS.vermilion;
-  ctx.font = "600 24px ui-monospace, Menlo, monospace";
-  ctx.fillText("CERTIFICATE  OF  PARTICIPATION", W / 2, 168);
+  const measured = ctx.measureText(memberName).width;
+  const size =
+    measured > NAME_MAX_WIDTH ? NAME_FONT_SIZE * (NAME_MAX_WIDTH / measured) : NAME_FONT_SIZE;
+  ctx.font = `${size}px "${NAME_FONT_FAMILY}"`;
 
-  // Event name
-  ctx.fillStyle = COLORS.ink;
-  ctx.font = "800 78px Georgia, 'Times New Roman', serif";
-  ctx.fillText(eventName || "ART//CODE 2026", W / 2, 262);
+  const metrics = ctx.measureText(memberName);
+  const ascent = metrics.actualBoundingBoxAscent || size * 0.88;
+  const descent = metrics.actualBoundingBoxDescent || 0;
 
-  // Divider
-  ctx.strokeStyle = COLORS.gold;
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.moveTo(W / 2 - 190, 300);
-  ctx.lineTo(W / 2 + 190, 300);
-  ctx.stroke();
-  ctx.fillStyle = COLORS.vermilion;
-  ctx.beginPath();
-  ctx.arc(W / 2, 300, 7, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Preamble
-  ctx.fillStyle = COLORS.secondaryRed;
-  ctx.font = "500 26px Georgia, serif";
-  ctx.fillText("This certificate is proudly presented to", W / 2, 392);
-
-  // Recipient name
-  ctx.fillStyle = COLORS.darkRed;
-  ctx.font = "700 86px Georgia, 'Times New Roman', serif";
-  ctx.fillText(memberName, W / 2, 512);
-
-  // Name underline
-  const nameWidth = Math.min(ctx.measureText(memberName).width + 120, 1000);
-  ctx.strokeStyle = COLORS.mutedGold;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(W / 2 - nameWidth / 2, 548);
-  ctx.lineTo(W / 2 + nameWidth / 2, 548);
-  ctx.stroke();
-
-  // Body copy
-  ctx.fillStyle = COLORS.ink;
-  ctx.font = "400 27px Georgia, serif";
-  ctx.fillText("for outstanding participation in the", W / 2, 618);
-  const titleTxt = `“${team.projectTitle || team.name}”`;
-  ctx.font = "700 30px Georgia, serif";
-  ctx.fillStyle = COLORS.vermilion;
-  ctx.fillText(titleTxt, W / 2, 666);
-
-  ctx.fillStyle = COLORS.ink;
-  ctx.font = "400 25px Georgia, serif";
-  ctx.fillText(`as part of Team ${team.name}`, W / 2, 716);
-  if (team.challengeTitle) {
-    ctx.font = "italic 400 23px Georgia, serif";
-    ctx.fillStyle = COLORS.secondaryRed;
-    ctx.fillText(`Challenge Track — ${team.challengeTitle}`, W / 2, 758);
-  }
-
-  // Signature row
-  const sigY = 900;
-  const drawSig = (cx: number, label: string, value: string) => {
-    ctx.strokeStyle = COLORS.darkRed;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(cx - 190, sigY);
-    ctx.lineTo(cx + 190, sigY);
-    ctx.stroke();
-    ctx.fillStyle = COLORS.darkRed;
-    ctx.font = "700 24px Georgia, serif";
-    ctx.fillText(value, cx, sigY - 18);
-    ctx.fillStyle = COLORS.secondaryRed;
-    ctx.font = "500 19px ui-monospace, Menlo, monospace";
-    ctx.fillText(label, cx, sigY + 36);
-  };
-
-  drawSig(W / 2 - 320, "ORGANISING COMMITTEE", organiser || "DELTA");
-  drawSig(W / 2 + 320, "REFERENCE", team.referenceId || "—");
+  ctx.fillText(memberName, NAME_CENTER_X, NAME_CENTER_Y + (ascent - descent) / 2);
 }
 
 export default function CertificatePage() {
@@ -169,8 +91,6 @@ export default function CertificatePage() {
   const [selectedTeamId, setSelectedTeamId] = useState("");
   const [data, setData] = useState<CertificateData | null>(null);
   const [memberName, setMemberName] = useState("");
-  const [eventName, setEventName] = useState("ART//CODE 2026");
-  const [organiser, setOrganiser] = useState("DELTA");
   const [blocked, setBlocked] = useState<{ opensAt: string; message: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -257,8 +177,8 @@ export default function CertificatePage() {
     if (!canvas || !data || !memberName) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    drawCertificate(ctx, data, memberName, eventName, organiser);
-  }, [data, memberName, eventName, organiser]);
+    drawCertificate(ctx, memberName);
+  }, [data, memberName]);
 
   useEffect(() => {
     render();
