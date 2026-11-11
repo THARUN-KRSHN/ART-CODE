@@ -85,10 +85,12 @@ export default function FeedbackPage() {
   }, [router]);
 
   useEffect(() => {
-    if (!submitted || !advanced) return;
-    const t = setTimeout(() => router.push("/certificate"), 2200);
+    if (!submitted || editing) return;
+    const next = new URLSearchParams(window.location.search).get("next");
+    if (!advanced && !next) return;
+    const t = setTimeout(() => router.push(next || "/certificate"), 1800);
     return () => clearTimeout(t);
-  }, [submitted, advanced, router]);
+  }, [submitted, editing, advanced, router]);
 
   const isAnswered = (q: FeedbackQuestion) => {
     const v = answers[q.id];

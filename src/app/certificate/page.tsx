@@ -94,7 +94,7 @@ export default function CertificatePage() {
   const [blocked, setBlocked] = useState<{ opensAt: string; message: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Access gate: signed-in participants must submit feedback first (admins bypass),
+  // Access gate: every signed-in user must submit feedback first,
   // then the availability window decides whether the generator unlocks.
   useEffect(() => {
     let cancelled = false;
@@ -112,14 +112,12 @@ export default function CertificatePage() {
           return;
         }
 
-        if (session.user.role !== "admin") {
-          const fbRes = await fetch("/api/feedback");
-          const fb = await fbRes.json().catch(() => ({}));
-          if (cancelled) return;
-          if (!fbRes.ok || !fb.submitted) {
-            router.replace("/feedback?next=/certificate");
-            return;
-          }
+        const fbRes = await fetch("/api/feedback");
+        const fb = await fbRes.json().catch(() => ({}));
+        if (cancelled) return;
+        if (!fbRes.ok || !fb.submitted) {
+          router.replace("/feedback?next=/certificate");
+          return;
         }
       } catch {
         // Session probe failed; the availability API below still decides.

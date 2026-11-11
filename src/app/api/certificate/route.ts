@@ -33,16 +33,57 @@ export async function GET(req: NextRequest) {
   const teamId = url.searchParams.get("teamId");
 
   const { opensAt, isOpen } = certificateWindow();
+  const { session, pending } = await getSession();
+  const respond = (body: unknown, init?: ResponseInit) =>
+    withCookies(NextResponse.json(body, init), pending);
 
-  // Admins may preview the template before the public unlock date.
-  let adminPreview = false;
-  if (!isOpen && url.searchParams.get("preview") === "1") {
-    const { session } = await getSession();
-    adminPreview = Boolean(session && session.role === "admin");
+  if (!isSupabaseConfigured()) {
+    return respond({ available: true, opensAt, teams: [], settings: null });
   }
 
+  if (!session) {
+    return respond(
+      { available: false, opensAt, error: "Sign in to access your certificate.", teams: [] },
+      { status: 401 }
+    );
+  }
+
+  // Certificates are gated on event feedback: no feedback, no certificate.
+  try {
+    const admin = createAdminSupabase();
+    const { data: feedback, error: feedbackError } = await admin
+      .from("event_feedback")
+      .select("id")
+      .eq("user_id", session.userId)
+      .maybeSingle();
+
+    if (feedbackError) {
+      return respond(
+        { available: false, opensAt, error: "Could not verify feedback status.", teams: [] },
+        { status: 500 }
+      );
+    }
+
+    if (!feedback) {
+      return respond(
+        {
+          available: false,
+          opensAt,
+          error: "Submit the event feedback form to unlock your certificate.",
+          teams: [],
+        },
+        { status: 403 }
+      );
+    }
+  } catch (err: any) {
+    return respond({ available: false, opensAt, error: err.message, teams: [] }, { status: 500 });
+  }
+
+  // Admins may preview the template before the public unlock date.
+  const adminPreview = !isOpen && url.searchParams.get("preview") === "1" && session.role === "admin";
+
   if (!isOpen && !adminPreview) {
-    return NextResponse.json(
+    return respond(
       {
         available: false,
         opensAt,
@@ -51,10 +92,6 @@ export async function GET(req: NextRequest) {
       },
       { status: 403 }
     );
-  }
-
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ available: true, opensAt, teams: [], settings: null });
   }
 
   try {
