@@ -172,15 +172,6 @@ export default function ResultsPage() {
     );
   }
 
-  const tickerItems = [
-    "Results Announced",
-    ...winners
-      .slice()
-      .sort((a, b) => a.rank - b.rank)
-      .map((w) => `${ordinal(w.rank)} · ${w.teamName} — ${w.projectTitle}`),
-    "ART//CODE 2026",
-  ];
-
   return (
     <div className="min-h-screen bg-cream bg-mandala-grid text-ink relative overflow-x-hidden">
       {/* Falling confetti */}
@@ -201,25 +192,6 @@ export default function ResultsPage() {
             }}
           />
         ))}
-      </div>
-
-      {/* Victory ticker */}
-      <div className="results-ticker bg-vermilion border-b-2 border-darkRed/40 py-2.5 relative z-10">
-        <div className="results-ticker__track">
-          {[0, 1].map((dup) => (
-            <span key={dup} className="inline-flex items-center shrink-0">
-              {tickerItems.map((item, i) => (
-                <span
-                  key={`${dup}-${i}`}
-                  className="inline-flex items-center gap-3 px-5 text-[11px] font-mono font-bold uppercase tracking-widest text-accentGold"
-                >
-                  <span className="text-cream/90">{item}</span>
-                  <RhombusMotif size={10} color="#F1B321" />
-                </span>
-              ))}
-            </span>
-          ))}
-        </div>
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 space-y-12">

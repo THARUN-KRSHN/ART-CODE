@@ -198,20 +198,7 @@ body:has(.artcode-home) footer > div,
   .hero-figure__filter { display: none; }
 }
 
-/* Results announcement — ticker, confetti, podium flourishes */
-.results-ticker {
-  overflow: hidden;
-  white-space: nowrap;
-}
-.results-ticker__track {
-  display: inline-flex;
-  animation: ticker-scroll 28s linear infinite;
-}
-@keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
+/* Results announcement — confetti and podium flourishes */
 .confetti-layer {
   position: fixed;
   inset: 0;
@@ -247,7 +234,6 @@ body:has(.artcode-home) footer > div,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .results-ticker__track,
   .confetti-piece,
   .podium-halo,
   .crown-bob { animation: none; }
