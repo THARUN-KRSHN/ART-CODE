@@ -53,7 +53,6 @@ export function InkAura() {
     let pageHeight = 0;
     let mobile = mobileQuery.matches;
     let reducedMotion = motionQuery.matches;
-    let scrollY = window.scrollY;
     // A scalar field, not another canvas: feather opacity around actual text.
     const protectionCell = 20;
     let protection = new Float32Array(0);
@@ -71,6 +70,9 @@ export function InkAura() {
     let disposed = false;
     let figureVisible = true;
     const mouse = { x: -1000, y: -1000 };
+    // Pointer position converted to document space so threads bend under it
+    // even though the canvas itself now scrolls with the page.
+    const mouseDoc = { x: -1000, y: -1000 };
     let strands = makeStrands();
     const palette = [...AURA_CONFIG.colors.paint, AURA_CONFIG.colors.ink];
     // Canvas strokes have uniform styles. Quantized width/alpha sub-batches
@@ -117,7 +119,7 @@ export function InkAura() {
 
     function bend(point: Point, envelope: number): Point {
       if (mobile || reducedMotion || !pointerQuery.matches) return point;
-      const dx = point.x - mouse.x, dy = point.y - mouse.y;
+      const dx = point.x - mouseDoc.x, dy = point.y - mouseDoc.y;
       if (dx * dx + dy * dy >= 145 * 145) return point;
       const distance = Math.hypot(dx, dy);
       const force = Math.max(0, 1 - distance / 145) ** 2 * 19 * envelope;
@@ -148,10 +150,18 @@ export function InkAura() {
     function measure() {
       width = window.innerWidth;
       height = window.innerHeight;
-      pageHeight = document.documentElement.scrollHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      pageHeight = Math.max(document.documentElement.scrollHeight, height);
+      // Document-space canvas: it scrolls natively with the poster, so threads
+      // never trail behind during compositor-driven scrolling. Cap total pixels
+      // so a long page cannot blow up GPU memory.
+      const dpr = Math.max(1, Math.min(
+        window.devicePixelRatio || 1,
+        2,
+        Math.sqrt(12_000_000 / Math.max(1, width * pageHeight))
+      ));
       canvas!.width = Math.round(width * dpr);
-      canvas!.height = Math.round(height * dpr);
+      canvas!.height = Math.round(pageHeight * dpr);
+      canvas!.style.height = `${pageHeight}px`;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
       protectionColumns = Math.ceil(width / protectionCell) + 2;
       protectionRows = Math.ceil(pageHeight / protectionCell) + 2;
@@ -171,7 +181,7 @@ export function InkAura() {
         for (const rect of Array.from(parent.getClientRects())) {
           if (!rect.width || !rect.height) continue;
           const left = rect.left - 6, right = rect.right + 6;
-          const top = rect.top + scrollY - 4, bottom = rect.bottom + scrollY + 4;
+          const top = rect.top + window.scrollY - 4, bottom = rect.bottom + window.scrollY + 4;
           const feather = 72;
           for (let row = Math.max(0, Math.floor((top - feather) / protectionCell)); row <= Math.min(protectionRows - 1, Math.ceil((bottom + feather) / protectionCell)); row++) {
             for (let col = Math.max(0, Math.floor((left - feather) / protectionCell)); col <= Math.min(protectionColumns - 1, Math.ceil((right + feather) / protectionCell)); col++) {
@@ -190,8 +200,19 @@ export function InkAura() {
 
     function draw() {
       if (needsMeasure) measure();
-      ctx!.clearRect(0, 0, width, height);
+      const scrollY = window.scrollY;
+      const viewTop = scrollY - height * 0.5;
+      const viewBottom = scrollY + height * 1.5;
+      // Everything is drawn in document coordinates on a page-sized canvas, so
+      // native scrolling keeps the threads glued to the poster with no per-frame
+      // scroll sync (the old fixed canvas trailed behind during fast scrolling).
+      // Redraw only the visible window plus a margin.
+      if (playIntro && progress < 1) ctx!.clearRect(0, 0, width, pageHeight);
+      else ctx!.clearRect(0, viewTop, width, height * 2);
       const rect = figure!.getBoundingClientRect();
+      const figureTop = rect.top + scrollY;
+      mouseDoc.x = mouse.x;
+      mouseDoc.y = mouse.y + scrollY;
       introPlayed = true;
       progress = playIntro ? clamp(elapsed / INTRO_DURATION) : 1;
       canvas!.dataset.introProgress = progress.toFixed(3);
@@ -204,7 +225,7 @@ export function InkAura() {
       strands.forEach((strand, index) => {
         const spread = playIntro ? easeOut((progress - strand.delay) / strand.duration) : 1;
         if (spread <= 0) return;
-        const origin = { x: rect.left + rect.width * strand.anchor[0], y: rect.top + rect.height * strand.anchor[1] };
+        const origin = { x: rect.left + rect.width * strand.anchor[0], y: figureTop + rect.height * strand.anchor[1] };
         const points: Point[] = [];
         for (let step = 0; step <= steps; step++) {
           const t = step / steps * spread;
@@ -228,11 +249,11 @@ export function InkAura() {
           const end = Math.min(steps, i + 2);
           const p1 = points[i];
           const run = points.slice(i, end + 1);
-          if (run.every(p => p.y < -80) || run.every(p => p.y > height + 80)) continue;
+          if (run.every(p => p.y < viewTop - 80) || run.every(p => p.y > viewBottom + 80)) continue;
           const t = (i + end) / (2 * steps);
           const opacity = (AURA_CONFIG.farOpacity + (AURA_CONFIG.nearOpacity - AURA_CONFIG.farOpacity) * Math.exp(-t * 6))
             * (strand.ink ? AURA_CONFIG.inkOpacity : 1) * clamp((1 - t) / 0.18)
-            * readability(p1.x, p1.y + scrollY);
+            * readability(p1.x, p1.y);
           const path = strokeBatch(palette.indexOf(strand.color), Math.max(0.4, strand.lineWidth * (1 - t * 0.7)), opacity);
           if (!path) continue;
           path.moveTo(p1.x, p1.y);
@@ -250,7 +271,7 @@ export function InkAura() {
           const p0 = points[Math.max(0, i - 1)], p1 = points[i], p2 = points[i + 1], p3 = points[Math.min(steps, i + 2)];
           const spline = (a: number, b: number, c: number, d: number) => 0.5 * (2 * b + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u * u + (-a + 3 * b - 3 * c + d) * u * u * u);
           const x = spline(p0.x, p1.x, p2.x, p3.x), y = spline(p0.y, p1.y, p2.y, p3.y);
-          const path = strokeBatch(index % 6, 1.2 + strand.dot, Math.sin(travel * Math.PI) * 0.45 * readability(x, y + scrollY));
+          const path = strokeBatch(index % 6, 1.2 + strand.dot, Math.sin(travel * Math.PI) * 0.45 * readability(x, y));
           path?.moveTo(x, y);
           path?.lineTo(x + (p2.x - p1.x) * 0.15, y + (p2.y - p1.y) * 0.15);
         }
@@ -272,11 +293,8 @@ export function InkAura() {
     function schedule() {
       if (!frame && !document.hidden && !disposed) frame = requestAnimationFrame(tick);
     }
-    function onScroll() {
-      scrollY = window.scrollY;
-      // Reduced motion uses a still drawing, repositioned only for scroll/resize.
-      if (reducedMotion) { lastFrame = -Infinity; schedule(); }
-    }
+    // No scroll listener: the canvas lives in document space, so native
+    // scrolling moves the threads with the poster and nothing can lag behind.
     function invalidate() { needsMeasure = true; lastFrame = -Infinity; schedule(); }
     function onPreferenceChange() {
       mobile = mobileQuery.matches;
@@ -312,7 +330,6 @@ export function InkAura() {
       updateFigureMotion();
     });
     intersectionObserver.observe(figure);
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", invalidate);
     window.addEventListener("pointermove", onPointer, { passive: true });
     document.addEventListener("pointerleave", clearPointer);
@@ -328,7 +345,6 @@ export function InkAura() {
       cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", invalidate);
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("pointerleave", clearPointer);

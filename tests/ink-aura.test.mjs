@@ -25,7 +25,7 @@ function mountAura({ mobile = false, reduced = false } = {}) {
     clearRect() { draws++; },
     stroke() { strokes++; },
   };
-  const canvas = { dataset: {}, getContext: () => context };
+  const canvas = { dataset: {}, style: {}, getContext: () => context };
   const addEventListener = (name, callback) => listeners.set(name, callback);
   const removeEventListener = name => listeners.delete(name);
   const figure = {
@@ -109,8 +109,12 @@ test("desktop aura is stroke-only, batched, and DPR-capped without waterfall bun
   assert.equal(app.canvas.dataset.stringCount, String(app.exports.STRING_COUNT));
   assert.equal(app.canvas.dataset.bundleCount, undefined);
   assert.equal(app.exports.BUNDLE_COUNT, undefined);
-  assert.equal(app.canvas.width, 2880);
-  assert.equal(app.canvas.height, 2000);
+  // Document-space canvas: page height (6000) not viewport height, DPR capped
+  // by both the 2x ceiling and the 12MP memory budget.
+  const dpr = Math.min(3, 2, Math.sqrt(12_000_000 / (1440 * 6000)));
+  assert.equal(app.canvas.width, Math.round(1440 * dpr));
+  assert.equal(app.canvas.height, Math.round(6000 * dpr));
+  assert.equal(app.canvas.style.height, "6000px");
   assert.ok(app.strokes > 0);
   assert.ok(app.segments > app.strokes * 4, "segments should share color/style batches");
   assert.equal(app.context.lineCap, "round");
@@ -127,10 +131,12 @@ test("mobile halves aura strings; reduced motion is static", () => {
   assert.equal(app.pending, 0);
   app.step(500);
   assert.equal(app.draws, 1);
+  // The canvas scrolls natively with the page, so a scroll must not trigger a
+  // repaint (that per-frame sync was what made threads trail the poster).
   app.window.scrollY = 1000;
-  app.listeners.get("scroll")();
   app.step(600);
-  assert.equal(app.draws, 2, "static drawing must still follow scrolling");
+  assert.equal(app.draws, 1, "document-space drawing needs no scroll repaint");
+  assert.equal(app.listeners.get("scroll"), undefined);
   app.unmount();
 });
 
