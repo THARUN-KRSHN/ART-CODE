@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { getSession, loadTeam, logAudit, withCookies } from "@/lib/auth";
+import { getSession, getSettings, loadTeam, logAudit, withCookies } from "@/lib/auth";
 import { mapProblem, mapSubmission, ProblemRow, SubmissionRow } from "@/lib/supabase/mappers";
 import { ProjectSubmission } from "@/types";
 
@@ -64,6 +64,18 @@ export async function POST(req: NextRequest) {
           { error: "Only the Team Leader can edit the draft submission. Teammates can view status." },
           { status: 403 }
         ),
+        pending
+      );
+    }
+
+    // Deadline gate: once the submission window closes, drafts freeze too
+    const settings = await getSettings();
+    const deadline = new Date(settings.submissionDeadline);
+    if (Date.now() > deadline.getTime()) {
+      return withCookies(
+        NextResponse.json({
+          error: `The submission deadline of ${deadline.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} has passed. Draft editing is closed.`,
+        }, { status: 400 }),
         pending
       );
     }
