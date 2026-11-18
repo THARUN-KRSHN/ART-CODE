@@ -25,6 +25,11 @@ export function createAdminSupabase(): SupabaseClient {
       autoRefreshToken: false,
       detectSessionInUrl: false,
     },
+    // Live data only — never let Next.js cache Supabase GETs (stale winners, etc.)
+    global: {
+      fetch: (input, init) =>
+        fetch(input, { ...init, cache: "no-store" }),
+    },
   });
   return cached;
 }

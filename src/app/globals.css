@@ -196,3 +196,59 @@ body:has(.artcode-home) footer > div,
   .hero-figure[data-ripple="true"] .hero-figure__art { filter: none; }
   .hero-figure__filter { display: none; }
 }
+
+/* Results announcement — ticker, confetti, podium flourishes */
+.results-ticker {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.results-ticker__track {
+  display: inline-flex;
+  animation: ticker-scroll 28s linear infinite;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 30;
+}
+.confetti-piece {
+  position: absolute;
+  top: -4vh;
+  animation: confetti-fall linear infinite;
+}
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, -6vh, 0) rotate(0deg); opacity: 0; }
+  8% { opacity: 1; }
+  100% { transform: translate3d(var(--drift, 20px), 110vh, 0) rotate(720deg); opacity: .9; }
+}
+
+.podium-halo {
+  animation: podium-halo 3.4s ease-in-out infinite;
+}
+@keyframes podium-halo {
+  0%, 100% { opacity: .55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.045); }
+}
+
+.crown-bob {
+  animation: crown-bob 2.6s ease-in-out infinite;
+}
+@keyframes crown-bob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-6px) rotate(3deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .results-ticker__track,
+  .confetti-piece,
+  .podium-halo,
+  .crown-bob { animation: none; }
+  .confetti-piece { display: none; }
+}
