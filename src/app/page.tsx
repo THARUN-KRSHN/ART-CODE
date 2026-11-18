@@ -103,11 +103,18 @@ export default async function HomePage() {
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
-                  href="/register"
+                  href="/projects"
                   className="px-6 py-3.5 rounded-xl bg-vermilion text-cream font-bold text-xs uppercase tracking-wider hover:bg-darkRed transition-all shadow-subtle hover:shadow-poster flex items-center gap-2 border border-vermilion-700"
                 >
-                  <span>Register Now</span>
+                  <span>Explore Projects</span>
                   <ArrowRight size={15} className="text-accentGold" />
+                </Link>
+
+                <Link
+                  href="/results"
+                  className="px-6 py-3.5 rounded-xl bg-paleCream border-2 border-mutedGold text-ink font-bold text-xs uppercase tracking-wider hover:bg-cream hover:border-vermilion transition-colors shadow-subtle"
+                >
+                  See Winners
                 </Link>
 
                 <Link
@@ -523,16 +530,23 @@ export default async function HomePage() {
           </h2>
 
           <p className="text-sm sm:text-base text-cream/90 max-w-xl mx-auto leading-relaxed">
-            Form your two-member team and join student innovators across disciplines to build creative technology celebrating art and heritage.
+            ART//CODE 2026 has concluded. Explore the projects built by student innovators and meet the teams whose work celebrated art and heritage through creative technology.
           </p>
 
-          <div className="pt-4 flex justify-center gap-4">
+          <div className="pt-4 flex flex-wrap justify-center gap-4">
             <Link
-              href="/register"
+              href="/results"
               className="px-8 py-4 rounded-xl bg-accentGold text-darkRed font-bold text-xs uppercase tracking-wider hover:bg-cream transition-colors shadow-poster flex items-center gap-2"
             >
-              <span>Register for ART//CODE</span>
+              <span>See the Winners</span>
               <ArrowRight size={15} />
+            </Link>
+
+            <Link
+              href="/projects"
+              className="px-8 py-4 rounded-xl border-2 border-accentGold/70 text-cream font-bold text-xs uppercase tracking-wider hover:bg-accentGold/10 transition-colors flex items-center gap-2"
+            >
+              <span>Browse Projects</span>
             </Link>
           </div>
         </div>

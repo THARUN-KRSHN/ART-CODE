@@ -102,13 +102,13 @@ export default function GuidelinesPage() {
 
             {/* Quick action card */}
             <div className="p-5 rounded-card border-2 border-vermilion bg-cream text-xs text-ink-secondary space-y-3 shadow-subtle">
-              <div className="font-bold text-darkRed text-sm">Ready to Register?</div>
-              <p>Form your team of two and begin drafting your solution.</p>
+              <div className="font-bold text-darkRed text-sm">Curious what was built?</div>
+              <p>ART//CODE 2026 has concluded — browse the projects and the winning works.</p>
               <Link
-                href="/register"
+                href="/projects"
                 className="w-full text-center block py-3 rounded-xl bg-vermilion text-cream font-bold text-xs uppercase tracking-wider hover:bg-darkRed transition-colors shadow-subtle"
               >
-                Register Team
+                View Project Showcase
               </Link>
             </div>
           </div>

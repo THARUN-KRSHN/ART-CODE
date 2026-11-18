@@ -139,23 +139,31 @@ export default function ChallengesPage() {
           ))}
         </div>
 
-        {/* Bottom Registration CTA (Section 4 Rule) */}
+        {/* Bottom CTA (post-event) */}
         <div className="p-8 rounded-card border-2 border-vermilion bg-cream shadow-poster flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-xl font-bold text-darkRed font-display">
-              Found your challenge? Bring your idea to life.
+              Found your challenge? See how teams brought it to life.
             </h3>
             <p className="text-xs text-ink-secondary mt-1">
-              Form your two-member team and register for ART//CODE 2026.
+              ART//CODE 2026 has concluded — explore the projects and the winning works.
             </p>
           </div>
-          <Link
-            href="/register"
-            className="px-6 py-3 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors inline-flex items-center gap-2 shadow-subtle flex-shrink-0"
-          >
-            <span>Register Now</span>
-            <ArrowRight size={14} className="text-accentGold" />
-          </Link>
+          <div className="flex flex-wrap gap-3 flex-shrink-0">
+            <Link
+              href="/projects"
+              className="px-6 py-3 rounded-xl bg-vermilion text-cream text-xs font-bold uppercase tracking-wider hover:bg-darkRed transition-colors inline-flex items-center gap-2 shadow-subtle"
+            >
+              <span>Explore Projects</span>
+              <ArrowRight size={14} className="text-accentGold" />
+            </Link>
+            <Link
+              href="/results"
+              className="px-6 py-3 rounded-xl border-2 border-mutedGold text-darkRed text-xs font-bold uppercase tracking-wider hover:bg-paleCream transition-colors inline-flex items-center gap-2"
+            >
+              <span>See Winners</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
