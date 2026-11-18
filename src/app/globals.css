@@ -239,3 +239,16 @@ body:has(.artcode-home) footer > div,
   .crown-bob { animation: none; }
   .confetti-piece { display: none; }
 }
+
+/* Results page PDF export */
+@media print {
+  @page { size: A4 portrait; margin: 8mm; }
+  .confetti-layer, header.sticky, footer { display: none !important; }
+  .podium-halo, .crown-bob, .results-ticker__track { animation: none !important; }
+  .results-ticker { display: none !important; }
+  .min-h-screen { min-height: 0 !important; }
+  article { break-inside: avoid; }
+  .results-page { zoom: .72; padding: 0 !important; background-image: none !important; }
+  h1, h2, h3 { break-after: avoid; }
+  section { break-inside: avoid; }
+}

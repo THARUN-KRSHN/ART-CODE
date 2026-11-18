@@ -173,7 +173,7 @@ export default function ResultsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream bg-mandala-grid text-ink relative overflow-x-hidden">
+    <div className="results-page min-h-screen bg-cream bg-mandala-grid text-ink relative overflow-x-hidden">
       {/* Falling confetti */}
       <div className="confetti-layer" aria-hidden="true">
         {confetti.map((c) => (
