@@ -48,8 +48,6 @@ export function Navbar() {
     { label: "Projects", href: "/projects" },
     { label: "Results", href: "/results" },
     { label: "Guidelines", href: "/guidelines" },
-    { label: "Prizes", href: "/#prizes" },
-    { label: "FAQs", href: "/#faqs" },
   ];
 
   return (
@@ -129,15 +127,9 @@ export function Navbar() {
             <div className="flex items-center gap-2 pl-2 border-l border-mutedGold">
               <Link
                 href="/login"
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-ink hover:text-vermilion transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/register"
                 className="px-4 py-2 rounded-xl text-xs font-semibold bg-vermilion text-cream hover:bg-darkRed transition-colors shadow-subtle flex items-center gap-1.5"
               >
-                <span>Register Now</span>
+                <span>Sign In</span>
                 <ArrowRight size={13} className="text-accentGold" />
               </Link>
             </div>
@@ -204,16 +196,9 @@ export function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-center py-3 rounded-xl text-sm font-medium border border-mutedGold text-ink bg-white"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full text-center py-3 rounded-xl text-sm font-semibold bg-vermilion text-cream"
                 >
-                  Register Now
+                  Sign In
                 </Link>
                 <button
                   onClick={async () => {
