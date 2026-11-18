@@ -50,6 +50,16 @@ export async function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/projects" className="hover:text-accentGold transition-colors">
+                  Project Showcase
+                </Link>
+              </li>
+              <li>
+                <Link href="/results" className="hover:text-accentGold transition-colors">
+                  Winners Announcement
+                </Link>
+              </li>
+              <li>
                 <Link href="/guidelines" className="hover:text-accentGold transition-colors">
                   Rules & Evaluation Rubric
                 </Link>

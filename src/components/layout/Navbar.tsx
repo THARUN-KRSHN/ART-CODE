@@ -45,6 +45,8 @@ export function Navbar() {
   const navLinks = [
     { label: "About", href: "/event" },
     { label: "Challenges", href: "/challenges" },
+    { label: "Projects", href: "/projects" },
+    { label: "Results", href: "/results" },
     { label: "Guidelines", href: "/guidelines" },
     { label: "Prizes", href: "/#prizes" },
     { label: "FAQs", href: "/#faqs" },

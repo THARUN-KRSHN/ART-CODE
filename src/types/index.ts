@@ -91,6 +91,28 @@ export interface ProjectSubmission {
   updatedAt: string;
 }
 
+export interface ShowcaseProject {
+  id: string;
+  teamName: string;
+  members: string[];
+  challengeId: string;
+  challengeTitle: string;
+  challengeCategory: string;
+  challengeCode: string;
+  challengeSlug: string;
+  projectTitle: string;
+  shortDescription: string;
+  proposedSolution: string;
+  keyFeatures: string[];
+  techStack: string[];
+  innovationAndImpact: string;
+  githubUrl: string;
+  liveUrl?: string;
+  submittedAt?: string;
+  likeCount: number;
+  liked: boolean;
+}
+
 export type NotificationPriority = "normal" | "important" | "urgent";
 export type NotificationAudience = "all" | "complete_teams" | "incomplete_teams" | "not_submitted" | "specific_team";
 
